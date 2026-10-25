@@ -13,12 +13,14 @@ import streamlit as st
 from src.datos import DIMENSIONES, NIVELES_TIEMPO, TIPOS_COMPARABLES, agregar_periodo, cargar_viajeros, filtrar
 from src.estilo import ORDEN_VIA, formato_numero
 from src.graficas import figura_evolucion, figura_origen
+from src.ui import encabezado_grafica, nota_fuente, selector_graficas, sin_datos
 
-st.title("Explorar llegadas de viajeros")
-st.caption(
-    "Viajeros internacionales que ingresaron a Guatemala por mes. "
-    "Datos de uso académico; no son cifras oficiales."
+st.title("Evolución y origen de los viajeros")
+st.markdown(
+    "¿Cuántos viajeros internacionales llegan a Guatemala, por qué vía y desde dónde? "
+    "Las dos gráficas están **enlazadas**: lo que selecciones en la primera define el detalle de la segunda."
 )
+nota_fuente()
 
 df = cargar_viajeros()
 anio_min, anio_max = int(df["anio"].min()), int(df["anio"].max())
@@ -42,9 +44,11 @@ nivel = c4.segmented_control(
 ) or "Año"
 
 datos = filtrar(df, anios, tipos, vias)
-if datos.empty:
-    st.warning("No hay viajeros para la combinación de filtros elegida. Amplía el rango de años o agrega tipos de viajero y vías.")
+if datos.empty or datos["viajeros"].sum() == 0:
+    sin_datos("No hay viajeros para la combinación de filtros elegida. Amplía el rango de años o agrega tipos de viajero y vías.")
     st.stop()
+
+visibles = selector_graficas({"evolucion": "1. Evolución por vía", "origen": "2. Origen y puesto de ingreso"}, key="explorar_vis")
 
 # ---------------------------------------------------------------- resumen (no cuenta como visualizacion)
 total = datos["viajeros"].sum()
@@ -56,26 +60,31 @@ k2.metric(f"Vía principal ({por_via.max() / total:.0%} del total)", via_princip
 k3.metric("Meses incluidos", f"{datos['fecha'].nunique()}")
 
 # ---------------------------------------------------------------- viz 1: evolucion
-st.subheader("1. ¿Cómo ha evolucionado la llegada de viajeros?")
-st.caption(
-    "Cada barra suma los viajeros del periodo, dividida por vía de ingreso. "
-    "**Haz clic en una barra** para ver abajo de dónde vinieron esos viajeros. "
-    "Mantén Shift para sumar varias barras, o usa la herramienta de caja (arriba a la derecha) para elegir un rango. "
-    "Doble clic sobre la gráfica limpia la selección."
-)
-
 datos = datos.assign(periodo=agregar_periodo(datos["fecha"], nivel))
-fig1, vias_trazas = figura_evolucion(datos, nivel)
-
-evento = st.plotly_chart(
-    fig1,
-    key=f"evolucion_{nivel}",
-    on_select="rerun",
-    selection_mode=("points", "box"),
-    use_container_width=True,
-)
-if ultimo_mes.month < 12 and anios[1] == ultimo_mes.year:
-    st.caption(f"{ultimo_mes.year} solo incluye datos hasta {ultimo_mes:%m/%Y}; su barra anual no está completa.")
+evento = None
+if "evolucion" in visibles:
+    encabezado_grafica(
+        1,
+        "¿Cómo ha evolucionado la llegada de viajeros?",
+        "observado",
+        "viajeros por periodo, divididos por vía de ingreso. Cambia el **detalle temporal** (año, trimestre o mes) arriba.",
+        "dimensionar la demanda, ubicar la caída de 2020 y medir la recuperación de cada vía.",
+    )
+    st.caption(
+        "**Haz clic en una barra** para ver abajo de dónde vinieron esos viajeros. "
+        "Mantén Shift para sumar varias barras, o usa la herramienta de caja (arriba a la derecha) para elegir un rango. "
+        "Doble clic sobre la gráfica limpia la selección."
+    )
+    fig1, vias_trazas = figura_evolucion(datos, nivel)
+    evento = st.plotly_chart(
+        fig1,
+        key=f"evolucion_{nivel}",
+        on_select="rerun",
+        selection_mode=("points", "box"),
+        use_container_width=True,
+    )
+    if ultimo_mes.month < 12 and anios[1] == ultimo_mes.year:
+        st.caption(f"{ultimo_mes.year} solo incluye datos hasta {ultimo_mes:%m/%Y}; su barra anual no está completa.")
 
 # Parejas (periodo, via) seleccionadas en la grafica 1
 puntos = evento.selection.points if evento and evento.selection else []
@@ -93,7 +102,15 @@ else:
     texto_seleccion = f"todo el periodo filtrado ({anios[0]}-{anios[1]})"
 
 # ---------------------------------------------------------------- viz 2: detalle de la seleccion
-st.subheader("2. ¿De dónde vienen y por dónde entran?")
+if "origen" not in visibles:
+    st.stop()
+encabezado_grafica(
+    2,
+    "¿De dónde vienen y por dónde entran?",
+    "observado",
+    "las categorías con más viajeros en la selección de la gráfica 1 (región, país, puesto de ingreso o región OMT), divididas por vía.",
+    "identificar los mercados y puestos fronterizos que concentran la demanda y priorizar promoción o capacidad de atención.",
+)
 d1, d2 = st.columns([2, 2])
 dim_label = d1.selectbox("Ver por", list(DIMENSIONES), help="Cambia la categoría con la que se desglosa la selección.")
 top_n = d2.slider("Cantidad de categorías", 5, 25, 10, help="Más categorías = más detalle.")
@@ -102,7 +119,7 @@ dimension = DIMENSIONES[dim_label]
 st.caption(f"Mostrando: **{texto_seleccion}**" + ("" if seleccion else " — selecciona barras arriba para enfocarte en un periodo o vía."))
 
 if detalle.empty or detalle["viajeros"].sum() == 0:
-    st.info("La selección no tiene viajeros registrados. Elige otra barra o limpia la selección con doble clic.")
+    sin_datos("La selección no tiene viajeros registrados. Elige otra barra o limpia la selección con doble clic.")
     st.stop()
 
 fig2, totales, desglose = figura_origen(detalle, dimension, top_n)
