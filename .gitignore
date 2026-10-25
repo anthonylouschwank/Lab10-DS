@@ -10,10 +10,10 @@ venv/
 .DS_Store
 Thumbs.db
 
-.claude/
 
 # LaTeX
 report/*.aux
 report/*.log
 report/*.out
 report/*.toc
+.pytest_cache/
