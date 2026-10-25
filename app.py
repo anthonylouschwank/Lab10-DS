@@ -16,8 +16,15 @@ paginas = st.navigation(
     {
         "Observatorio": [
             st.Page("paginas/inicio.py", title="Inicio", icon=":material/home:", default=True),
-            st.Page("paginas/explorar.py", title="Explorar llegadas", icon=":material/bar_chart:"),
-            st.Page("paginas/modelos.py", title="Pronósticos y modelos", icon=":material/trending_up:"),
+        ],
+        "Explorar los datos": [
+            st.Page("paginas/explorar.py", title="Evolución y origen", icon=":material/bar_chart:"),
+            st.Page("paginas/temporadas.py", title="Temporadas", icon=":material/calendar_month:"),
+            st.Page("paginas/mercados.py", title="Mercados y recuperación", icon=":material/public:"),
+        ],
+        "Pronósticos": [
+            st.Page("paginas/modelos.py", title="Pronósticos de llegadas", icon=":material/trending_up:"),
+            st.Page("paginas/comparar.py", title="Comparar modelos", icon=":material/leaderboard:"),
         ],
         "Ayuda": [
             st.Page("paginas/acerca.py", title="Glosario y limitaciones", icon=":material/help:"),
