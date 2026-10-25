@@ -20,16 +20,42 @@ COLORES_VIA = {
 }
 ORDEN_VIA = list(COLORES_VIA)
 
-# Categoricos: modelos de pronostico (pagina de modelos). Hues distintos de las vias
-# para que ningun color cambie de significado entre paginas. El valor real va en tinta negra.
+# Categoricos: modelos de pronostico (paginas de modelos). Hues distintos de las vias
+# para que ningun color cambie de significado entre paginas. El valor real va en tinta negra
+# y la referencia ingenua en gris (es una vara de medir, no un modelo candidato).
+# Validado (scripts/validate_palette.js, todos los pares): CVD >= 16.2, vision normal >= 19.6.
+# Magenta y amarillo quedan bajo 3:1 de contraste -> cada modelo lleva ademas un patron de
+# linea propio (DASH_MODELO) y la tabla comparativa repite los valores.
 COLORES_MODELO = {
     "Holt-Winters": "#6250d6",
     "SARIMA": "#e87ba4",
+    "Prophet": "#eda100",
     "LSTM": "#008300",
+    "Referencia ingenua": "#898781",
 }
+DASH_MODELO = {
+    "Holt-Winters": "solid",
+    "SARIMA": "dash",
+    "Prophet": "dashdot",
+    "LSTM": "longdash",
+    "Referencia ingenua": "dot",
+}
+COLOR_REAL = "#0b0b0b"
+COLOR_HISTORIA = "#898781"
 
 # Secuencial (magnitud): azul claro -> oscuro
 SECUENCIAL_AZUL = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]
+ESCALA_SECUENCIAL = [[i / (len(SECUENCIAL_AZUL) - 1), c] for i, c in enumerate(SECUENCIAL_AZUL)]
+
+# Divergente (polaridad respecto a una base, p. ej. indice 2019 = 100):
+# rojo = por debajo de la base, gris = igual, azul = por encima. Solo en mapas de calor con barra de color.
+ESCALA_DIVERGENTE = [
+    [0.0, "#d25757"],
+    [0.25, "#e66767"],
+    [0.5, "#f0efec"],
+    [0.75, "#6da7ec"],
+    [1.0, "#4a8ee0"],
+]
 
 # Estados reservados
 ESTADO = {"bien": "#0ca30c", "alerta": "#fab219", "critico": "#d03b3b"}
@@ -79,6 +105,9 @@ def aplicar_estilo(fig: go.Figure, alto: int = 420) -> go.Figure:
         title_font=dict(color=TINTA_SECUNDARIA),
     )
     return fig
+
+
+MESES = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
 
 
 def formato_numero(valor: float) -> str:
