@@ -8,6 +8,13 @@ Los datos y los modelos vienen de los Laboratorios 1 y 2
 ([DM-Laboratorio-1.-Series-de-Tiempo](https://github.com/Isabella1911/DM-Laboratorio-1.-Series-de-Tiempo)).
 En este laboratorio no se entrenan modelos nuevos.
 
+## Equipo
+
+- Anthony Lou Schwank
+- Christa Isabella Obando Guzmán
+- Fabian Prado Dluzniewski
+- Luis Fernando Mendoza Alvarez
+
 ## Contenido
 
 7 páginas y **11 visualizaciones interactivas**, 10 de ellas en cinco pares enlazados
@@ -38,12 +45,13 @@ src/
   datos.py / modelos.py     Carga con caché, filtros, métricas de error
   estilo.py                 Paleta de colores y estilo común de las gráficas
   graficas.py               Funciones que construyen cada figura (app y documento)
-  ui.py                     Encabezados, filtros, selector de gráficas, mensajes sin datos
+  ui.py                     Componentes de interfaz: encabezados, tarjetas, indicadores, filtros
   exportar_figuras.py       Exporta las figuras a report/figures/ (kaleido + Chrome)
 data/
   raw/                      Base original (uso académico, no son cifras oficiales)
   procesados/               Parquet de viajeros
   modelos/                  Pronósticos de prueba, series y tuneo LSTM de los Labs 1 y 2
+static/                     Tipografías (Source Sans 3, Source Serif 4; licencia OFL) y logotipo
 report/
   documento_diseno.html/.pdf  Documento de diseño (entregable)
   generar_pdf.py            HTML -> PDF con Chromium (Playwright)
