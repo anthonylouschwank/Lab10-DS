@@ -6,4 +6,5 @@ openpyxl>=3.1
 # Solo para regenerar el documento de diseno y correr pruebas
 kaleido>=1.0       # src/exportar_figuras.py
 playwright>=1.45   # report/generar_pdf.py
+pypdf>=4          # report/generar_pdf.py
 pytest>=8          # tests/
