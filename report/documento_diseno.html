@@ -46,7 +46,7 @@
     <h1>Observatorio de Turismo Sostenible · Guatemala</h1>
     <div class="sub">Laboratorio 10 – Visualización interactiva<br>Documento de diseño del tablero</div>
     <table class="meta">
-      <tr><td><b>Integrantes</b></td><td>Fernando Mendoza · anthonylouschwank · Isabella1911 · Cisco890</td></tr>
+      <tr><td><b>Integrantes</b></td><td>Anthony Lou Schwank (anthonylouschwank) · Isabella1911 · Fernando Mendoza (lfmendoza) · fabianpradod</td></tr>
       <tr><td><b>Repositorio</b></td><td>https://github.com/anthonylouschwank/Lab10-DS</td></tr>
       <tr><td><b>Ejecutar</b></td><td><code>pip install -r requirements.txt</code> y <code>streamlit run app.py</code></td></tr>
       <tr><td><b>Fecha</b></td><td>25 de octubre de 2026 (entrega final)</td></tr>
@@ -275,20 +275,22 @@
 
 <!-- ======================================================= 8. PLANIFICACION -->
 <h2 class="pb">8. Planificación de tareas (4.6)</h2>
+<p>Responsables y fechas tomados del historial de los repositorios: <code>anthonylouschwank/Lab10-DS</code> (este tablero) y <code>Isabella1911/DM-Laboratorio-1.-Series-de-Tiempo</code> (modelos de los Laboratorios 1 y 2). El trabajo de análisis y definición de requerimientos no deja commits, y se indica así en la columna de evidencia.</p>
 <table>
-  <tr><th>#</th><th>Tarea</th><th>Responsable</th><th>Fecha de terminación</th><th>Estado</th></tr>
-  <tr><td>1</td><td>Selección de preguntas de gestión y alcance</td><td>Todo el equipo</td><td>20-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>2</td><td>Paleta de colores, tipografía y validación de daltonismo</td><td>anthonylouschwank</td><td>21-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>3</td><td>Bosquejo de interfaz y navegación</td><td>Isabella1911</td><td>21-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>4</td><td>Preparación de datos (Excel → parquet) y estructura Streamlit</td><td>anthonylouschwank</td><td>22-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>5</td><td>Gráficas 1 y 2 enlazadas (avance)</td><td>anthonylouschwank</td><td>22-oct-2026 (avance)</td><td class="ok">Terminada</td></tr>
-  <tr><td>6</td><td>Documento de avance (preguntas, alcance, paleta, boceto, herramienta)</td><td>Isabella1911 · Cisco890</td><td>22-oct-2026 (avance)</td><td class="ok">Terminada</td></tr>
-  <tr><td>7</td><td>Regenerar e integrar resultados de modelos Labs 1 y 2</td><td>Fernando Mendoza</td><td>23-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>8</td><td>Páginas Temporadas y Mercados (gráficas 3-6)</td><td>Cisco890</td><td>24-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>9</td><td>Páginas Pronósticos y Comparar modelos (gráficas 7-11)</td><td>Fernando Mendoza</td><td>24-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>10</td><td>Textos explicativos, glosario, mensajes sin datos, inicio</td><td>Isabella1911</td><td>24-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>11</td><td>Pruebas automáticas y verificación en navegador</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td></tr>
-  <tr><td>12</td><td>Documento de diseño final y README</td><td>Todo el equipo</td><td>25-oct-2026</td><td class="ok">Terminada</td></tr>
+  <tr><th>#</th><th>Tarea</th><th>Responsable</th><th>Terminación</th><th>Estado</th><th>Evidencia</th></tr>
+  <tr><td>1</td><td>Modelos de pronóstico (Holt-Winters, SARIMA, Prophet, LSTM) que el tablero reutiliza</td><td>Isabella1911 · anthonylouschwank (equipo de los Labs 1 y 2)</td><td>02-ago-2026</td><td class="ok">Terminada</td><td>Commits del 23-jul al 02-ago en el repositorio de los laboratorios</td></tr>
+  <tr><td>2</td><td>Preguntas de gestión, alcance y requerimientos del tablero</td><td>Todo el equipo</td><td>22-oct-2026</td><td class="ok">Terminada</td><td>Trabajo de análisis (sin commits)</td></tr>
+  <tr><td>3</td><td>Base Streamlit, preparación de datos (Excel → parquet), tema y paleta de vías</td><td>anthonylouschwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td>Commits c67ae2f, a701ced</td></tr>
+  <tr><td>4</td><td>Gráficas 1 y 2 enlazadas (avance)</td><td>anthonylouschwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td>Commit a701ced</td></tr>
+  <tr><td>5</td><td>README y archivos auxiliares</td><td>anthonylouschwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td>Commit a959cfa</td></tr>
+  <tr><td>6</td><td>Análisis de la entrega final y definición de instrucciones para su implementación</td><td>Isabella1911 · fabianpradod · Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Trabajo de análisis (sin commits)</td></tr>
+  <tr><td>7</td><td>Integración de los resultados de los modelos de los Labs 1 y 2</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Commit a2a6fdf</td></tr>
+  <tr><td>8</td><td>Visualizaciones 3-11, paleta de modelos y componentes de interfaz</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Commits aa12cc8, ee3fb42, f68a6d8</td></tr>
+  <tr><td>9</td><td>Navegación, resumen de inicio y glosario</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Commit 115f74c</td></tr>
+  <tr><td>10</td><td>Pruebas automáticas y verificación en navegador</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Commit bfb5f86</td></tr>
+  <tr><td>11</td><td>Documento de diseño, figuras y README</td><td>Fernando Mendoza</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Commits b12a285, 027bcff</td></tr>
+  <tr><td>12</td><td>Revisión final del tablero y del documento</td><td>Todo el equipo</td><td>25-oct-2026</td><td>Pendiente</td><td>—</td></tr>
+  <tr><td>13</td><td>Entrega en Canvas (PDF + enlace del repositorio) y presentación individual</td><td>Todo el equipo</td><td>25-oct-2026</td><td>Pendiente</td><td>—</td></tr>
 </table>
 
 <!-- ======================================================= 9. LIMITACIONES -->

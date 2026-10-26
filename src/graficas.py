@@ -224,6 +224,9 @@ def figura_recuperacion(indice: pd.DataFrame, base: int) -> go.Figure:
             colorbar=dict(
                 title=dict(text=f"Índice<br>{base} = 100", side="top"),
                 thickness=12,
+                len=0.8,
+                yanchor="bottom",
+                y=0,
                 tickvals=[0, 50, 100, 150, 200],
                 ticktext=["0", "50", "100", "150", "200+"],
             ),
