@@ -4,7 +4,46 @@ primaryColor = "#2a78d6"
 backgroundColor = "#f9f9f7"
 secondaryBackgroundColor = "#f0efec"
 textColor = "#0b0b0b"
-font = "sans serif"
+linkColor = "#1c5cab"
+borderColor = "#dedcd5"
+showWidgetBorder = true
+baseRadius = "medium"
+font = "SourceSans, sans-serif"
+headingFont = "SourceSerif, serif"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+codeFont = "SourceCode, monospace"
+baseFontSize = 15
+
+[[theme.fontFaces]]
+family = "SourceSans"
+url = "app/static/tipografia/SourceSans3.ttf"
+weight = "200 900"
+style = "normal"
+
+[[theme.fontFaces]]
+family = "SourceSans"
+url = "app/static/tipografia/SourceSans3-Italic.ttf"
+weight = "200 900"
+style = "italic"
+
+[[theme.fontFaces]]
+family = "SourceSerif"
+url = "app/static/tipografia/SourceSerif4.ttf"
+weight = "200 900"
+style = "normal"
+
+[[theme.fontFaces]]
+family = "SourceCode"
+url = "app/static/tipografia/SourceCodePro.ttf"
+weight = "200 900"
+
+[theme.sidebar]
+backgroundColor = "#f0efec"
+showSidebarBorder = true
 
 [server]
 headless = true
+enableStaticServing = true
+
+[client]
+toolbarMode = "minimal"

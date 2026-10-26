@@ -6,11 +6,15 @@ Ejecutar:
 
 import streamlit as st
 
+from src.ui import FUENTE_DATOS, estilo_global
+
 st.set_page_config(
-    page_title="Observatorio de Turismo - Guatemala",
-    page_icon=":material/travel_explore:",
+    page_title="Observatorio de Turismo · Guatemala",
+    page_icon="static/icono.svg",
     layout="wide",
 )
+st.logo("static/logo.svg", icon_image="static/icono.svg", size="large")
+estilo_global()
 
 paginas = st.navigation(
     {
@@ -30,5 +34,10 @@ paginas = st.navigation(
             st.Page("paginas/acerca.py", title="Glosario y limitaciones", icon=":material/help:"),
         ],
     }
+)
+st.sidebar.caption(FUENTE_DATOS)
+st.sidebar.caption(
+    "Equipo: Anthony Lou Schwank · Christa Isabella Obando Guzmán · "
+    "Fabian Prado Dluzniewski · Luis Fernando Mendoza Alvarez"
 )
 paginas.run()

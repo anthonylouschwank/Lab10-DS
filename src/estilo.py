@@ -69,7 +69,7 @@ CUADRICULA = "#e1e0d9"
 EJE = "#c3c2b7"
 
 # Misma familia que la interfaz de Streamlit (Source Sans), con respaldo al sans del sistema
-FUENTE = '"Source Sans Pro", "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif'
+FUENTE = 'SourceSans, "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif'
 
 
 def aplicar_estilo(fig: go.Figure, alto: int = 420) -> go.Figure:

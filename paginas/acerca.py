@@ -1,68 +1,94 @@
+"""Glosario, guia de colores y limitaciones de los datos y de los modelos."""
+
 import streamlit as st
 
-st.title("Glosario y limitaciones")
+from src.ui import encabezado_pagina
 
-st.subheader("Glosario")
-st.markdown(
-    """
-- **Turista**: viajero que pernocta al menos una noche en el país.
-- **Excursionista**: viajero que entra y sale el mismo día, sin pernoctar.
-- **Vía de ingreso**: medio por el que entró el viajero (aérea, terrestre o marítima).
-- **Frontera / puesto de ingreso**: aeropuerto, puerto o paso fronterizo donde se registró la entrada.
-- **Región OMT**: agrupación de países de origen definida por la Organización Mundial del Turismo.
-- **Índice de recuperación (año base = 100)**: viajeros de un año divididos entre los del año base
-  en los mismos meses, por 100. 120 = 20 % más que el año base; 60 = 40 % menos.
-- **Pronóstico**: estimación de valores futuros a partir del comportamiento pasado de la serie.
-- **Periodo de entrenamiento / de prueba**: los modelos aprendieron con enero 2009-marzo 2021 y
-  pronosticaron abril 2021-junio 2026 sin ver esos datos; comparar ese pronóstico con lo que
-  realmente pasó mide su confiabilidad.
-- **Error del pronóstico**: qué tan lejos quedó el pronóstico del valor real.
-  - **MAE**: error promedio en viajeros por mes.
-  - **RMSE**: parecido al MAE pero castiga más los errores grandes.
-  - **MAPE**: error promedio en porcentaje del valor real; un MAPE de 18 % significa que, en
-    promedio, el pronóstico se desvió 18 %. Se dispara cuando hay meses con muy pocos viajeros.
-- **Rango probable (95 %)**: banda dentro de la cual el modelo esperaba el valor real con 95 % de
-  probabilidad. Solo SARIMA y Prophet la calculan.
-- **Referencia ingenua**: repetir los valores del último año conocido. Es la vara mínima que un
-  modelo debe superar para ser útil.
-- **Holt-Winters, SARIMA, Prophet** (Laboratorio 1) y **LSTM** (Laboratorio 2): los modelos de
-  pronóstico comparados. Su descripción está en la página *Pronósticos de llegadas*.
-- **Validación**: datos previos al corte que el modelo no usó para aprender y que sirven para
-  elegir su configuración sin mirar el periodo de prueba.
-"""
+encabezado_pagina(
+    "Ayuda",
+    "Glosario y limitaciones",
+    "Qué significa cada término del tablero, cómo leer sus colores y qué no se puede concluir con estos datos.",
 )
 
-st.subheader("Cómo leer los colores")
-st.markdown(
-    """
-Cada color significa **lo mismo en todo el tablero**:
+glosario, colores, limites = st.tabs(["Glosario", "Cómo leer los colores", "Limitaciones"])
 
-- :blue[**Azul**] = vía aérea · :orange[**Naranja**] = vía terrestre · :green[**Verde aqua**] = vía marítima.
-- En los mapas de calor, un solo tono de azul: **más oscuro = más viajeros** (o más error, en la comparación de modelos).
-- En el índice de recuperación: **rojo** = por debajo del año base, **gris** = similar, **azul** = por encima.
-- Modelos: violeta = Holt-Winters, rosa = SARIMA, amarillo = Prophet, verde = LSTM, gris punteado =
-  referencia ingenua. Cada modelo además tiene su propio tipo de línea para distinguirlo sin depender del color.
-- **Negro** = valor real observado.
-"""
-)
+with glosario:
+    st.markdown(
+        """
+**Turista.** Viajero que pasa al menos una noche en el país.
 
-st.subheader("Limitaciones")
-st.markdown(
-    """
-- Los datos son de **uso académico** y no son cifras oficiales.
-- La base combina tres fuentes: respaldos históricos (2009-2020), Instituto Guatemalteco de
-  Migración (2021-2022) y conteos depurados del INGUAT (2023-junio 2026).
-- Desde 2023 la columna de país a veces agrupa **mercados** en lugar de países individuales.
-- El año 2026 solo incluye datos hasta junio.
-- Las gráficas muestran **qué** ocurrió, no **por qué**: un cambio en las llegadas no puede
-  atribuirse a una causa específica solo con estos datos.
-- Por vía marítima, desde 2017 la fuente solo registra cruceristas u otros tipos de viajero (no
-  turistas ni excursionistas), por lo que los pronósticos de esa serie no
-  pueden evaluarse.
-- Los modelos se evaluaron en un periodo que incluye la reapertura posterior a la pandemia; su
-  error en un periodo estable podría ser distinto. Los laboratorios no generaron pronósticos
-  posteriores a junio de 2026 y en este tablero no se entrenan modelos nuevos.
-- Las recomendaciones que se deriven del tablero deben considerar estas limitaciones y contrastarse
-  con otras fuentes (ocupación hotelera, conectividad aérea, gasto turístico).
+**Excursionista.** Viajero que entra y sale el mismo día.
+
+**Vía de ingreso.** Medio por el que entró el viajero: aérea, terrestre o marítima.
+
+**Puesto de ingreso.** Aeropuerto, puerto o paso fronterizo donde se registró la entrada.
+
+**Región OMT.** Agrupación de países de origen definida por la Organización Mundial del Turismo.
+
+**Índice de recuperación.** Viajeros de un año divididos entre los del año base en los mismos meses, multiplicado
+por 100. Un índice de 120 equivale a 20 % más que el año base; uno de 60, a 40 % menos.
+
+**Pronóstico.** Estimación de valores futuros a partir del comportamiento pasado de una serie.
+
+**Periodo de entrenamiento y periodo de prueba.** Los modelos aprendieron con los datos de enero de 2009 a marzo
+de 2021 y pronosticaron de abril de 2021 a junio de 2026 sin ver lo que ocurrió. Comparar esos pronósticos con la
+realidad mide su confiabilidad.
+
+**Validación.** Meses previos al corte que el modelo no usó para aprender y que sirven para elegir su
+configuración sin tocar el periodo de prueba.
+
+**Medidas de error.** Indican qué tan lejos quedó el pronóstico del valor real.
+- **MAE:** error promedio, en viajeros por mes.
+- **RMSE:** también en viajeros, pero pesa más los errores grandes.
+- **MAPE:** error promedio como porcentaje del valor real. Un MAPE de 18 % indica que el pronóstico se desvió,
+  en promedio, 18 %. Se dispara cuando hay meses con muy pocos viajeros.
+
+**Rango probable (95 %).** Banda en la que el modelo esperaba encontrar el valor real con 95 % de probabilidad.
+Solo SARIMA y Prophet la calculan.
+
+**Referencia ingenua.** Repetir los valores del último año conocido. Es la vara mínima: un modelo que no la supera
+no aporta información.
+
+**Holt-Winters, SARIMA y Prophet** (Laboratorio 1) **y LSTM** (Laboratorio 2). Los modelos comparados; la página
+*Pronósticos de llegadas* describe cada uno.
 """
-)
+    )
+
+with colores:
+    st.markdown(
+        """
+Cada color significa lo mismo en todo el tablero.
+
+- **Vías de ingreso:** :blue[**azul**] para la aérea, :orange[**naranja**] para la terrestre y :green[**verde aqua**] para la marítima.
+- **Mapas de calor:** un solo tono de azul; cuanto más oscuro, más viajeros (o más error, en la comparación de modelos).
+- **Índice de recuperación:** rojo por debajo del año base, gris en un nivel similar y azul por encima.
+- **Modelos:** violeta para Holt-Winters, rosa para SARIMA, amarillo para Prophet, verde para la LSTM y gris
+  punteado para la referencia ingenua. Cada modelo tiene además su propio tipo de línea, de modo que se distingue
+  aunque no se perciban los colores.
+- **Negro:** valor real observado.
+
+La paleta se validó para las formas comunes de daltonismo. Cuando un color tiene poco contraste con el fondo, el
+valor exacto aparece al pasar el cursor y en las tablas.
+"""
+    )
+
+with limites:
+    st.markdown(
+        """
+- **Uso académico.** Los datos no son cifras oficiales.
+- **Tres fuentes distintas.** La base combina respaldos históricos (2009-2020), registros del Instituto
+  Guatemalteco de Migración (2021-2022) y conteos depurados del INGUAT (2023 a junio de 2026). Parte de los
+  cambios entre esos periodos puede deberse al registro y no a la demanda.
+- **Países agrupados desde 2023.** La columna de país agrupa a veces mercados en lugar de países individuales.
+- **2026 incompleto.** Solo incluye de enero a junio.
+- **Qué, no por qué.** Las gráficas muestran lo que ocurrió; con estos datos no se puede atribuir un cambio a una
+  causa concreta.
+- **Vía marítima.** Desde 2017 la fuente solo registra cruceristas y otros tipos de viajero por esa vía, no
+  turistas ni excursionistas, así que sus pronósticos no pueden evaluarse.
+- **Periodo de prueba atípico.** Los modelos se evaluaron durante la reapertura posterior a la pandemia; en un
+  periodo estable su error podría ser distinto. No hay pronósticos posteriores a junio de 2026 y el tablero no
+  entrena modelos nuevos.
+- **Contrastar antes de decidir.** Cualquier recomendación derivada del tablero debe tener en cuenta estas
+  limitaciones y verificarse con otras fuentes, como la ocupación hotelera, la conectividad aérea o el gasto turístico.
+"""
+    )
