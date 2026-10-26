@@ -1,9 +1,9 @@
-"""Componentes de interfaz compartidos por todas las paginas.
+"""Componentes de interfaz del tablero.
 
-Todo lo visual que se repite (encabezado de pagina, tarjeta de grafica, indicadores,
-hallazgos, barra de filtros) vive aqui para que el tablero hable un solo lenguaje visual.
-Los contenedores usan `key`: Streamlit les agrega la clase `st-key-<key>` y el CSS de
-`estilo_global` se engancha a esa clase.
+El lenguaje visual sigue la estructura de IBM Carbon para productos de datos: escala de
+grises g10, mosaicos blancos de borde fino, tipografia IBM Plex Sans, etiquetas pequenas
+y la explicacion de cada grafica detras de un icono de informacion. Los contenedores
+usan `key`; Streamlit les agrega la clase `st-key-<key>` y el CSS se engancha a ella.
 """
 
 from __future__ import annotations
@@ -18,70 +18,70 @@ import streamlit as st
 from src.datos import TIPOS_COMPARABLES
 from src.estilo import ORDEN_VIA
 
-# Distingue lo que se midio de lo que se interpreta o se estima (requisito de diseno)
+# Etiqueta, color de texto y fondo (tags de Carbon: blue 20, gray 20, purple 20)
 TIPO_INFO = {
-    "observado": ("Dato observado", "#1c5cab", "#e7f0fb"),
-    "interpretacion": ("Interpretación", "#52514e", "#ecebe7"),
-    "estimacion": ("Estimación de modelo", "#4a3aa7", "#ece9fb"),
+    "observado": ("Observado", "#0043ce", "#d0e2ff"),
+    "interpretacion": ("Interpretación", "#393939", "#e0e0e0"),
+    "estimacion": ("Estimado", "#6929c4", "#e8daff"),
 }
 
-FUENTE_DATOS = (
-    "Base de migración, enero 2009 a junio 2026. Uso académico: no son cifras oficiales "
-    "del INGUAT ni del Instituto Guatemalteco de Migración."
-)
+FUENTE_DATOS = "Base de migración, ene 2009 – jun 2026. Uso académico; no son cifras oficiales."
+
+MESES_CORTOS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 
 _CSS = """
 <style>
-/* ---------- estructura ---------- */
-[data-testid="stMainBlockContainer"] { max-width: 1280px; padding-top: 2.2rem; padding-bottom: 4rem; }
+[data-testid="stMainBlockContainer"] { max-width: 1440px; padding: 1.25rem 2rem 3rem; }
 [data-testid="stDecoration"] { display: none; }
 [data-testid="stHeader"] { background: transparent; }
-h1, h2, h3 { letter-spacing: -0.01em; }
+[data-testid="stSidebarContent"] { padding-top: .25rem; }
+[data-testid="stVerticalBlock"] { gap: .75rem; }
 
-/* ---------- encabezado de pagina ---------- */
-.op-eyebrow { font-size: .78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #2a78d6; margin: 0 0 .35rem; }
-.op-title { font-family: SourceSerif, Georgia, serif; font-weight: 600; font-size: 2.35rem; line-height: 1.12; color: #0b0b0b; margin: 0 0 .6rem; }
-.op-lede { font-size: 1.08rem; line-height: 1.5; color: #3d3c3a; max-width: 62rem; margin: 0; }
+/* encabezado de pagina */
+.ot-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem; padding: .25rem 0 .75rem; }
+.ot-crumb { font-size: .75rem; color: #6f6f6f; margin-bottom: .2rem; }
+.ot-h1 { font-size: 1.75rem; font-weight: 400; line-height: 1.25; color: #161616; margin: 0; }
+.ot-desc { font-size: .875rem; color: #525252; margin: .35rem 0 0; max-width: 56rem; line-height: 1.45; }
+.ot-meta { font-size: .75rem; color: #6f6f6f; text-align: right; white-space: nowrap; line-height: 1.6; }
+.ot-meta b { color: #161616; font-weight: 500; }
 
-/* ---------- tarjeta de grafica ---------- */
-[class*="st-key-tarjeta-"] { background: #ffffff; box-shadow: 0 1px 2px rgba(13,54,107,.06); padding: 1.1rem 1.25rem 1rem !important; }
-.op-chart-head { display: flex; gap: .9rem; align-items: flex-start; }
-.op-num { font-family: SourceSerif, Georgia, serif; font-size: 1.9rem; font-weight: 600; line-height: 1; color: #0d366b; min-width: 1.6rem; }
-.op-q { font-size: 1.16rem; font-weight: 700; line-height: 1.3; color: #0b0b0b; }
-.op-sub { font-size: .93rem; color: #52514e; margin-top: .2rem; line-height: 1.45; }
-.op-tag { display: inline-block; font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: .12rem .55rem; border-radius: 999px; margin-top: .45rem; }
-.op-hint { font-size: .84rem; color: #6b6a66; margin: .1rem 0 0; }
-.op-hint b { color: #3d3c3a; }
+/* mosaicos */
+[class*="st-key-tile-"], [class*="st-key-filtros-"] { background: #ffffff; border: 1px solid #e0e0e0; padding: 1rem 1rem .75rem !important; gap: .5rem; }
+[class*="st-key-filtros-"] { padding: .75rem 1rem .25rem !important; }
+.ot-tt { font-size: .9375rem; font-weight: 600; color: #161616; line-height: 1.3; }
+.ot-ts { font-size: .75rem; color: #6f6f6f; margin-top: .15rem; line-height: 1.4; }
+.ot-tags { display: flex; gap: .4rem; justify-content: flex-end; align-items: center; flex-wrap: wrap; padding-top: .1rem; }
+.ot-tag { font-size: .6875rem; line-height: 1.1rem; padding: 0 .5rem; border-radius: 1rem; white-space: nowrap; }
+[class*="st-key-tile-"] [data-testid="stPopover"] button { border: none; background: transparent; min-height: 1.75rem; padding: 0 .25rem; color: #525252; }
+[class*="st-key-tile-"] [data-testid="stPopover"] button:hover { background: #e8e8e8; color: #161616; }
+[class*="st-key-tile-"] [data-testid="stPopover"] button div[aria-hidden="true"] { display: none; }
+.ot-chip { font-size: .6875rem; line-height: 1.1rem; padding: 0 .5rem; background: #161616; color: #ffffff; white-space: nowrap; max-width: 22rem; overflow: hidden; text-overflow: ellipsis; }
 
-/* ---------- indicadores ---------- */
-.op-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: .9rem; margin: .4rem 0 .2rem; }
-.op-kpi { background: #ffffff; border: 1px solid #dedcd5; border-top: 3px solid #0d366b; border-radius: .5rem; padding: .85rem 1rem .8rem; }
-.op-kpi .l { font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #6b6a66; }
-.op-kpi .v { font-family: SourceSerif, Georgia, serif; font-size: 2.05rem; font-weight: 600; line-height: 1.1; color: #0d366b; margin-top: .3rem; }
-.op-kpi .c { font-size: .86rem; color: #52514e; margin-top: .25rem; line-height: 1.35; }
-.op-kpi .c .neg { color: #b23a3a; font-weight: 700; }
-.op-kpi .c .pos { color: #0a7a0a; font-weight: 700; }
+/* indicadores */
+.ot-kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: .75rem; }
+.ot-kpi { background: #ffffff; border: 1px solid #e0e0e0; padding: .9rem 1rem .8rem; display: flex; flex-direction: column; gap: .2rem; }
+.ot-kpi .l { font-size: .75rem; color: #525252; }
+.ot-kpi .row { display: flex; justify-content: space-between; align-items: flex-end; gap: .75rem; }
+.ot-kpi .v { font-size: 1.875rem; font-weight: 300; color: #161616; line-height: 1.15; font-variant-numeric: tabular-nums; letter-spacing: -.01em; }
+.ot-kpi .d { font-size: .75rem; color: #525252; font-variant-numeric: tabular-nums; }
+.ot-kpi .d .up { color: #198038; font-weight: 600; }
+.ot-kpi .d .down { color: #da1e28; font-weight: 600; }
+.ot-kpi svg { flex: none; }
 
-/* ---------- hallazgos ---------- */
-[class*="st-key-hallazgo-"] { border-radius: .5rem; padding: .8rem 1rem .5rem !important; gap: .25rem; }
-[class*="st-key-hallazgo-observado"] { background: #eef4fc; border-left: 3px solid #2a78d6; }
-[class*="st-key-hallazgo-interpretacion"] { background: #f2f1ed; border-left: 3px solid #898781; }
-[class*="st-key-hallazgo-estimacion"] { background: #f1effc; border-left: 3px solid #6250d6; }
-.op-hl { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+/* notas bajo las graficas */
+[class*="st-key-nota-"] { border-left: 2px solid #8d8d8d; padding: .1rem 0 .1rem .75rem !important; gap: 0; }
+[class*="st-key-nota-observado"] { border-left-color: #0f62fe; }
+[class*="st-key-nota-estimacion"] { border-left-color: #8a3ffc; }
+[class*="st-key-nota-"] p { font-size: .8125rem; color: #393939; line-height: 1.5; margin-bottom: .2rem; }
+.ot-nl { font-size: .6875rem; color: #6f6f6f; margin-bottom: .1rem; }
 
-/* ---------- barra de filtros ---------- */
-[class*="st-key-filtros-"] { background: #f0efec; border-radius: .6rem; padding: .7rem 1rem .2rem !important; }
+/* accesos de la portada */
+[class*="st-key-acceso-"] { background: #ffffff; border: 1px solid #e0e0e0; padding: 1rem !important; min-height: 10.5rem; justify-content: space-between; }
+.ot-acc-t { font-size: 1rem; font-weight: 600; color: #161616; }
+.ot-acc-d { font-size: .8125rem; color: #525252; line-height: 1.5; margin-top: .3rem; }
 
-/* ---------- tarjetas de navegacion ---------- */
-[class*="st-key-nav-"] { background: #ffffff; min-height: 15.5rem; justify-content: space-between; }
-.op-nav-k { font-size: .72rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #2a78d6; }
-.op-nav-t { font-family: SourceSerif, Georgia, serif; font-size: 1.3rem; font-weight: 600; color: #0b0b0b; margin: .15rem 0 .35rem; }
-.op-nav-d { font-size: .92rem; color: #52514e; line-height: 1.45; }
-.op-nav-q { font-size: .86rem; color: #3d3c3a; margin: .55rem 0 .1rem; padding-left: 1rem; }
-.op-nav-q li { margin-bottom: .2rem; }
-
-/* ---------- barra lateral ---------- */
-[data-testid="stSidebar"] [data-testid="stCaptionContainer"] { font-size: .78rem; line-height: 1.45; }
+[data-testid="stCaptionContainer"] { color: #6f6f6f; }
+[data-testid="stSidebar"] [data-testid="stCaptionContainer"] { font-size: .7rem; line-height: 1.45; }
 </style>
 """
 
@@ -95,51 +95,73 @@ def estilo_global() -> None:
     st.html(_CSS)
 
 
-def encabezado_pagina(seccion: str, titulo: str, bajada: str) -> None:
+def encabezado_pagina(seccion: str, titulo: str, descripcion: str | None = None, meta: str | None = None) -> None:
+    desc = f'<p class="ot-desc">{descripcion}</p>' if descripcion else ""
+    der = f'<div class="ot-meta">{meta}</div>' if meta else ""
     st.html(
-        f'<div class="op-eyebrow">{html.escape(seccion)}</div>'
-        f'<h1 class="op-title">{html.escape(titulo)}</h1>'
-        f'<p class="op-lede">{bajada}</p>'
+        f'<div class="ot-head"><div><div class="ot-crumb">{html.escape(seccion)}</div>'
+        f'<h1 class="ot-h1">{html.escape(titulo)}</h1>{desc}</div>{der}</div>'
     )
 
 
-def _etiqueta_html(tipo: str) -> str:
+def _tag(tipo: str) -> str:
     texto, color, fondo = TIPO_INFO[tipo]
-    return f'<span class="op-tag" style="color:{color};background:{fondo}">{texto}</span>'
+    return f'<span class="ot-tag" style="color:{color};background:{fondo}">{texto}</span>'
 
 
 @contextmanager
-def tarjeta_grafica(numero: int, pregunta: str, tipo: str, para_que: str, como_leer: str, interaccion: str | None = None):
-    """Contenedor de una visualizacion: pregunta, una linea de proposito y, a peticion,
-    la explicacion de como leerla (divulgacion progresiva)."""
-    with st.container(border=True, key=f"tarjeta-{numero}"):
-        izq, der = st.columns([0.84, 0.16], vertical_alignment="top")
-        izq.html(
-            f'<div class="op-chart-head"><div class="op-num">{numero}</div><div>'
-            f'<div class="op-q">{html.escape(pregunta)}</div>'
-            f'<div class="op-sub">{para_que}</div>{_etiqueta_html(tipo)}</div></div>'
-        )
-        with der.popover("Cómo leerla", icon=":material/menu_book:", width="stretch"):
-            st.markdown(como_leer)
-        if interaccion:
-            st.html(f'<p class="op-hint">{interaccion}</p>')
+def mosaico(clave: str, titulo: str, subtitulo: str, tipo: str, ayuda: str, filtro: str | None = None):
+    """Mosaico de una visualizacion: titulo, subtitulo con unidades y alcance, etiqueta de
+    tipo de dato, chip del filtro cruzado activo y la explicacion en un icono de informacion."""
+    with st.container(key=f"tile-{clave}"):
+        izq, der, info = st.columns([0.62, 0.32, 0.06], vertical_alignment="top", gap="small")
+        izq.html(f'<div class="ot-tt">{html.escape(titulo)}</div><div class="ot-ts">{subtitulo}</div>')
+        chip = f'<span class="ot-chip" title="{html.escape(filtro)}">Filtrado por: {html.escape(filtro)}</span>' if filtro else ""
+        der.html(f'<div class="ot-tags">{chip}{_tag(tipo)}</div>')
+        with info.popover("", icon=":material/info:", help="Acerca de esta gráfica"):
+            st.markdown(ayuda)
         yield
 
 
-def indicadores(items: list[tuple[str, str, str]]) -> None:
-    """Fila de indicadores: (etiqueta, valor, contexto). El contexto admite <span class="neg|pos">."""
-    celdas = "".join(
-        f'<div class="op-kpi"><div class="l">{html.escape(l)}</div><div class="v">{html.escape(v)}</div><div class="c">{c}</div></div>'
-        for l, v, c in items
+def _sparkline(valores: list[float], ancho: int = 96, alto: int = 30) -> str:
+    v = [float(x) for x in valores if pd.notna(x)]
+    if len(v) < 2:
+        return ""
+    lo, hi = min(v), max(v)
+    rango = hi - lo or 1.0
+    pts = [(i * (ancho - 4) / (len(v) - 1) + 2, alto - 3 - (y - lo) / rango * (alto - 6)) for i, y in enumerate(v)]
+    camino = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+    x, y = pts[-1]
+    return (
+        f'<svg width="{ancho}" height="{alto}" viewBox="0 0 {ancho} {alto}" aria-hidden="true">'
+        f'<polyline points="{camino}" fill="none" stroke="#8d8d8d" stroke-width="1.25"/>'
+        f'<circle cx="{x:.1f}" cy="{y:.1f}" r="2.5" fill="#161616"/></svg>'
     )
-    st.html(f'<div class="op-kpis">{celdas}</div>')
 
 
-def hallazgo(tipo: str, texto: str) -> None:
-    """Recuadro de texto con el tipo de informacion explicito (observado, interpretacion, estimacion)."""
-    etiqueta, color, _ = TIPO_INFO[tipo]
-    with st.container(key=f"hallazgo-{tipo}-{_clave(texto)}"):
-        st.html(f'<div class="op-hl" style="color:{color}">{etiqueta}</div>')
+def indicadores(items: list[dict]) -> None:
+    """Fila de indicadores. Cada item: etiqueta, valor y, opcionalmente, delta (fraccion) con
+    delta_texto, o contexto; y serie para la minigrafica."""
+    celdas = []
+    for it in items:
+        if it.get("delta") is not None:
+            d = it["delta"]
+            clase, flecha = ("up", "▲") if d >= 0 else ("down", "▼")
+            pie = f'<span class="{clase}">{flecha} {abs(d):.0%}</span> {html.escape(it.get("delta_texto", ""))}'
+        else:
+            pie = html.escape(it.get("contexto", ""))
+        celdas.append(
+            f'<div class="ot-kpi"><div class="l">{html.escape(it["etiqueta"])}</div>'
+            f'<div class="row"><div class="v">{html.escape(it["valor"])}</div>{_sparkline(it.get("serie", []))}</div>'
+            f'<div class="d">{pie}</div></div>'
+        )
+    st.html(f'<div class="ot-kpis">{"".join(celdas)}</div>')
+
+
+def nota(tipo: str, texto: str) -> None:
+    """Lectura breve bajo una grafica, marcada como observado, interpretacion o estimacion."""
+    with st.container(key=f"nota-{tipo}-{_clave(texto)}"):
+        st.html(f'<div class="ot-nl">{TIPO_INFO[tipo][0]}</div>')
         st.markdown(texto)
 
 
@@ -149,20 +171,27 @@ def barra_filtros(nombre: str):
         yield
 
 
-def selector_graficas(opciones: dict[str, str], key: str) -> set[str]:
-    """Permite al usuario elegir que graficas de la pagina ver. Devuelve las claves visibles."""
-    elegidas = st.pills(
-        "Gráficas visibles",
-        list(opciones),
-        format_func=lambda k: opciones[k],
-        selection_mode="multi",
-        default=list(opciones),
-        key=key,
-        help="Oculte las gráficas que no necesite para concentrarse en una pregunta.",
-    )
-    if not elegidas:
-        st.info("No hay gráficas seleccionadas. Active al menos una en **Gráficas visibles**.", icon=":material/visibility_off:")
-    return set(elegidas)
+def personalizar_vista(opciones: dict[str, str], key: str) -> set[str]:
+    """Menu para elegir que graficas de la pagina se muestran."""
+    with st.popover("Personalizar vista", icon=":material/tune:", width="stretch"):
+        elegidas = st.pills(
+            "Gráficas visibles", list(opciones), format_func=lambda k: opciones[k],
+            selection_mode="multi", default=list(opciones), key=key,
+        )
+    return set(elegidas or [])
+
+
+def encabezado_con_vista(seccion: str, titulo: str, descripcion: str | None, meta: str, opciones: dict[str, str], key: str) -> set[str]:
+    """Encabezado de pagina con el menu de vista a la derecha."""
+    izq, der = st.columns([0.82, 0.18], vertical_alignment="bottom")
+    with izq:
+        encabezado_pagina(seccion, titulo, descripcion)
+    with der:
+        st.html(f'<div class="ot-meta" style="margin-bottom:.4rem">{meta}</div>')
+        visibles = personalizar_vista(opciones, key)
+    if not visibles:
+        st.info("Todas las gráficas están ocultas. Actívelas desde **Personalizar vista**.", icon=":material/visibility_off:")
+    return visibles
 
 
 def filtros_viajeros(df: pd.DataFrame, key: str, extra: int = 0) -> tuple[tuple[int, int], list[str], list[str], list]:
@@ -172,11 +201,8 @@ def filtros_viajeros(df: pd.DataFrame, key: str, extra: int = 0) -> tuple[tuple[
     anios = cols[0].slider("Años", anio_min, anio_max, (anio_min, anio_max), key=f"{key}_anios")
     tipos_disp = sorted(df["tipo"].unique())
     tipos = cols[1].multiselect(
-        "Tipo de viajero",
-        tipos_disp,
-        default=[t for t in TIPOS_COMPARABLES if t in tipos_disp],
-        key=f"{key}_tipos",
-        help="Por defecto, turistas y excursionistas: los únicos tipos registrados de la misma forma en todo 2009-2026.",
+        "Tipo de viajero", tipos_disp, default=[t for t in TIPOS_COMPARABLES if t in tipos_disp], key=f"{key}_tipos",
+        help="Turistas y excursionistas son los únicos tipos registrados de la misma forma en todo 2009-2026.",
     )
     vias = cols[2].multiselect("Vía de ingreso", ORDEN_VIA, default=ORDEN_VIA, key=f"{key}_vias")
     return anios, tipos, vias, cols[3:]
@@ -184,3 +210,8 @@ def filtros_viajeros(df: pd.DataFrame, key: str, extra: int = 0) -> tuple[tuple[
 
 def sin_datos(mensaje: str) -> None:
     st.warning(mensaje, icon=":material/search_off:")
+
+
+def meta_datos(df: pd.DataFrame) -> str:
+    ultimo = df["fecha"].max()
+    return f"Datos hasta <b>{MESES_CORTOS[ultimo.month - 1]} {ultimo.year}</b><br>Fuente: base de migración"

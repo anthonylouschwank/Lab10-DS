@@ -27,6 +27,7 @@ from src.graficas import (
     figura_perfil_mensual,
     figura_pronostico,
     figura_recuperacion,
+    figura_tendencia,
     figura_treemap,
     figura_tuneo,
     indice_recuperacion,
@@ -59,6 +60,9 @@ def main() -> None:
     df = pd.read_parquet(OUT_PATH)
     anios = (int(df["anio"].min()), int(df["anio"].max()))
     datos = filtrar(df, anios, TIPOS_COMPARABLES, ORDEN_VIA)
+
+    # Portada: tendencia mensual
+    _guardar(figura_tendencia(datos.groupby("fecha")["viajeros"].sum()), "viz0_tendencia", 320)
 
     # 1 y 2: evolucion -> origen
     d = datos.assign(periodo=agregar_periodo(datos["fecha"], "Año"))

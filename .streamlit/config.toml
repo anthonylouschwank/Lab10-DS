@@ -1,44 +1,46 @@
+# Tema basado en la escala de grises g10 de IBM Carbon. Los controles van en tinta
+# oscura para que el azul, el naranja y el aqua queden reservados a las vias de ingreso.
 [theme]
 base = "light"
-primaryColor = "#2a78d6"
-backgroundColor = "#f9f9f7"
-secondaryBackgroundColor = "#f0efec"
-textColor = "#0b0b0b"
-linkColor = "#1c5cab"
-borderColor = "#dedcd5"
+primaryColor = "#161616"
+backgroundColor = "#f4f4f4"
+secondaryBackgroundColor = "#e8e8e8"
+textColor = "#161616"
+linkColor = "#0f62fe"
+borderColor = "#e0e0e0"
 showWidgetBorder = true
-baseRadius = "medium"
-font = "SourceSans, sans-serif"
-headingFont = "SourceSerif, serif"
+baseRadius = "none"
+font = "PlexSans, sans-serif"
+headingFont = "PlexSans, sans-serif"
 headingFontWeights = [600, 600, 600, 600, 600, 600]
-codeFont = "SourceCode, monospace"
-baseFontSize = 15
+codeFont = "PlexMono, monospace"
+baseFontSize = 14
 
 [[theme.fontFaces]]
-family = "SourceSans"
-url = "app/static/tipografia/SourceSans3.ttf"
-weight = "200 900"
+family = "PlexSans"
+url = "app/static/tipografia/IBMPlexSans.ttf"
+weight = "100 700"
 style = "normal"
 
 [[theme.fontFaces]]
-family = "SourceSans"
-url = "app/static/tipografia/SourceSans3-Italic.ttf"
-weight = "200 900"
+family = "PlexSans"
+url = "app/static/tipografia/IBMPlexSans-Italic.ttf"
+weight = "100 700"
 style = "italic"
 
 [[theme.fontFaces]]
-family = "SourceSerif"
-url = "app/static/tipografia/SourceSerif4.ttf"
-weight = "200 900"
-style = "normal"
+family = "PlexMono"
+url = "app/static/tipografia/IBMPlexMono-Regular.ttf"
+weight = "400"
 
 [[theme.fontFaces]]
-family = "SourceCode"
-url = "app/static/tipografia/SourceCodePro.ttf"
-weight = "200 900"
+family = "PlexMono"
+url = "app/static/tipografia/IBMPlexMono-Medium.ttf"
+weight = "500"
 
 [theme.sidebar]
-backgroundColor = "#f0efec"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f4f4f4"
 showSidebarBorder = true
 
 [server]

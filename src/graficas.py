@@ -453,3 +453,28 @@ def figura_tuneo(tuneo: pd.DataFrame, elegido: str) -> go.Figure:
     fig.update_yaxes(title_text="Error de validación (RMSE)", rangemode="tozero", fixedrange=True)
     fig.update_layout(showlegend=False, margin=dict(l=8, r=8, t=28, b=8))
     return fig
+
+
+# ---------------------------------------------------------------- portada
+
+
+def figura_tendencia(mensual: pd.Series) -> go.Figure:
+    """Llegadas mensuales (gris) y su promedio movil de 12 meses (tinta), que quita la estacionalidad."""
+    movil = mensual.rolling(12, min_periods=12).mean()
+    etiquetas = [f"{MESES[f.month - 1]} {f.year}" for f in mensual.index]
+    fig = go.Figure()
+    fig.add_scatter(
+        x=mensual.index, y=mensual.values, name="Mensual", mode="lines",
+        line=dict(color=EJE, width=1.25), fill="tozeroy", fillcolor="rgba(198,198,198,0.18)",
+        customdata=etiquetas, hovertemplate="<b>%{customdata}</b><br>%{y:,.0f} viajeros<extra></extra>",
+    )
+    fig.add_scatter(
+        x=movil.index, y=movil.values, name="Promedio móvil de 12 meses", mode="lines",
+        line=dict(color=TINTA, width=2), customdata=etiquetas,
+        hovertemplate="<b>%{customdata}</b><br>Promedio 12 meses: %{y:,.0f}<extra></extra>",
+    )
+    aplicar_estilo(fig, alto=300)
+    fig.update_layout(hovermode="x unified")
+    fig.update_xaxes(title_text=None, tickformat="%Y")
+    fig.update_yaxes(title_text=None, rangemode="tozero", tickformat="~s")
+    return fig

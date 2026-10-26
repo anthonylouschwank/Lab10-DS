@@ -19,7 +19,7 @@ estilo_global()
 paginas = st.navigation(
     {
         "Observatorio": [
-            st.Page("paginas/inicio.py", title="Inicio", icon=":material/home:", default=True),
+            st.Page("paginas/inicio.py", title="Resumen", icon=":material/dashboard:", default=True),
         ],
         "Explorar los datos": [
             st.Page("paginas/explorar.py", title="Evolución y origen", icon=":material/bar_chart:"),
@@ -31,13 +31,9 @@ paginas = st.navigation(
             st.Page("paginas/comparar.py", title="Comparar modelos", icon=":material/leaderboard:"),
         ],
         "Ayuda": [
-            st.Page("paginas/acerca.py", title="Glosario y limitaciones", icon=":material/help:"),
+            st.Page("paginas/acerca.py", title="Acerca del tablero", icon=":material/info:"),
         ],
     }
 )
 st.sidebar.caption(FUENTE_DATOS)
-st.sidebar.caption(
-    "Equipo: Anthony Lou Schwank · Christa Isabella Obando Guzmán · "
-    "Fabian Prado Dluzniewski · Luis Fernando Mendoza Alvarez"
-)
 paginas.run()

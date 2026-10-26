@@ -2,694 +2,410 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Observatorio de Turismo Sostenible · Documento de diseño del tablero interactivo</title>
+<title>Observatorio de Turismo Sostenible · Diseño del tablero</title>
 <style>
-  @font-face { font-family: "Source Sans 3"; src: url("../static/tipografia/SourceSans3.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
-  @font-face { font-family: "Source Sans 3"; src: url("../static/tipografia/SourceSans3-Italic.ttf") format("truetype"); font-weight: 200 900; font-style: italic; }
-  @font-face { font-family: "Source Serif 4"; src: url("../static/tipografia/SourceSerif4.ttf") format("truetype"); font-weight: 200 900; font-style: normal; }
-  @font-face { font-family: "Source Serif 4"; src: url("../static/tipografia/SourceSerif4-Italic.ttf") format("truetype"); font-weight: 200 900; font-style: italic; }
-  @font-face { font-family: "Source Code Pro"; src: url("../static/tipografia/SourceCodePro.ttf") format("truetype"); font-weight: 200 900; }
+  @font-face { font-family: "Plex"; src: url("../static/tipografia/IBMPlexSans.ttf") format("truetype"); font-weight: 100 700; font-style: normal; }
+  @font-face { font-family: "Plex"; src: url("../static/tipografia/IBMPlexSans-Italic.ttf") format("truetype"); font-weight: 100 700; font-style: italic; }
+  @font-face { font-family: "PlexMono"; src: url("../static/tipografia/IBMPlexMono-Regular.ttf") format("truetype"); font-weight: 400; }
 
-  @page { size: Letter; margin: 20mm 19mm 20mm 19mm; }
+  @page { size: Letter; margin: 22mm 20mm 20mm 20mm; }
   @page portada { margin: 0; }
 
-  :root {
-    --tinta: #0b0b0b; --tinta-2: #3d3c3a; --tinta-3: #6b6a66; --linea: #dedcd5; --fondo-suave: #f4f3ef;
-    --marino: #0d366b; --azul: #2a78d6; --azul-claro: #e7f0fb; --naranja: #eb6834; --aqua: #1baf7a;
-  }
   * { box-sizing: border-box; }
   html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { margin: 0; font-family: "Source Sans 3", sans-serif; font-size: 10.4pt; line-height: 1.5; color: var(--tinta); hyphens: auto; }
+  body { margin: 0; font-family: "Plex", sans-serif; font-size: 10pt; line-height: 1.55; color: #161616; }
 
-  /* ---------- portada ---------- */
-  .portada { page: portada; width: 215.9mm; height: 279.4mm; position: relative; break-after: page; overflow: hidden; }
-  .portada .banda { background: var(--marino); color: #fff; height: 168mm; padding: 26mm 22mm 0 22mm; position: relative; }
-  .portada .inst { font-size: 8.6pt; letter-spacing: .14em; text-transform: uppercase; color: #b9cde8; }
-  .portada h1 { font-family: "Source Serif 4", serif; font-weight: 600; font-size: 34pt; line-height: 1.08; margin: 34mm 0 6mm; letter-spacing: -.01em; }
-  .portada .bajada { font-size: 14.5pt; font-weight: 300; color: #dce7f6; max-width: 150mm; line-height: 1.35; }
-  .portada .acento { position: absolute; left: 22mm; bottom: 0; width: 40mm; height: 3.2mm; background: var(--naranja); }
-  .portada .vias { position: absolute; right: 22mm; bottom: 14mm; display: flex; gap: 2mm; }
-  .portada .vias span { width: 9mm; height: 9mm; border-radius: 1.5mm; display: block; }
-  .portada .datos { padding: 12mm 22mm 0 22mm; display: grid; grid-template-columns: 38mm 1fr; row-gap: 3.2mm; font-size: 10.2pt; margin: 0; }
-  .portada .datos dt { color: var(--tinta-3); font-size: 8.4pt; letter-spacing: .1em; text-transform: uppercase; padding-top: .8mm; }
-  .portada .datos dd { margin: 0; }
-  .portada .aviso { position: absolute; left: 22mm; right: 22mm; bottom: 16mm; font-size: 8.2pt; color: var(--tinta-3); border-top: 1px solid var(--linea); padding-top: 3mm; }
+  .portada { page: portada; width: 215.9mm; height: 279.4mm; position: relative; break-after: page; padding: 28mm 24mm; background: #ffffff; }
+  .portada .marca { display: flex; align-items: flex-end; gap: 1.6mm; }
+  .portada .marca i { display: block; width: 4.2mm; }
+  .portada .marca span { margin-left: 3mm; font-size: 10pt; font-weight: 600; }
+  .portada h1 { font-size: 34pt; font-weight: 300; line-height: 1.12; margin: 62mm 0 6mm; letter-spacing: -.01em; max-width: 150mm; }
+  .portada .sub { font-size: 13pt; font-weight: 300; color: #525252; max-width: 140mm; }
+  .portada .pie { position: absolute; left: 24mm; right: 24mm; bottom: 26mm; border-top: 1px solid #161616; padding-top: 5mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; font-size: 8.8pt; color: #393939; }
+  .portada .pie b { display: block; font-size: 7.6pt; font-weight: 400; color: #6f6f6f; margin-bottom: 1mm; }
+  .portada .aviso { position: absolute; left: 24mm; right: 24mm; bottom: 12mm; font-size: 7.6pt; color: #6f6f6f; }
 
-  /* ---------- tipografia del cuerpo ---------- */
-  h1, h2, h3, h4, .entrada, .tt, .cifra, figcaption, .bajada { hyphens: manual; }
-  h2 { font-family: "Source Serif 4", serif; font-weight: 600; font-size: 19pt; line-height: 1.18; margin: 0 0 3mm; letter-spacing: -.005em; break-after: avoid; }
-  .seccion { break-before: page; }
-  .num { font-size: 8.6pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--azul); margin-bottom: 2mm; display: flex; justify-content: space-between; }
-  .num .req { color: var(--tinta-3); font-weight: 500; letter-spacing: .06em; }
-  .entrada { font-size: 11.6pt; line-height: 1.45; color: var(--tinta-2); margin: 0 0 5mm; padding-bottom: 4mm; border-bottom: 1px solid var(--linea); text-align: left; }
-  h3 { font-size: 11.6pt; font-weight: 700; margin: 6mm 0 1.6mm; break-after: avoid; }
-  h4 { font-size: 9pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-3); margin: 4mm 0 1.4mm; break-after: avoid; }
-  p { margin: 0 0 2.6mm; text-align: justify; }
-  ul, ol { margin: 0 0 3mm; padding-left: 5mm; }
-  li { margin-bottom: 1.3mm; }
-  strong { font-weight: 700; }
-  code { font-family: "Source Code Pro", monospace; font-size: 8.4pt; background: var(--fondo-suave); padding: .2mm 1mm; border-radius: .6mm; }
-  a { color: var(--azul); text-decoration: none; }
+  .sec { break-before: page; }
+  .k { font-size: 8pt; color: #6f6f6f; margin-bottom: 1.5mm; }
+  h2 { font-size: 21pt; font-weight: 300; line-height: 1.2; margin: 0 0 5mm; letter-spacing: -.005em; break-after: avoid; }
+  h3 { font-size: 11pt; font-weight: 600; margin: 6mm 0 1.5mm; break-after: avoid; }
+  p { margin: 0 0 3mm; max-width: 165mm; }
+  .lead { font-size: 11.5pt; font-weight: 300; line-height: 1.45; color: #393939; margin-bottom: 4.5mm; }
+  ul { margin: 0 0 3mm; padding-left: 4.5mm; } li { margin-bottom: 1.2mm; }
+  code { font-family: "PlexMono", monospace; font-size: 8.4pt; }
+  a { color: #0f62fe; text-decoration: none; }
 
-  /* ---------- tablas ---------- */
-  table { width: 100%; border-collapse: collapse; font-size: 8.9pt; line-height: 1.38; margin: 2mm 0 5mm; }
-  thead th { text-align: left; font-weight: 700; font-size: 7.9pt; letter-spacing: .05em; text-transform: uppercase; color: var(--tinta-3); border-bottom: 1.4px solid var(--tinta); padding: 1.6mm 2mm 1.6mm 0; }
-  tbody td { border-bottom: 1px solid var(--linea); padding: 1.8mm 2mm 1.8mm 0; vertical-align: top; }
-  tbody tr { break-inside: avoid; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.8pt; line-height: 1.4; margin: 2mm 0 6mm; }
+  th { text-align: left; font-weight: 600; background: #e0e0e0; padding: 1.6mm 2.5mm; }
+  td { border-bottom: 1px solid #e0e0e0; padding: 1.5mm 2.5mm; vertical-align: top; }
+  tr { break-inside: avoid; }
   td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
-  td.c, th.c { text-align: center; }
-  .total td { border-top: 1.4px solid var(--tinta); font-weight: 700; }
-  .resalta td { background: var(--azul-claro); }
-  .tenue { color: var(--tinta-3); }
+  tr.on td { background: #edf5ff; }
 
-  /* ---------- bloques ---------- */
-  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4mm; margin: 4mm 0 5mm; }
-  .cifra { border-top: 2.4px solid var(--marino); padding-top: 2mm; }
-  .cifra b { display: block; font-family: "Source Serif 4", serif; font-size: 23pt; font-weight: 600; line-height: 1.05; color: var(--marino); }
-  .cifra span { font-size: 8.6pt; color: var(--tinta-2); line-height: 1.3; display: block; margin-top: 1mm; }
-  .mensaje { border-left: 3px solid var(--azul); background: var(--fondo-suave); padding: 3.2mm 4.5mm; margin: 3mm 0 5mm; break-inside: avoid; }
-  .mensaje p { margin: 0; text-align: left; }
-  .mensaje .t { font-size: 8pt; letter-spacing: .1em; text-transform: uppercase; font-weight: 700; color: var(--azul); margin-bottom: 1mm; }
-  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
-  .tres { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4mm; }
-  .tarjeta { border: 1px solid var(--linea); border-radius: 1.5mm; padding: 3mm 3.5mm; break-inside: avoid; }
-  .tarjeta h4 { margin-top: 0; color: var(--marino); }
-  .tarjeta p { text-align: left; font-size: 9.2pt; margin: 0; }
-  .sw { display: inline-block; width: 3.6mm; height: 3.6mm; border-radius: .7mm; vertical-align: -.6mm; margin-right: 1.2mm; }
-  .rampa { display: flex; height: 4mm; border-radius: .8mm; overflow: hidden; margin-top: 1mm; }
-  .rampa span { flex: 1; }
-  .pill { display: inline-block; font-size: 7.6pt; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; padding: .3mm 1.8mm; border-radius: 3mm; margin-bottom: .8mm; }
-  .p-obs { background: #e3edfb; color: #1c5cab; } .p-int { background: #ecebe7; color: #52514e; } .p-est { background: #ece9fb; color: #4a3aa7; }
-  .ok { color: #0a7a0a; font-weight: 700; } .pend { color: #9a6a00; font-weight: 700; }
+  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #161616; border-bottom: 1px solid #e0e0e0; margin: 1mm 0 5mm; }
+  .cifra { padding: 3.5mm 3mm 3mm 0; }
+  .cifra + .cifra { padding-left: 4mm; border-left: 1px solid #e0e0e0; }
+  .cifra b { display: block; font-size: 24pt; font-weight: 300; line-height: 1.1; }
+  .cifra span { font-size: 8pt; color: #525252; }
 
-  /* ---------- figuras ---------- */
-  figure { margin: 3mm 0 5mm; break-inside: avoid; }
-  figure img { width: 100%; display: block; border: 1px solid var(--linea); }
-  figure.sinmarco img { border: none; }
-  figure.pantalla img, figure.boceto img { width: 84%; margin: 0 auto; }
-  figure.pantalla figcaption, figure.boceto figcaption { width: 84%; margin-left: auto; margin-right: auto; }
-  .ficha figure img { max-height: 62mm; width: auto; max-width: 100%; margin: 0 auto; }
-  .ficha figure figcaption { text-align: center; }
-  p.izq { text-align: left; }
-  figcaption { font-size: 8.4pt; color: var(--tinta-3); margin-top: 1.6mm; line-height: 1.35; }
-  figcaption b { color: var(--tinta); }
+  .dos { break-inside: avoid; display: grid; grid-template-columns: 1fr 1fr; gap: 8mm; }
+  .dos li { font-size: 9pt; line-height: 1.45; margin-bottom: .8mm; }
+  .sw { display: inline-block; width: 3.2mm; height: 3.2mm; vertical-align: -.4mm; margin-right: 1.4mm; }
+  .rampa { display: flex; height: 3.4mm; margin-top: 1mm; } .rampa span { flex: 1; }
+  .nota { border-left: 2px solid #0f62fe; padding: 1mm 0 1mm 4mm; margin: 2mm 0 6mm; color: #393939; break-inside: avoid; }
 
-  /* ---------- fichas de visualizacion ---------- */
-  .ficha { break-inside: avoid; margin-bottom: 5mm; }
-  .ficha .cab { display: flex; align-items: baseline; gap: 3mm; border-bottom: 1px solid var(--tinta); padding-bottom: 1.2mm; margin-bottom: 2mm; }
-  .ficha .cab .k { font-family: "Source Serif 4", serif; font-size: 20pt; font-weight: 600; color: var(--marino); line-height: 1; min-width: 9mm; }
-  .ficha .cab .tt { font-size: 12pt; font-weight: 700; line-height: 1.2; flex: 1; }
-  .ficha .cab .rol { font-size: 7.8pt; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--azul); white-space: nowrap; }
-  .ficha dl { display: grid; grid-template-columns: 25mm 1fr; column-gap: 3mm; row-gap: 1.2mm; margin: 0 0 2.5mm; font-size: 9.3pt; line-height: 1.42; }
-  .ficha dt { font-weight: 700; color: var(--tinta-3); font-size: 7.9pt; letter-spacing: .05em; text-transform: uppercase; padding-top: .6mm; }
-  .ficha dd { margin: 0; }
+  figure { margin: 2mm 0 7mm; break-inside: avoid; }
+  figure img { width: 100%; display: block; border: 1px solid #e0e0e0; }
+  figcaption { font-size: 8pt; color: #525252; margin-top: 2mm; max-width: 165mm; }
+  .viz { break-inside: avoid; margin-bottom: 6mm; }
+  .viz h3 { margin-top: 0; }
+  .viz .meta { font-size: 8pt; color: #6f6f6f; margin: -1mm 0 2mm; }
+  .viz img { max-height: 68mm; width: auto; max-width: 100%; }
 
-  /* ---------- indice ---------- */
-  .indice { list-style: none; padding: 0; margin: 4mm 0 0; }
-  .indice li { display: grid; grid-template-columns: 10mm 1fr 34mm; padding: 2.2mm 0; border-bottom: 1px solid var(--linea); margin: 0; }
-  .indice .k { color: var(--azul); font-weight: 700; }
-  .indice .r { text-align: right; color: var(--tinta-3); font-size: 8.8pt; }
-
-  /* ---------- hitos ---------- */
-  .hitos { display: grid; grid-template-columns: repeat(4, 1fr); margin: 2mm 0 3mm; position: relative; }
-  .hitos::before { content: ""; position: absolute; left: 0; right: 0; top: 2.2mm; height: 1.2px; background: var(--tinta-3); }
-  .hito { position: relative; padding-top: 6mm; padding-right: 3mm; font-size: 8.8pt; line-height: 1.35; }
-  .hito::before { content: ""; position: absolute; top: .8mm; left: 0; width: 3mm; height: 3mm; border-radius: 50%; background: var(--marino); }
-  .hito.p::before { background: #fff; border: 1.4px solid var(--marino); }
-  .hito b { display: block; font-size: 9pt; }
-
-  .refs { padding-left: 0; }
-  .refs li { font-size: 8.9pt; margin-bottom: 1.8mm; padding-left: 6mm; text-indent: -6mm; list-style: none; }
-  .compacta td { font-size: 8.5pt; padding-top: 1.4mm; padding-bottom: 1.4mm; }
-  .resumen .cifras { margin: 3mm 0 3mm; }
-  .resumen .entrada { margin-bottom: 3mm; padding-bottom: 3mm; }
-  .resumen h3 { margin-top: 4mm; }
-  .fuente { font-size: 8pt; color: var(--tinta-3); margin-top: -3mm; margin-bottom: 4mm; text-align: left; }
+  .refs { list-style: none; padding: 0; } .refs li { font-size: 8.6pt; padding-left: 5mm; text-indent: -5mm; margin-bottom: 1.6mm; }
 </style>
 </head>
 <body>
 
-<!-- =========================================================== PORTADA -->
 <section class="portada">
-  <div class="banda">
-    <div class="inst">Universidad del Valle de Guatemala · CC3066 Data Science · Laboratorio 10</div>
-    <h1>Observatorio de Turismo Sostenible de Guatemala</h1>
-    <div class="bajada">Documento de diseño del tablero interactivo de llegadas internacionales y pronósticos</div>
-    <div class="vias"><span style="background:#2a78d6"></span><span style="background:#eb6834"></span><span style="background:#1baf7a"></span></div>
-    <div class="acento"></div>
+  <div class="marca"><i style="height:11mm;background:#2a78d6"></i><i style="height:8mm;background:#eb6834"></i><i style="height:5mm;background:#1baf7a"></i><span>Observatorio de Turismo Sostenible</span></div>
+  <h1>Tablero de llegadas internacionales a Guatemala</h1>
+  <div class="sub">Diseño, decisiones y alcance de la herramienta</div>
+  <div class="pie">
+    <div><b>Equipo</b>Anthony Lou Schwank<br>Christa Isabella Obando Guzmán<br>Fabian Prado Dluzniewski<br>Luis Fernando Mendoza Alvarez</div>
+    <div><b>Repositorio</b><a href="https://github.com/anthonylouschwank/Lab10-DS">github.com/anthonylouschwank/Lab10-DS</a><br><br><b>Curso</b>CC3066 Data Science · Universidad del Valle de Guatemala<br>25 de octubre de 2026</div>
   </div>
-  <dl class="datos">
-    <dt>Audiencia</dt><dd>Dirección y tomadores de decisiones del sector turístico (INGUAT)</dd>
-    <dt>Equipo</dt><dd>Anthony Lou Schwank<br>Christa Isabella Obando Guzmán<br>Fabian Prado Dluzniewski<br>Luis Fernando Mendoza Alvarez</dd>
-    <dt>Repositorio</dt><dd><a href="https://github.com/anthonylouschwank/Lab10-DS">github.com/anthonylouschwank/Lab10-DS</a></dd>
-    <dt>Ejecución</dt><dd><code>pip install -r requirements.txt</code> &nbsp;·&nbsp; <code>streamlit run app.py</code></dd>
-    <dt>Versión</dt><dd>Entrega final · 25 de octubre de 2026</dd>
-  </dl>
-  <div class="aviso">Usamos la base de migración de enero de 2009 a junio de 2026 con fines exclusivamente académicos. Ninguna cifra de este documento ni del tablero es una estadística oficial del INGUAT o del Instituto Guatemalteco de Migración.</div>
+  <div class="aviso">Los datos provienen de una base de migración de uso académico (enero de 2009 a junio de 2026) y no son estadísticas oficiales del INGUAT ni del Instituto Guatemalteco de Migración.</div>
 </section>
 
-<!-- =========================================================== INDICE -->
-<section class="seccion">
-  <div class="num"><span>Contenido</span></div>
-  <h2>Estructura del documento</h2>
-  <p class="entrada">Empezamos por lo que la dirección necesita saber del tablero y dejamos para después el razonamiento de diseño que lo respalda. Al margen de cada sección indicamos qué requisito del enunciado cubre.</p>
-  <ol class="indice">
-    <li><span class="k">01</span><span>Resumen ejecutivo</span><span class="r">Síntesis</span></li>
-    <li><span class="k">02</span><span>Preguntas de gestión que dieron origen al diseño</span><span class="r">Requisito 4.4</span></li>
-    <li><span class="k">03</span><span>Alcance del tablero</span><span class="r">Requisito 4.5</span></li>
-    <li><span class="k">04</span><span>Principios de diseño y su justificación</span><span class="r">Requisitos 2 y 4.1</span></li>
-    <li><span class="k">05</span><span>Color y tipografía</span><span class="r">Requisito 4.1</span></li>
-    <li><span class="k">06</span><span>Interfaz, boceto y navegación</span><span class="r">Requisito 4.1</span></li>
-    <li><span class="k">07</span><span>Las once visualizaciones y por qué tienen esa forma</span><span class="r">Requisitos 1, 3 y 4.2</span></li>
-    <li><span class="k">08</span><span>Modelos de pronóstico</span><span class="r">Requisitos 1.2 y 3.5</span></li>
-    <li><span class="k">09</span><span>Elección de la herramienta</span><span class="r">Requisito 4.3</span></li>
-    <li><span class="k">10</span><span>Planificación y responsables</span><span class="r">Requisito 4.6</span></li>
-    <li><span class="k">11</span><span>Verificación y limitaciones</span><span class="r">Restricciones</span></li>
-    <li><span class="k">A</span><span>Correspondencia con el enunciado</span><span class="r">Anexo</span></li>
-    <li><span class="k">B</span><span>Referencias y repositorio</span><span class="r">Anexo</span></li>
-  </ol>
-</section>
-
-<!-- =========================================================== 01 RESUMEN -->
-<section class="seccion resumen">
-  <div class="num"><span>01 · Resumen ejecutivo</span></div>
-  <h2>Diecisiete años de registros migratorios, ordenados para tomar decisiones</h2>
-  <p class="entrada">Construimos el tablero para que un directivo pueda contestar por su cuenta, sin apoyo de un analista, cuatro preguntas que se repiten en cualquier planificación turística: cuánta demanda hay, en qué meses llega, de qué mercados viene y qué tanto se puede confiar en los pronósticos.</p>
-
-  <div class="cifras">
-    <div class="cifra"><b>11</b><span>visualizaciones interactivas; el enunciado pide 8</span></div>
-    <div class="cifra"><b>5</b><span>pares de gráficas enlazadas, de la vista general al detalle</span></div>
-    <div class="cifra"><b>4 + 1</b><span>modelos de pronóstico y una referencia ingenua, evaluados en el mismo periodo</span></div>
-    <div class="cifra"><b>210</b><span>meses de datos, de enero de 2009 a junio de 2026</span></div>
-  </div>
-
-  <h3>Lo que el tablero permite decidir</h3>
-  <table class="compacta">
-    <thead><tr><th style="width:26%">Decisión</th><th>Qué muestran los datos</th><th style="width:17%">Dónde verlo</th></tr></thead>
-    <tbody>
-      <tr><td>Metas de llegadas frente a 2019</td><td>En 2025 llegaron 3.4 millones de turistas y excursionistas, 19 % menos que en 2019. La fuente cambió su forma de registro en 2021 y en 2023, así que una parte de esa brecha puede venir del registro y no de la demanda; el tablero lo advierte junto a la cifra.</td><td>Inicio, Evolución</td></tr>
-      <tr><td>Mercados a priorizar en la promoción</td><td>Norteamérica (índice 139), Sudamérica (138), Europa (125) y Asia (192) ya superan su nivel de 2019; Centroamérica se queda en 66. Aun así, en 2025 El Salvador aportó casi la mitad de los visitantes (47 %) y Estados Unidos, una quinta parte.</td><td>Mercados</td></tr>
-      <tr><td>Calendario de personal y campañas</td><td>Diciembre fue el mes más fuerte de 2025 (365.6 mil viajeros) y septiembre el más débil (218.1 mil). En conjunto, el año quedó 2 % por debajo del promedio mensual de 2015-2019.</td><td>Temporadas</td></tr>
-      <tr><td>Capacidad por vía de ingreso</td><td>Dos de cada tres llegadas de 2025 entraron por tierra (65 %). La vista por puesto fronterizo identifica dónde se concentra esa carga.</td><td>Evolución</td></tr>
-      <tr><td>Uso de los pronósticos</td><td>En el total mensual, la red LSTM se desvió en promedio 18.1 % del valor real entre abril de 2021 y junio de 2026; la referencia ingenua, 84.9 %. En las series terrestres ningún modelo baja de 65 %, de modo que esas cifras deben tomarse con reserva.</td><td>Pronósticos, Comparar</td></tr>
-    </tbody>
-  </table>
-
-  <h3>Tres decisiones de diseño</h3>
-  <div class="tres">
-    <div class="tarjeta"><h4>La pregunta va primero</h4><p>Cada gráfica se titula con la pregunta que responde y una línea que dice para qué sirve. Quien no sabe leer un mapa de calor igual entiende qué está mirando.</p></div>
-    <div class="tarjeta"><h4>Primero el panorama, luego el detalle</h4><p>Cada página abre con una vista agregada. Un clic sobre ella filtra la gráfica siguiente, y el patrón se repite en las cinco páginas de análisis.</p></div>
-    <div class="tarjeta"><h4>Cada color significa una sola cosa</h4><p>El azul siempre es la vía aérea, el naranja la terrestre. La paleta resiste las formas comunes de daltonismo y lo medido se distingue de lo estimado con etiquetas.</p></div>
-  </div>
-</section>
-
-<!-- =========================================================== 02 PREGUNTAS -->
-<section class="seccion">
-  <div class="num"><span>02 · Preguntas de gestión</span><span class="req">Requisito 4.4</span></div>
-  <h2>Siete preguntas que la fuente puede contestar</h2>
-  <p class="entrada">Antes de dibujar cualquier gráfica hicimos una lista de lo que la dirección suele preguntar al planificar promoción, capacidad de atención y presupuesto. Después tachamos lo que los datos disponibles no alcanzan a responder. Las siete preguntas que sobrevivieron definieron las visualizaciones y el orden de las páginas.</p>
-  <table>
-    <thead><tr><th style="width:5%">#</th><th style="width:37%">Pregunta</th><th style="width:25%">Decisión asociada</th><th style="width:11%">Gráficas</th><th>Página</th></tr></thead>
-    <tbody>
-      <tr><td>P1</td><td>¿Cómo ha evolucionado la llegada de viajeros y cuánto se recuperó después de la pandemia?</td><td>Metas anuales y seguimiento</td><td>1, 5</td><td>Evolución y origen; Mercados</td></tr>
-      <tr><td>P2</td><td>¿Por qué vías y puestos fronterizos entran los viajeros?</td><td>Capacidad en aeropuertos y fronteras</td><td>1, 2</td><td>Evolución y origen</td></tr>
-      <tr><td>P3</td><td>¿De qué regiones y países vienen, y cómo cambia esa mezcla?</td><td>Reparto del presupuesto de promoción</td><td>2, 6</td><td>Evolución y origen; Mercados</td></tr>
-      <tr><td>P4</td><td>¿En qué meses se concentra la demanda? ¿Un año concreto se parece a 2015-2019?</td><td>Calendario de personal y campañas</td><td>3, 4</td><td>Temporadas</td></tr>
-      <tr><td>P5</td><td>¿Qué mercados o puestos ya superaron su nivel de 2019 y cuáles siguen abajo?</td><td>Estrategias de reactivación</td><td>5, 6</td><td>Mercados y recuperación</td></tr>
-      <tr><td>P6</td><td>¿Qué pronosticaron los modelos y qué tan cerca quedaron de lo que pasó?</td><td>Uso de pronósticos en la planificación</td><td>7, 8</td><td>Pronósticos de llegadas</td></tr>
-      <tr><td>P7</td><td>¿Qué modelo conviene en cada serie y hasta qué horizonte se sostiene?</td><td>Elección y actualización de modelos</td><td>9, 10, 11</td><td>Comparar modelos</td></tr>
-    </tbody>
-  </table>
-
-  <h3>Lo que dejamos fuera</h3>
-  <p>Descartamos tres tipos de pregunta. Las de gasto, estadía u ocupación hotelera, porque la base no trae esas variables. Las que buscan la causa de un cambio en la demanda, porque los datos son observacionales: muestran que las llegadas subieron o bajaron, pero no permiten atribuirlo a una campaña, un evento o una política, y el tablero lo dice en cada lugar donde podría surgir la tentación. Y las de pronósticos posteriores a junio de 2026, porque los laboratorios no los generaron y el enunciado no permite entrenar modelos nuevos.</p>
-
-  <h3>Cómo se convirtieron en navegación</h3>
-  <p>Ordenamos las preguntas como las haría un directivo. Primero, qué pasó (P1 a P5), que forma la sección «Explorar los datos». Luego, qué se espera (P6), en «Pronósticos». Al final, cuánto creerle a ese pronóstico (P7), en «Comparar modelos». El glosario y las limitaciones quedaron en una sección aparte de ayuda. Esa secuencia es, sin cambios, la barra lateral de la aplicación.</p>
-</section>
-
-<!-- =========================================================== 03 ALCANCE -->
-<section class="seccion">
-  <div class="num"><span>03 · Alcance</span><span class="req">Requisito 4.5</span></div>
-  <h2>Qué cubre el tablero y qué no</h2>
-  <p class="entrada">El tablero trata la llegada de viajeros internacionales y el desempeño de los pronósticos que ya existían. Declaramos las exclusiones con el mismo cuidado que las inclusiones: a quien decide le sirve tanto saber qué encontrará como saber qué no debe buscar.</p>
-  <div class="dos">
-    <div>
-      <h4>Incluye</h4>
-      <ul>
-        <li>Llegadas mensuales de enero de 2009 a junio de 2026, a partir de 161 036 registros.</li>
-        <li>Turistas y excursionistas como punto de partida, por ser los únicos tipos registrados igual en todo el periodo. El usuario puede sumar los demás.</li>
-        <li>Desgloses por vía de ingreso, puesto fronterizo, país, región de origen y región de la Organización Mundial del Turismo.</li>
-        <li>Pronósticos del periodo de prueba (abril de 2021 a junio de 2026) para siete series: el total, las tres vías y las tres fronteras con más movimiento.</li>
-        <li>Cuatro modelos y una referencia ingenua, medidos con MAE, RMSE y MAPE.</li>
-      </ul>
-    </div>
-    <div>
-      <h4>No incluye</h4>
-      <ul>
-        <li>Modelos nuevos. Reutilizamos los resultados de los Laboratorios 1 y 2, como pide el enunciado.</li>
-        <li>Pronósticos posteriores a junio de 2026, que los laboratorios no produjeron.</li>
-        <li>Gasto, ocupación o conectividad aérea, ni análisis de causas.</li>
-        <li>Cifras oficiales; la base es de uso académico.</li>
-        <li>La evaluación de la vía marítima. Desde 2017 la fuente solo registra cruceristas y otros tipos de viajero por esa vía, así que no hay turistas ni excursionistas contra los cuales comparar. En lugar de mostrar una gráfica vacía, el tablero lo explica.</li>
-      </ul>
-    </div>
-  </div>
-  <div class="mensaje"><div class="t">Regla que seguimos</div><p>El tablero no afirma nada que la fuente no permita comprobar. Si una selección no tiene datos, si un año está incompleto o si la fuente cambió su forma de registrar, el aviso aparece donde el usuario lo necesita y no en una nota al final.</p></div>
-</section>
-
-<!-- =========================================================== 04 PRINCIPIOS -->
-<section class="seccion">
-  <div class="num"><span>04 · Principios de diseño</span><span class="req">Requisitos 2 y 4.1</span></div>
-  <h2>Por qué la interfaz tiene la forma que tiene</h2>
-  <p class="entrada">No partimos de un sistema de diseño comercial. Tomamos principios de la investigación en visualización e interacción humano-computador que tienen evidencia detrás y los aplicamos de manera que se puedan verificar en la aplicación. La tabla resume cada uno, el motivo para adoptarlo pensando en una audiencia directiva y el lugar donde se nota.</p>
-  <table>
-    <thead><tr><th style="width:23%">Principio</th><th style="width:37%">Por qué lo adoptamos</th><th>Dónde se aplica</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Diseño orientado a la decisión</strong><br><span class="tenue">Few (2006); Minto (2009)</span></td><td>Un directivo no abre un tablero por curiosidad; busca una respuesta concreta. El contenido debe organizarse por pregunta y no por tipo de dato.</td><td>Títulos en forma de pregunta, una línea de propósito bajo cada gráfica y una portada con los indicadores y hallazgos principales.</td></tr>
-      <tr><td><strong>Mantra de búsqueda visual</strong><br><span class="tenue">Shneiderman (1996)</span></td><td>«Panorama primero, acercamiento y filtrado después, detalle a petición» describe cómo se recorre la información visual con más eficacia.</td><td>Cinco pares enlazados en los que la gráfica general filtra a la de detalle; niveles de año, trimestre y mes; valores exactos en tooltips y tablas.</td></tr>
-      <tr><td><strong>Divulgación progresiva</strong><br><span class="tenue">Nielsen (2006)</span></td><td>Mostrar todo de una vez abruma a quien no es especialista. Conviene dejar a la vista lo esencial y ofrecer el resto cuando se pide.</td><td>Cada gráfica muestra una sola línea de propósito; la explicación completa vive en el botón «Cómo leerla». La descripción de los modelos, las tablas y el rango de 95 % están plegados por defecto.</td></tr>
-      <tr><td><strong>Jerarquía perceptual</strong><br><span class="tenue">Cleveland y McGill (1984); Munzner (2014)</span></td><td>La posición sobre una escala común y la longitud se leen con mucha más precisión que el área, el ángulo o el color. Lo que más importa comparar debe ir en el canal más preciso.</td><td>Volúmenes y errores de modelos se comparan con barras y posición. La intensidad de color queda para patrones en dos dimensiones, siempre con el número escrito o disponible al pasar el cursor.</td></tr>
-      <tr><td><strong>Proporción datos-tinta</strong><br><span class="tenue">Tufte (2001)</span></td><td>Cada trazo que no representa un dato le quita atención a los que sí.</td><td>Cuadrícula tenue solo en el eje de valores, sin fondos decorativos ni efectos tridimensionales, y separadores blancos de 2 px en lugar de contornos.</td></tr>
-      <tr><td><strong>Gestalt</strong><br><span class="tenue">Ware (2012)</span></td><td>Percibimos como grupo lo que está cerca, se parece o comparte un contenedor. Si el diseño lo aprovecha, sobran instrucciones.</td><td>Cada gráfica vive en su propia tarjeta con su título, etiqueta y controles; los filtros de la página comparten una banda gris sobre las gráficas que afectan.</td></tr>
-      <tr><td><strong>Heurísticas de usabilidad</strong><br><span class="tenue">Nielsen (1994)</span></td><td>Son la referencia más usada para evaluar una interfaz sin pruebas de laboratorio.</td><td>Ver la tabla siguiente.</td></tr>
-    </tbody>
-  </table>
-
-  <h3>Las heurísticas de Nielsen en la aplicación</h3>
-  <table>
-    <thead><tr><th style="width:30%">Heurística</th><th>Cómo se cumple</th></tr></thead>
-    <tbody>
-      <tr><td>Visibilidad del estado del sistema</td><td>El título de la gráfica de detalle cambia con la selección («¿Qué modelo se equivocó menos en Oct 2023?») y la celda elegida queda enmarcada.</td></tr>
-      <tr><td>Relación con el mundo real</td><td>Vocabulario del sector, meses en español y cifras abreviadas («3.4 M», «40.6 mil»). Los términos técnicos están en el glosario.</td></tr>
-      <tr><td>Control y libertad</td><td>Un doble clic deshace cualquier selección. El usuario decide qué gráficas ver, qué modelos comparar y con qué medida de error.</td></tr>
-      <tr><td>Consistencia</td><td>Todas las páginas comparten encabezado, banda de filtros y tarjetas; las gráficas salen de un mismo módulo y los colores conservan su significado.</td></tr>
-      <tr><td>Prevención de errores</td><td>Los valores por defecto son seguros: tipos de viajero comparables, último año completo y comparación de meses equivalentes cuando un año está incompleto.</td></tr>
-      <tr><td>Reconocer antes que recordar</td><td>Cada gráfica indica cómo se interactúa con ella justo encima del dibujo; las leyendas están siempre visibles y la portada enlaza cada pregunta con su página.</td></tr>
-      <tr><td>Recuperación ante errores</td><td>Cuando un filtro no deja datos, cuando una serie no tiene periodo de prueba o cuando no hay modelos elegidos, el mensaje dice qué pasó y qué hacer.</td></tr>
-      <tr><td>Ayuda y documentación</td><td>El botón «Cómo leerla» en cada gráfica, el ícono de ayuda en los controles y una página de glosario y limitaciones.</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- =========================================================== 05 COLOR -->
 <section>
-  <div class="num" style="margin-top:8mm"><span>05 · Color y tipografía</span><span class="req">Requisito 4.1</span></div>
-  <h2>Cada color tiene un trabajo y lo conserva en toda la aplicación</h2>
-  <p class="entrada">Asignamos el color según su función, con la clasificación de Harrower y Brewer (2003): cualitativo para distinguir entidades, secuencial para magnitudes y divergente para desviaciones respecto a una referencia. Luego medimos la paleta contra las tres formas comunes de daltonismo, calculando distancias perceptuales en el espacio OKLab (Ottosson, 2020).</p>
+  <div class="k">01</div>
+  <h2>Para qué sirve el tablero</h2>
+  <p class="lead">La dirección necesita responder con frecuencia las mismas preguntas: cuántos viajeros llegan, en qué meses, desde qué mercados y qué tan confiables son los pronósticos con los que se planifica. Hoy esas respuestas dependen de pedir un informe. El tablero las pone a un par de clics.</p>
+  <div class="cifras">
+    <div class="cifra"><b>3.4 M</b><span>viajeros en 2025, el 81 % de 2019</span></div>
+    <div class="cifra"><b>65 %</b><span>de las llegadas de 2025 entraron por tierra</span></div>
+    <div class="cifra"><b>66</b><span>índice de Centroamérica frente a 2019 (= 100)</span></div>
+    <div class="cifra"><b>18 %</b><span>error del mejor pronóstico del total mensual</span></div>
+  </div>
+  <p>Lo que más pesa en estas cifras es la composición de la demanda. La recuperación posterior a la pandemia la empujan los mercados de larga distancia: Norteamérica, Sudamérica, Europa y Asia ya superan su volumen de 2019. Centroamérica, que sigue siendo el origen principal, está en dos tercios de aquel nivel. Una parte de esa diferencia puede deberse a que la fuente cambió su forma de registrar en 2021 y en 2023, y el tablero lo advierte junto a las cifras afectadas.</p>
+  <p>En pronósticos el panorama es desigual. Para el total mensual, la vía aérea y el aeropuerto La Aurora, el mejor modelo se equivoca en torno a una quinta parte, lo que basta para planificar. Para las series terrestres el error supera el 65 % y esas cifras deben tomarse con reserva.</p>
 
+  <h3>Cómo está organizado</h3>
+  <p>El tablero tiene siete páginas. Una de resumen; tres para explorar la demanda (evolución y origen, temporadas, mercados); dos para los pronósticos (lo que dijo cada modelo y cómo se comparan), y una de ayuda con el glosario y las limitaciones. Contiene once gráficas interactivas, y diez de ellas trabajan en pares: al seleccionar algo en la primera, la segunda muestra el detalle de esa selección.</p>
+
+  <h3>Qué cubre y qué no</h3>
+  <div class="dos">
+    <div><ul>
+      <li>Llegadas mensuales de enero de 2009 a junio de 2026 (161 036 registros).</li>
+      <li>Turistas y excursionistas por defecto, porque son los únicos tipos registrados igual en todo el periodo; los demás se pueden agregar.</li>
+      <li>Desgloses por vía, puesto fronterizo, país, región y región de la OMT.</li>
+      <li>Pronósticos de abril de 2021 a junio de 2026 para siete series: el total, las tres vías y las tres fronteras con más movimiento.</li>
+    </ul></div>
+    <div><ul>
+      <li>No incluye modelos nuevos; integra los de los Laboratorios 1 y 2.</li>
+      <li>No hay cifras posteriores a junio de 2026.</li>
+      <li>No es una fuente oficial.</li>
+      <li>La vía marítima no se puede evaluar: desde 2017 la fuente solo registra cruceristas y otros tipos de viajero por esa vía. El tablero lo explica en lugar de mostrar una gráfica vacía.</li>
+    </ul></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="k">02</div>
+  <h2>Las preguntas de partida</h2>
+  <p class="lead">Antes de diseñar pantallas hicimos una lista de lo que la dirección suele preguntar al planificar promoción, personal y capacidad, y conservamos solo lo que la fuente permite contestar con rigor.</p>
   <table>
-    <thead><tr><th style="width:16%">Función</th><th style="width:27%">Colores</th><th>Justificación</th></tr></thead>
-    <tbody>
-      <tr><td><strong>Vías de ingreso</strong><br><span class="tenue">cualitativo</span></td>
-        <td><span class="sw" style="background:#2a78d6"></span>Aérea <code>#2a78d6</code><br><span class="sw" style="background:#eb6834"></span>Terrestre <code>#eb6834</code><br><span class="sw" style="background:#1baf7a"></span>Marítima <code>#1baf7a</code></td>
-        <td>Tres matices bien separados con luminosidad parecida, para que ninguno se imponga. Cielo, tierra y mar ayudan a recordarlos. El par más cercano mantiene una distancia ΔE de 9.2 con deuteranopia y de 9.6 con tritanopia, por encima del umbral de 8 a partir del cual dos colores se distinguen. El color acompaña a la vía y no cambia si cambia el orden.</td></tr>
-      <tr><td><strong>Modelos</strong><br><span class="tenue">cualitativo</span></td>
-        <td><span class="sw" style="background:#6250d6"></span>Holt-Winters<br><span class="sw" style="background:#e87ba4"></span>SARIMA<br><span class="sw" style="background:#eda100"></span>Prophet<br><span class="sw" style="background:#008300"></span>LSTM<br><span class="sw" style="background:#898781"></span>Referencia ingenua</td>
-        <td>Matices distintos a los de las vías, para que ningún color nombre dos cosas. Con protanopia y deuteranopia el par más cercano conserva ΔE 16.2; con tritanopia, el amarillo y el rosa bajan a 5.8. Por eso cada modelo tiene también su propio trazo (continuo, guiones, guion y punto, guion largo y punteado): se reconoce aunque no se perciba el color. La referencia va en gris porque sirve de vara de medir. Lo real va siempre en negro.</td></tr>
-      <tr><td><strong>Magnitud</strong><br><span class="tenue">secuencial</span></td>
-        <td>Un solo azul, de claro a oscuro<div class="rampa"><span style="background:#cde2fb"></span><span style="background:#9ec5f4"></span><span style="background:#6da7ec"></span><span style="background:#3987e5"></span><span style="background:#256abf"></span><span style="background:#184f95"></span><span style="background:#0d366b"></span></div></td>
-        <td>Un único matiz que se oscurece de forma continua: «más oscuro, más cantidad» se entiende sin leyenda. Descartamos el arcoíris porque inventa fronteras de color donde los datos no las tienen. Lo usan los mapas de calor y el árbol de orígenes.</td></tr>
-      <tr><td><strong>Desviación</strong><br><span class="tenue">divergente</span></td>
-        <td>Rojo, gris y azul<div class="rampa"><span style="background:#d25757"></span><span style="background:#e66767"></span><span style="background:#f0efec"></span><span style="background:#6da7ec"></span><span style="background:#4a8ee0"></span></div></td>
-        <td>Solo en el índice de recuperación: rojo por debajo del año base, gris al mismo nivel y azul por encima. Son dos polos opuestos, uno cálido y otro frío, con un centro neutro, como se recomienda cuando el punto medio tiene significado. Aclaramos los extremos para que el número dentro de cada celda se siga leyendo.</td></tr>
-      <tr><td><strong>Texto y superficies</strong></td>
-        <td><span class="sw" style="background:#0b0b0b"></span>Texto <code>#0b0b0b</code><br><span class="sw" style="background:#52514e"></span>Secundario <code>#52514e</code><br><span class="sw" style="background:#f9f9f7;border:1px solid #ccc"></span>Fondo <code>#f9f9f7</code></td>
-        <td>El texto principal tiene un contraste de 18.7:1 y el secundario de 7.5:1; ambos superan el nivel AAA de WCAG 2.2, que pide 7:1. El fondo es un blanco cálido que cansa menos la vista que el blanco puro. Las cifras nunca se escriben en el color de una serie.</td></tr>
-      <tr><td><strong>Tipo de información</strong></td>
-        <td><span class="pill p-obs">Dato observado</span><br><span class="pill p-int">Interpretación</span><br><span class="pill p-est">Estimación de modelo</span></td>
-        <td>Responden a la exigencia de separar lo observado de lo interpretado y lo estimado. Cada etiqueta lleva el nombre escrito, así que su significado no depende del color (criterio 1.4.1 de WCAG 2.2).</td></tr>
-    </tbody>
+    <tr><th style="width:44%">Pregunta</th><th style="width:30%">Decisión que informa</th><th>Página</th></tr>
+    <tr><td>¿Cómo ha evolucionado la llegada de viajeros y por qué vía entran?</td><td>Metas anuales y capacidad por vía</td><td>Evolución y origen</td></tr>
+    <tr><td>¿De qué países vienen y por qué puestos ingresan?</td><td>Promoción y atención en fronteras</td><td>Evolución y origen</td></tr>
+    <tr><td>¿En qué meses se concentra la demanda? ¿Un año dado fue normal?</td><td>Calendario de personal y campañas</td><td>Temporadas</td></tr>
+    <tr><td>¿Qué mercados ya superaron su nivel de 2019?</td><td>Estrategias de reactivación</td><td>Mercados y recuperación</td></tr>
+    <tr><td>¿Qué peso tiene cada región y cada país de origen?</td><td>Reparto del presupuesto de promoción</td><td>Mercados y recuperación</td></tr>
+    <tr><td>¿Qué pronosticaron los modelos y qué tan cerca quedaron?</td><td>Uso de pronósticos en la planificación</td><td>Pronósticos de llegadas</td></tr>
+    <tr><td>¿Qué modelo conviene en cada serie y hasta qué horizonte?</td><td>Elección y actualización de modelos</td><td>Comparar modelos</td></tr>
   </table>
-  <p class="fuente">Las distancias ΔE se calcularon en OKLab (×100) entre todos los pares de cada paleta, simulando protanopia, deuteranopia y tritanopia. Los contrastes siguen la fórmula de luminancia relativa de WCAG 2.2.</p>
+  <p>Quedaron fuera las preguntas sobre gasto, estadía u ocupación hotelera, porque la base no tiene esas variables, y las que buscan explicar por qué cambió la demanda. Los registros muestran que las llegadas subieron o bajaron, pero no permiten atribuirlo a una campaña, un evento o una política. También descartamos pronosticar más allá de junio de 2026: los modelos disponibles no lo hicieron y no entrenamos modelos nuevos.</p>
+  <p>El orden de las preguntas es el de la navegación: primero lo que ocurrió, después lo que se esperaba y al final cuánto creerle a esa expectativa.</p>
 
-  <h3>Tres colores con poco contraste y cómo los compensamos</h3>
-  <p>El aqua de la vía marítima (2.7:1), el rosa de SARIMA (2.6:1) y el amarillo de Prophet (2.1:1) no llegan al 3:1 que WCAG 2.2 sugiere para elementos gráficos. Los mantuvimos porque son los que mejor se separan entre sí con daltonismo, y los compensamos de tres maneras: la leyenda nunca se oculta, el valor exacto aparece al pasar el cursor y en las tablas, y cada modelo tiene un trazo distinto.</p>
+</section>
+
+<section class="sec">
+  <div class="k">03</div>
+  <h2>Criterios de diseño</h2>
+  <p class="lead">Tomamos como referencia la forma en que se construyen los productos de datos empresariales y la investigación sobre percepción visual. Cada criterio responde a algo concreto que un directivo necesita al usar la herramienta.</p>
+
+  <h3>Un sistema visual, no una página</h3>
+  <p>La interfaz sigue la estructura de IBM Carbon, el sistema de diseño de IBM para productos analíticos: fondo gris claro, mosaicos blancos con borde fino, sin sombras ni esquinas redondeadas, y una escala tipográfica corta. Todo trazo que no representa un dato se eliminó o se dejó en gris tenue (Tufte, 2001). Lo elegimos porque está pensado para pantallas con muchos datos y mucha interacción, que es exactamente este caso, y porque obliga a que el color lo pongan los datos y no la decoración. Por la misma razón los controles van en negro: el azul, el naranja y el aqua quedan reservados para las vías de ingreso.</p>
+
+  <h3>Panorama primero, detalle a petición</h3>
+  <p>Cada página abre con una fila de indicadores y una vista general; el detalle aparece al seleccionar. Es el patrón que Shneiderman (1996) describió para la búsqueda visual y el que usan herramientas como Power BI con su filtro cruzado. Cuando una gráfica está filtrada por otra, su encabezado lo muestra con una etiqueta negra («Filtrado por: 2019 · Aérea»), de modo que el estado de la pantalla siempre es visible.</p>
+
+  <h3>La explicación, solo si se pide</h3>
+  <p>Los títulos son cortos y el subtítulo dice las unidades y el alcance. La explicación completa de cada gráfica está detrás de un ícono de información. Un directivo que ya conoce el tablero no tiene que leer lo mismo cada vez, y quien lo abre por primera vez sabe dónde buscar. Few (2006) insiste en que un tablero debe leerse de un vistazo, y las instrucciones permanentes van en contra de eso.</p>
+
+  <h3>La codificación más precisa para lo que más importa</h3>
+  <p>Volúmenes y errores se comparan con barras y posición sobre un eje común, que es lo que el ojo lee con más precisión (Cleveland y McGill, 1984). El color de intensidad se usa solo para patrones en dos dimensiones, como la estacionalidad o los índices, y siempre con el valor escrito o disponible en el tooltip.</p>
+
+  <h3>Usabilidad</h3>
+  <p>Revisamos la interfaz con las heurísticas de usabilidad de Nielsen (1994). Las que más pesaron fueron la visibilidad del estado, el control del usuario (un doble clic deshace cualquier selección) y los mensajes que explican qué hacer cuando un filtro no deja datos.</p>
+
+  <h3>Lo medido, separado de lo estimado</h3>
+  <p>Cada gráfica lleva una etiqueta: azul para datos observados y violeta para estimaciones de modelos. Las lecturas escritas bajo las gráficas indican también si son una observación, una interpretación o una estimación. Ninguna lectura atribuye causas.</p>
 
   <h3>Tipografía</h3>
-  <div class="dos">
-    <div>
-      <p>La interfaz y las gráficas usan <strong>Source Sans 3</strong>, una sans serif humanista de Adobe pensada para pantalla, con formas abiertas que se leen bien en los textos pequeños de los ejes. Los títulos usan <strong>Source Serif 4</strong>, la serifa de la misma familia, que da un tono editorial sin romper la unidad visual. La aplicación sirve ambas tipografías desde el propio repositorio, de modo que se ven igual en cualquier computadora.</p>
-    </div>
-    <div>
-      <p>La jerarquía tiene tres niveles: título de página en serifa, pregunta de cada gráfica en negrita y texto a 15 px. Ejes, leyendas y tooltips van a 13 px en gris oscuro. Las cifras llevan separador de miles; en tarjetas y textos se abrevian («3.4 M», «40.6 mil») y en tooltips y tablas aparecen completas. Este documento usa las mismas dos tipografías.</p>
-    </div>
-  </div>
+  <p>Usamos IBM Plex Sans en la interfaz, en las gráficas y en este documento. Es la tipografía de Carbon, tiene cifras tabulares que alinean columnas de números y se lee bien en los tamaños pequeños de ejes y leyendas. Las cifras grandes van en peso ligero, como en los indicadores de las herramientas empresariales, para que el número domine sin saturar la pantalla. La aplicación sirve la fuente desde el propio repositorio y se ve igual en cualquier equipo.</p>
 </section>
 
-<!-- =========================================================== 06 INTERFAZ -->
-<section class="seccion">
-  <div class="num"><span>06 · Interfaz y navegación</span><span class="req">Requisito 4.1</span></div>
-  <h2>Siete páginas, una sola plantilla</h2>
-  <p class="entrada">La navegación sigue el orden de las preguntas de la sección 02. Todas las páginas de análisis comparten la misma plantilla, así que basta aprender a usar una para saber usar las demás.</p>
-
-  <figure class="sinmarco boceto"><img src="figures/boceto_interfaz.png"><figcaption><b>Figura 1. Boceto de la plantilla.</b> Navegación lateral agrupada por tarea, filtros en una banda sobre las gráficas que afectan, selector de gráficas visibles y gráficas en tarjetas con su pregunta y su etiqueta. La gráfica de arriba filtra a la de abajo.</figcaption></figure>
-
+<section class="sec">
+  <div class="k">04</div>
+  <h2>Color</h2>
+  <p class="lead">Cada color tiene una sola función y la conserva en todas las páginas. Usamos esquemas cualitativos para identidad, secuenciales para magnitud y divergentes para desviación (Harrower y Brewer, 2003). Medimos la paleta con simulaciones de daltonismo en el espacio perceptual OKLab (Ottosson, 2020) y verificamos el contraste del texto con las pautas WCAG 2.2.</p>
   <table>
-    <thead><tr><th style="width:20%">Sección</th><th style="width:24%">Página</th><th>Contenido</th></tr></thead>
-    <tbody>
-      <tr><td>Observatorio</td><td>Inicio</td><td>Cuatro indicadores, hallazgos separados entre observados y estimados, y tarjetas que llevan a cada sección.</td></tr>
-      <tr><td rowspan="3">Explorar los datos</td><td>Evolución y origen</td><td>Gráficas 1 y 2, enlazadas</td></tr>
-      <tr><td>Temporadas</td><td>Gráficas 3 y 4, enlazadas</td></tr>
-      <tr><td>Mercados y recuperación</td><td>Gráficas 5 y 6, enlazadas</td></tr>
-      <tr><td rowspan="2">Pronósticos</td><td>Pronósticos de llegadas</td><td>Gráficas 7 y 8, enlazadas; descripción de cada modelo y tabla de valores</td></tr>
-      <tr><td>Comparar modelos</td><td>Gráficas 9 y 10, enlazadas; gráfica 11 y tabla comparativa</td></tr>
-      <tr><td>Ayuda</td><td>Glosario y limitaciones</td><td>Términos, lectura de colores y limitaciones, en pestañas.</td></tr>
-    </tbody>
+    <tr><th style="width:17%">Uso</th><th style="width:28%">Colores</th><th>Por qué</th></tr>
+    <tr><td>Vías de ingreso</td><td><span class="sw" style="background:#2a78d6"></span>Aérea<br><span class="sw" style="background:#eb6834"></span>Terrestre<br><span class="sw" style="background:#1baf7a"></span>Marítima</td><td>Matices bien separados y de luminosidad parecida. El par más cercano mantiene una distancia ΔE de 9.2 con deuteranopia y de 9.6 con tritanopia, por encima del umbral de 8 a partir del cual se distinguen. Cielo, tierra y mar ayudan a recordarlos.</td></tr>
+    <tr><td>Modelos</td><td><span class="sw" style="background:#6250d6"></span>Holt-Winters<br><span class="sw" style="background:#e87ba4"></span>SARIMA<br><span class="sw" style="background:#eda100"></span>Prophet<br><span class="sw" style="background:#008300"></span>LSTM<br><span class="sw" style="background:#8d8d8d"></span>Referencia ingenua</td><td>Distintos de los de las vías, para que ningún color nombre dos cosas. Con tritanopia el amarillo y el rosa se acercan (ΔE 5.8), así que cada modelo tiene además su propio trazo de línea. Lo real va siempre en negro.</td></tr>
+    <tr><td>Magnitud</td><td><div class="rampa"><span style="background:#cde2fb"></span><span style="background:#9ec5f4"></span><span style="background:#6da7ec"></span><span style="background:#3987e5"></span><span style="background:#256abf"></span><span style="background:#184f95"></span><span style="background:#0d366b"></span></div></td><td>Un solo azul que se oscurece: más oscuro es más. Evitamos el arcoíris porque crea fronteras que los datos no tienen.</td></tr>
+    <tr><td>Desviación</td><td><div class="rampa"><span style="background:#d25757"></span><span style="background:#e66767"></span><span style="background:#f0efec"></span><span style="background:#6da7ec"></span><span style="background:#4a8ee0"></span></div></td><td>Solo en el índice de recuperación: rojo por debajo del año base, gris igual y azul por encima. El centro neutro marca el punto que importa.</td></tr>
+    <tr><td>Interfaz</td><td><span class="sw" style="background:#161616"></span>Texto y controles<br><span class="sw" style="background:#525252"></span>Texto secundario<br><span class="sw" style="background:#f4f4f4;border:1px solid #c6c6c6"></span>Fondo</td><td>Escala de grises g10 de Carbon. Sobre el fondo, el texto principal tiene un contraste de 16.5:1 y el secundario de 7.1:1, ambos por encima del nivel AAA.</td></tr>
   </table>
-
+  <p>Tres colores de datos quedan por debajo del contraste de 3:1 recomendado para gráficos: el aqua (2.7:1), el rosa (2.6:1) y el amarillo (2.1:1). Los mantuvimos porque son los que mejor se separan entre sí con daltonismo, y los compensamos con leyendas siempre visibles, valores exactos en tooltips y tablas, y trazos distintos por modelo.</p>
 </section>
 
-<section class="seccion">
-  <div class="num"><span>06 · Interfaz y navegación</span><span class="req">Requisito 4.1</span></div>
-  <h2>Los componentes de la interfaz</h2>
+<section class="sec">
+  <div class="k">05</div>
+  <h2>Interfaz y navegación</h2>
+  <p class="lead">Todas las páginas de análisis comparten la misma estructura, así que basta aprender una.</p>
+  <figure><img src="figures/boceto_interfaz.png"><figcaption>Boceto de la plantilla. Navegación lateral por secciones; encabezado con la fecha de los datos y el menú para elegir qué gráficas ver; filtros de página en una franja; indicadores, y dos mosaicos en los que el primero filtra al segundo.</figcaption></figure>
   <table>
-    <thead><tr><th style="width:24%">Componente</th><th>Función y justificación</th></tr></thead>
-    <tbody>
-      <tr><td>Encabezado de página</td><td>Sección, título y una bajada de dos líneas como máximo. Ubica al usuario y le dice qué encontrará antes de mostrarle una sola cifra.</td></tr>
-      <tr><td>Banda de filtros</td><td>Reúne en un fondo gris los controles que afectan a toda la página. Separarlos de las gráficas deja claro qué cambia todo y qué cambia solo una tarjeta.</td></tr>
-      <tr><td>Indicadores</td><td>Tarjetas con una cifra grande y una línea de contexto. Responden «¿cómo vamos?» en segundos y no cuentan como visualizaciones.</td></tr>
-      <tr><td>Tarjeta de gráfica</td><td>Número, pregunta, una línea de propósito, etiqueta de tipo de información y una indicación de cómo interactuar. El botón «Cómo leerla» guarda la explicación completa.</td></tr>
-      <tr><td>Recuadros de hallazgo</td><td>Textos breves con un borde de color y el nombre del tipo de información: dato observado, interpretación o estimación de modelo.</td></tr>
-      <tr><td>Barra lateral</td><td>Logotipo, navegación por secciones, la fuente de los datos y el equipo, siempre visibles.</td></tr>
-    </tbody>
+    <tr><th style="width:22%">Sección</th><th style="width:26%">Página</th><th>Contenido</th></tr>
+    <tr><td>Observatorio</td><td>Resumen</td><td>Indicadores con tendencia, llegadas mensuales con promedio móvil, lectura principal y accesos.</td></tr>
+    <tr><td rowspan="3">Explorar los datos</td><td>Evolución y origen</td><td>Llegadas por vía → origen de la selección</td></tr>
+    <tr><td>Temporadas</td><td>Mapa de calor año × mes → perfil mensual por vía</td></tr>
+    <tr><td>Mercados y recuperación</td><td>Índice de recuperación → orígenes por región y país</td></tr>
+    <tr><td rowspan="2">Pronósticos</td><td>Pronósticos de llegadas</td><td>Real frente a pronóstico → error por modelo</td></tr>
+    <tr><td>Comparar modelos</td><td>Error por serie y modelo → error por año; ajuste de la LSTM; tabla resumen</td></tr>
+    <tr><td>Ayuda</td><td>Acerca del tablero</td><td>Glosario, colores, limitaciones, equipo y fuentes</td></tr>
   </table>
-  <figure class="pantalla"><img src="figures/app_inicio.png"><figcaption><b>Figura 2. Inicio.</b> Los indicadores responden de inmediato cómo va la demanda; debajo, los hallazgos se separan entre lo observado y lo estimado, y tres tarjetas llevan a cada sección.</figcaption></figure>
 </section>
 
-<section class="seccion">
-  <div class="num"><span>06 · Interfaz y navegación</span><span class="req">Requisito 4.1</span></div>
-  <h2>La plantilla aplicada a una página de exploración y a una de pronósticos</h2>
-  <figure class="pantalla"><img src="figures/app_explorar.png"><figcaption><b>Figura 3. Evolución y origen.</b> Banda de filtros con el control de detalle temporal, indicadores de contexto y la primera tarjeta de gráfica con su botón «Cómo leerla».</figcaption></figure>
-  <figure class="pantalla"><img src="figures/app_pronosticos.png"><figcaption><b>Figura 4. Pronósticos de llegadas.</b> El usuario elige la serie, los modelos y el nivel de detalle. La explicación de cada modelo está plegada y no ocupa espacio hasta que se abre.</figcaption></figure>
+<section class="sec">
+  <div class="k">05</div>
+  <h2>Pantallas</h2>
+  <figure><img src="figures/app_inicio.png"><figcaption>Resumen. Los indicadores muestran el valor, la variación y la tendencia anual en una minigráfica. Debajo, las llegadas mensuales con su promedio móvil de doce meses y la lectura principal, separada en lo observado y lo estimado.</figcaption></figure>
+  <figure><img src="figures/app_explorar.png"><figcaption>Evolución y origen. Las dos gráficas enlazadas comparten la fila para que el efecto de la selección se vea sin desplazarse.</figcaption></figure>
 </section>
 
-<!-- =========================================================== 07 VISUALIZACIONES -->
-<section class="seccion">
-  <div class="num"><span>07 · Visualizaciones</span><span class="req">Requisitos 1, 3 y 4.2</span></div>
-  <h2>Once visualizaciones elegidas por la tarea que resuelven</h2>
-  <p class="entrada">Seguimos el modelo anidado de Munzner (2009): primero definimos la tarea del usuario, después la estructura de los datos y solo al final la forma de la gráfica. En cada ficha explicamos qué pregunta responde, por qué esa forma funciona mejor que otras y qué alternativa descartamos. Diez de las once gráficas forman cinco pares enlazados. Las tarjetas de indicadores, los controles, los textos y la tabla comparativa de modelos son complementarios y no los contamos como visualizaciones.</p>
+<section class="sec">
+  <div class="k">05</div>
+  <h2>Pantallas de pronóstico</h2>
+  <figure><img src="figures/app_pronosticos.png"><figcaption>Pronósticos de llegadas. Los indicadores resumen el modelo con menor error de la serie elegida antes de entrar al detalle.</figcaption></figure>
+  <figure><img src="figures/app_comparar.png"><figcaption>Comparar modelos. La medida de error elegida se aplica a todas las gráficas de la página.</figcaption></figure>
+</section>
 
+<section class="sec">
+  <div class="k">06</div>
+  <h2>Las gráficas</h2>
+  <p class="lead">Elegimos cada forma por la tarea que resuelve (Munzner, 2009): primero qué necesita saber el usuario, luego la estructura de los datos y al final la gráfica. Los indicadores, los controles, los textos y la tabla resumen no se cuentan entre las once.</p>
   <table>
-    <thead><tr><th class="c" style="width:6%">#</th><th style="width:31%">Visualización</th><th style="width:26%">Forma</th><th style="width:14%">Enlace</th><th>Nivel de detalle</th></tr></thead>
-    <tbody>
-      <tr><td class="c">1</td><td>Evolución de llegadas por vía</td><td>Barras apiladas</td><td>Origen de 2</td><td>Año, trimestre o mes</td></tr>
-      <tr><td class="c">2</td><td>Origen y puesto de ingreso</td><td>Barras horizontales apiladas</td><td>Destino de 1</td><td>De 5 a 25 categorías; cuatro dimensiones</td></tr>
-      <tr><td class="c">3</td><td>Mapa de calor año × mes</td><td>Mapa de calor secuencial</td><td>Origen de 4</td><td>Uno o varios años</td></tr>
-      <tr><td class="c">4</td><td>Perfil mensual por vía</td><td>Barras apiladas con referencia</td><td>Destino de 3</td><td>Un año o el promedio de varios</td></tr>
-      <tr><td class="c">5</td><td>Índice de recuperación</td><td>Mapa de calor divergente</td><td>Origen de 6</td><td>De 3 a 15 filas; tres dimensiones</td></tr>
-      <tr><td class="c">6</td><td>Árbol de orígenes</td><td>Treemap jerárquico</td><td>Destino de 5</td><td>Regiones, o regiones y países; acercamiento</td></tr>
-      <tr><td class="c">7</td><td>Real frente a pronóstico</td><td>Líneas con banda de 95 %</td><td>Origen de 8</td><td>Mes, trimestre o año</td></tr>
-      <tr><td class="c">8</td><td>Error por modelo en la selección</td><td>Barras horizontales ordenadas</td><td>Destino de 7</td><td>Periodo elegido; tres medidas</td></tr>
-      <tr><td class="c">9</td><td>Mapa de errores serie × modelo</td><td>Mapa de calor con valores</td><td>Origen de 10</td><td>Tres medidas de error</td></tr>
-      <tr><td class="c">10</td><td>Error por año del horizonte</td><td>Líneas con marcadores</td><td>Destino de 9</td><td>Serie elegida</td></tr>
-      <tr><td class="c">11</td><td>Ajuste de la red LSTM</td><td>Barras con resalte</td><td>Independiente</td><td>Dos series</td></tr>
-    </tbody>
+    <tr><th>#</th><th>Gráfica</th><th>Forma</th><th>Interacción principal</th></tr>
+    <tr><td>1</td><td>Llegadas por vía de ingreso</td><td>Barras apiladas</td><td>Filtra la 2; año, trimestre o mes</td></tr>
+    <tr><td>2</td><td>Origen de los viajeros</td><td>Barras horizontales apiladas</td><td>Dimensión y número de categorías</td></tr>
+    <tr><td>3</td><td>Viajeros por año y mes</td><td>Mapa de calor</td><td>Filtra la 4; uno o varios años</td></tr>
+    <tr><td>4</td><td>Perfil mensual por vía</td><td>Barras apiladas con referencia</td><td>Responde a la 3</td></tr>
+    <tr><td>5</td><td>Índice de recuperación</td><td>Mapa de calor divergente</td><td>Filtra la 6; dimensión y año base</td></tr>
+    <tr><td>6</td><td>Orígenes por región y país</td><td>Treemap</td><td>Acercamiento por región</td></tr>
+    <tr><td>7</td><td>Real frente a pronóstico</td><td>Líneas con banda de 95 %</td><td>Filtra la 8; mes, trimestre o año</td></tr>
+    <tr><td>8</td><td>Error por modelo</td><td>Barras horizontales ordenadas</td><td>MAPE, MAE o RMSE</td></tr>
+    <tr><td>9</td><td>Error por serie y modelo</td><td>Mapa de calor con valores</td><td>Filtra la 10</td></tr>
+    <tr><td>10</td><td>Error por año de la prueba</td><td>Líneas con marcadores</td><td>Responde a la 9</td></tr>
+    <tr><td>11</td><td>Ajuste de la red LSTM</td><td>Barras con resalte</td><td>Serie</td></tr>
   </table>
+  <p>Además de esas once, el resumen muestra las llegadas mensuales con su promedio móvil, que sirve de entrada al resto.</p>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">1</span><span class="tt">¿Cómo ha evolucionado la llegada de viajeros?</span><span class="rol">Origen · par 1 → 2</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Barras verticales apiladas por periodo y vía de ingreso.</dd>
-      <dt>Por qué</dt><dd>El directivo necesita ver a la vez el <strong>total</strong>, que da la altura de la barra, y la <strong>composición</strong> por vía, que dan los segmentos. Además, una barra es un blanco de clic amplio, cómodo para elegir un periodo.</dd>
-      <dt>Descartada</dt><dd>Una línea por vía, porque esconde el total. Un área apilada, porque hace difícil señalar un periodo concreto.</dd>
-      <dt>Interacción</dt><dd>Nivel de año, trimestre o mes; clic, Shift + clic y selección por caja de periodos y vías; filtros de años, tipo de viajero y vía.</dd>
-    </dl>
-    <figure><img src="figures/viz1_evolucion_seleccion.png"><figcaption><b>Figura 6.</b> Al seleccionar la barra aérea de 2019, el resto se atenúa.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>1 · Llegadas por vía de ingreso</h3>
+    <div class="meta">Barras apiladas · filtra la gráfica 2</div>
+    <p>La altura de cada barra da el total y los segmentos dan la composición por vía, dos cosas que el directivo necesita ver juntas. Una línea por vía habría escondido el total. La barra, además, es un blanco cómodo para seleccionar un periodo.</p>
+    <figure><img src="figures/viz1_evolucion_seleccion.png"><figcaption>Al seleccionar la barra aérea de 2019, el resto se atenúa.</figcaption></figure>
   </div>
-  <div class="ficha">
-    <div class="cab"><span class="k">2</span><span class="tt">¿De dónde vienen y por dónde entran?</span><span class="rol">Destino · par 1 → 2</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Barras horizontales apiladas por vía, de mayor a menor.</dd>
-      <dt>Por qué</dt><dd>Son categorías con nombres largos, como países o puestos fronterizos. En horizontal, las etiquetas se leen sin girar la cabeza, y el orden descendente contesta directamente cuáles son los principales.</dd>
-      <dt>Descartada</dt><dd>Un gráfico circular: con más de cinco categorías, comparar ángulos es impreciso (Cleveland y McGill, 1984).</dd>
-      <dt>Interacción</dt><dd>Se recalcula con lo elegido en la gráfica 1. Se puede ver por región, país, frontera o región OMT y decidir cuántas categorías mostrar; la tabla completa está plegada debajo.</dd>
-    </dl>
-    <figure><img src="figures/viz2_origen_seleccion.png"><figcaption><b>Figura 7.</b> Países de origen de los viajeros aéreos de 2019, el resultado del clic de la figura 6.</figcaption></figure>
+  <div class="viz">
+    <h3>2 · Origen de los viajeros</h3>
+    <div class="meta">Barras horizontales apiladas, de mayor a menor · responde a la 1</div>
+    <p>Los nombres de países y puestos fronterizos son largos: en horizontal se leen sin girar la cabeza, y el orden descendente contesta cuáles son los principales. Un gráfico circular con más de cinco categorías obliga a comparar ángulos, que se leen mal.</p>
+    <figure><img src="figures/viz2_origen_seleccion.png"><figcaption>Países de origen de los viajeros aéreos de 2019.</figcaption></figure>
   </div>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">3</span><span class="tt">¿Qué meses concentran a los viajeros, año con año?</span><span class="rol">Origen · par 3 → 4</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Mapa de calor año × mes en una escala de un solo azul.</dd>
-      <dt>Por qué</dt><dd>Los 210 meses caben en una cuadrícula natural de años por meses. De un vistazo se ven las temporadas (diciembre, marzo y abril son las columnas más oscuras) y los años fuera de lo normal, como la franja clara de 2020 y 2021.</dd>
-      <dt>Descartada</dt><dd>Dieciocho líneas superpuestas, una por año; en el espacio disponible serían ilegibles.</dd>
-      <dt>Interacción</dt><dd>Clic y Shift + clic sobre las celdas para elegir años; la celda elegida queda enmarcada.</dd>
-    </dl>
-    <figure><img src="figures/viz3_estacionalidad.png"><figcaption><b>Figura 8.</b> Viajeros por año y mes; turistas y excursionistas, todas las vías.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>3 · Viajeros por año y mes</h3>
+    <div class="meta">Mapa de calor secuencial · filtra la gráfica 4</div>
+    <p>Los 210 meses forman una cuadrícula natural de años por meses. Se ven a la vez las temporadas, con diciembre, marzo y abril como columnas más oscuras, y los años atípicos, como la franja clara de 2020 y 2021. Dieciocho líneas superpuestas no se habrían podido leer.</p>
+    <figure><img src="figures/viz3_estacionalidad.png"><figcaption>Turistas y excursionistas de todas las vías.</figcaption></figure>
   </div>
-  <div class="ficha">
-    <div class="cab"><span class="k">4</span><span class="tt">¿Cómo se reparte el año elegido, mes a mes?</span><span class="rol">Destino · par 3 → 4</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Barras apiladas por mes y vía, con una línea punteada del promedio de 2015 a 2019.</dd>
-      <dt>Por qué</dt><dd>Al pasar de dieciocho años a uno, la pregunta cambia: qué vía explica cada temporada y si ese año fue normal. La línea de referencia comparte la escala de las barras, sin un segundo eje que confunda.</dd>
-      <dt>Interacción</dt><dd>Responde a los años elegidos en la gráfica 3; si son varios, muestra el promedio. Debajo resume por escrito el mes más alto, el más bajo y la diferencia frente a 2015-2019.</dd>
-    </dl>
-    <figure><img src="figures/viz4_perfil_mensual.png"><figcaption><b>Figura 9.</b> Perfil mensual de 2025 frente al promedio previo a la pandemia.</figcaption></figure>
+  <div class="viz">
+    <h3>4 · Perfil mensual por vía</h3>
+    <div class="meta">Barras apiladas con línea de referencia · responde a la 3</div>
+    <p>Al pasar de dieciocho años a uno interesa qué vía explica cada temporada y si el año fue normal. La línea punteada es el promedio de 2015 a 2019 en la misma escala, sin un segundo eje.</p>
+    <figure><img src="figures/viz4_perfil_mensual.png"><figcaption>2025 frente al promedio previo a la pandemia.</figcaption></figure>
   </div>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">5</span><span class="tt">¿Cuánto se recuperó cada mercado?</span><span class="rol">Origen · par 5 → 6</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Mapa de calor en escala divergente centrada en 100, con el valor escrito en cada celda.</dd>
-      <dt>Por qué</dt><dd>La pregunta es si cada mercado está por encima o por debajo de 2019, y los mercados tienen tamaños muy distintos. El índice los pone en la misma escala y el color divergente responde sin necesidad de leer números. Cada año se compara con los mismos meses del año base, para que 2026, que va de enero a junio, no aparente una caída.</dd>
-      <dt>Interacción</dt><dd>Dimensión (región, vía o frontera), año base y número de filas; clic en una celda para ver su detalle.</dd>
-    </dl>
-    <figure><img src="figures/viz5_recuperacion.png"><figcaption><b>Figura 10.</b> Índice por región de origen con base 2019. Norteamérica, Sudamérica, Europa y Asia ya superan ese nivel; Centroamérica, no.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>5 · Índice de recuperación</h3>
+    <div class="meta">Mapa de calor divergente centrado en 100 · filtra la gráfica 6</div>
+    <p>La pregunta es si cada mercado está por encima o por debajo de 2019, y los mercados tienen tamaños muy distintos. El índice los pone en la misma escala y el color responde antes de leer el número. Cada año se compara con los mismos meses del año base, para que 2026, que llega a junio, no parezca una caída.</p>
+    <figure><img src="figures/viz5_recuperacion.png"><figcaption>Índice por región, 2019 = 100.</figcaption></figure>
   </div>
-  <div class="ficha">
-    <div class="cab"><span class="k">6</span><span class="tt">¿De qué regiones y países vienen?</span><span class="rol">Destino · par 5 → 6</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Treemap jerárquico de región a país; el área y el tono crecen con los viajeros.</dd>
-      <dt>Por qué</dt><dd>Los orígenes forman una jerarquía muy concentrada. El treemap muestra a la vez el peso de cada región y el de cada país dentro de ella, y permite acercarse con un clic y volver con la barra superior.</dd>
-      <dt>Interacción</dt><dd>Se filtra con la celda elegida en la gráfica 5; un selector cambia entre ver solo regiones o regiones y países.</dd>
-    </dl>
-    <figure><img src="figures/viz6_treemap.png"><figcaption><b>Figura 11.</b> Orígenes de los viajeros en 2025.</figcaption></figure>
+  <div class="viz">
+    <h3>6 · Orígenes por región y país</h3>
+    <div class="meta">Treemap · responde a la 5</div>
+    <p>Los orígenes forman una jerarquía muy concentrada. El treemap muestra el peso de cada región y, dentro de ella, el de cada país, y permite acercarse con un clic.</p>
+    <figure><img src="figures/viz6_treemap.png"><figcaption>Orígenes de los viajeros en 2025.</figcaption></figure>
   </div>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">7</span><span class="tt">¿Qué pronosticó cada modelo y qué tan cerca quedó?</span><span class="rol">Origen · par 7 → 8</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Líneas en el tiempo, con una banda opcional de rango probable al 95 %.</dd>
-      <dt>Por qué</dt><dd>En una serie continua lo que interesa es la forma: tendencia, estacionalidad, desfases, y sobre todo la distancia entre lo real, en negro con marcadores, y lo pronosticado. La historia de entrenamiento va en gris y una línea vertical marca desde dónde los modelos ya no vieron datos.</dd>
-      <dt>Interacción</dt><dd>Serie, modelos visibles, nivel de mes, trimestre o año y banda de 95 % para SARIMA y Prophet; clic o caja sobre los puntos reales; tabla de valores.</dd>
-    </dl>
-    <figure><img src="figures/viz7_pronostico.png"><figcaption><b>Figura 12.</b> Total mensual: lo que pronosticó cada modelo frente a lo que llegó, con el rango probable de SARIMA y Prophet.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>7 · Real frente a pronóstico</h3>
+    <div class="meta">Líneas con banda opcional de 95 % · filtra la gráfica 8</div>
+    <p>En una serie continua importan la forma y la distancia entre lo real y lo pronosticado. La historia de entrenamiento va en gris y una línea vertical marca el punto desde el que los modelos ya no vieron datos.</p>
+    <figure><img src="figures/viz7_pronostico.png"><figcaption>Total mensual, con el rango probable de SARIMA y Prophet.</figcaption></figure>
   </div>
-  <div class="ficha">
-    <div class="cab"><span class="k">8</span><span class="tt">¿Qué modelo se equivocó menos en el periodo elegido?</span><span class="rol">Destino · par 7 → 8</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Barras horizontales ordenadas, una por modelo, con el valor escrito.</dd>
-      <dt>Por qué</dt><dd>Se compara una sola medida entre pocos elementos, y la longitud es lo que el ojo compara con más precisión. El orden pone arriba al modelo que menos se equivocó.</dd>
-      <dt>Interacción</dt><dd>Se recalcula con los periodos marcados en la gráfica 7; medida MAPE, MAE o RMSE.</dd>
-    </dl>
-    <figure><img src="figures/viz8_error_modelos.png"><figcaption><b>Figura 13.</b> Error porcentual promedio en todo el periodo de prueba, total mensual.</figcaption></figure>
+  <div class="viz">
+    <h3>8 · Error por modelo</h3>
+    <div class="meta">Barras horizontales ordenadas · responde a la 7</div>
+    <p>Es una sola medida entre pocos elementos: la longitud es lo que mejor se compara y el orden pone arriba al modelo que menos se equivocó.</p>
+    <figure><img src="figures/viz8_error_modelos.png"><figcaption>Error porcentual promedio en todo el periodo de prueba, total mensual.</figcaption></figure>
   </div>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">9</span><span class="tt">¿Qué modelo conviene para cada serie?</span><span class="rol">Origen · par 9 → 10</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Mapa de calor con series en filas, modelos en columnas y el valor en cada celda.</dd>
-      <dt>Por qué</dt><dd>Hay siete series y cinco modelos, y la pregunta es qué columna gana en cada fila. El tono destaca las celdas con menos error y la referencia ingenua queda en la misma fila para comparar. Donde no hay evaluación posible, la celda dice «sin dato».</dd>
-      <dt>Interacción</dt><dd>Medida de error y clic en una celda.</dd>
-    </dl>
-    <figure><img src="figures/viz9_mapa_errores.png"><figcaption><b>Figura 14.</b> MAPE por serie y modelo.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>9 · Error por serie y modelo</h3>
+    <div class="meta">Mapa de calor con valores · filtra la gráfica 10</div>
+    <p>Siete series por cinco modelos, y la pregunta de qué columna gana en cada fila. La referencia ingenua queda en la misma fila para comparar; donde no hay evaluación posible, la celda lo dice.</p>
+    <figure><img src="figures/viz9_mapa_errores.png"><figcaption>MAPE por serie y modelo.</figcaption></figure>
   </div>
-  <div class="ficha">
-    <div class="cab"><span class="k">10</span><span class="tt">¿El error crece al alejarse del corte?</span><span class="rol">Destino · par 9 → 10</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Líneas con marcadores, una por modelo.</dd>
-      <dt>Por qué</dt><dd>Muestra cómo cambia el error a lo largo de un eje ordenado, los años del horizonte. La línea revela la tendencia de cada modelo y el marcador, el valor de cada año.</dd>
-      <dt>Interacción</dt><dd>Responde a la serie elegida en la gráfica 9.</dd>
-    </dl>
-    <figure><img src="figures/viz10_error_horizonte.png"><figcaption><b>Figura 15.</b> Error por año en el total mensual. La LSTM mejora con el tiempo; Prophet empeora.</figcaption></figure>
+  <div class="viz">
+    <h3>10 · Error por año de la prueba</h3>
+    <div class="meta">Líneas con marcadores · responde a la 9</div>
+    <p>Muestra si el error crece a medida que el pronóstico se aleja del corte, lo que indica cada cuánto convendría actualizar un modelo.</p>
+    <figure><img src="figures/viz10_error_horizonte.png"><figcaption>Total mensual. La LSTM mejora con el tiempo y Prophet empeora.</figcaption></figure>
   </div>
 </section>
 
-<section class="seccion">
-  <div class="ficha">
-    <div class="cab"><span class="k">11</span><span class="tt">¿Cómo se eligió la configuración de la red LSTM?</span><span class="rol">Desempeño de modelo</span></div>
-    <dl>
-      <dt>Forma</dt><dd>Barras verticales ordenadas; la configuración elegida en el verde de la LSTM y las demás en gris.</dd>
-      <dt>Por qué</dt><dd>Compara una medida entre cuatro configuraciones. Resaltar solo la elegida dirige la atención sin añadir colores. La gráfica deja ver que la LSTM se eligió con datos de validación y no con el periodo de prueba.</dd>
-      <dt>Interacción</dt><dd>Serie (total o La Aurora); al pasar el cursor aparecen la ventana, las unidades, el dropout, la tasa de aprendizaje y la época de parada.</dd>
-    </dl>
-    <figure><img src="figures/viz11_tuneo_lstm.png"><figcaption><b>Figura 16.</b> Error de validación de las cuatro configuraciones LSTM, total mensual.</figcaption></figure>
+<section class="sec">
+  <div class="viz">
+    <h3>11 · Ajuste de la red LSTM</h3>
+    <div class="meta">Barras con la configuración elegida resaltada</div>
+    <p>Compara el error de validación de las cuatro configuraciones probadas. Resaltar solo la elegida dirige la atención sin agregar colores y deja ver que la LSTM se eligió con meses previos al corte, no con el periodo de prueba.</p>
+    <figure><img src="figures/viz11_tuneo_lstm.png"><figcaption>Error de validación por configuración, total mensual.</figcaption></figure>
+  </div>
+  <div class="viz">
+    <h3>Llegadas mensuales</h3>
+    <div class="meta">Área y promedio móvil de 12 meses · página de resumen</div>
+    <p>El promedio móvil elimina la estacionalidad y deja ver la tendencia: el crecimiento hasta 2019, la caída de 2020 y la recuperación posterior.</p>
+    <figure><img src="figures/viz0_tendencia.png"><figcaption>Turistas y excursionistas, todas las vías.</figcaption></figure>
   </div>
 </section>
 
-<!-- =========================================================== 08 MODELOS -->
-<section class="seccion">
-  <div class="num"><span>08 · Modelos de pronóstico</span><span class="req">Requisitos 1.2 y 3.5</span></div>
-  <h2>En la mitad de las series evaluables, el mejor modelo deja el error en menos de un tercio del de la referencia</h2>
-  <p class="entrada">El tablero no entrena modelos. Integra los pronósticos de prueba de los Laboratorios 1 y 2, que comparten series, punto de corte (marzo de 2021) y horizonte (63 meses). Gracias a eso, compararlos entre sí es legítimo.</p>
-
+<section class="sec">
+  <div class="k">07</div>
+  <h2>Modelos de pronóstico</h2>
+  <p class="lead">El tablero no entrena modelos. Integra los pronósticos de los Laboratorios 1 y 2, que comparten series, punto de corte (marzo de 2021) y horizonte (63 meses), y por eso se pueden comparar entre sí.</p>
   <table>
-    <thead><tr><th style="width:21%">Modelo</th><th style="width:9%">Origen</th><th>Configuración (la mejor variante de cada familia según el RMSE de prueba)</th></tr></thead>
-    <tbody>
-      <tr><td><span class="sw" style="background:#6250d6"></span>Holt-Winters</td><td>Lab 1</td><td>Tendencia aditiva y estacionalidad multiplicativa; en Valle Nuevo, aditiva con tendencia amortiguada.</td></tr>
-      <tr><td><span class="sw" style="background:#e87ba4"></span>SARIMA</td><td>Lab 1</td><td>Un orden para cada serie; por ejemplo, (1,1,1)×(0,0,1,12) en el total y en La Aurora.</td></tr>
-      <tr><td><span class="sw" style="background:#eda100"></span>Prophet</td><td>Lab 1</td><td>Estacionalidad anual y una variable que marca la pandemia, de marzo de 2020 a diciembre de 2021.</td></tr>
-      <tr><td><span class="sw" style="background:#008300"></span>LSTM</td><td>Lab 2</td><td>Una capa de 32 unidades, ventana de seis meses y dropout de 0.1; total mensual y La Aurora.</td></tr>
-      <tr><td><span class="sw" style="background:#898781"></span>Referencia ingenua</td><td>Lab 1</td><td>Repite el último año de entrenamiento. Es el mínimo que un modelo útil debe superar.</td></tr>
-    </tbody>
+    <tr><th style="width:22%">Modelo</th><th style="width:10%">Origen</th><th>Configuración</th></tr>
+    <tr><td><span class="sw" style="background:#6250d6"></span>Holt-Winters</td><td>Lab 1</td><td>Tendencia aditiva y estacionalidad multiplicativa; en Valle Nuevo, aditiva con tendencia amortiguada.</td></tr>
+    <tr><td><span class="sw" style="background:#e87ba4"></span>SARIMA</td><td>Lab 1</td><td>Orden propio de cada serie; (1,1,1)×(0,0,1,12) en el total y en La Aurora.</td></tr>
+    <tr><td><span class="sw" style="background:#eda100"></span>Prophet</td><td>Lab 1</td><td>Estacionalidad anual y una variable que marca la pandemia, de marzo de 2020 a diciembre de 2021.</td></tr>
+    <tr><td><span class="sw" style="background:#008300"></span>LSTM</td><td>Lab 2</td><td>Una capa de 32 unidades y ventana de seis meses; total mensual y La Aurora.</td></tr>
+    <tr><td><span class="sw" style="background:#8d8d8d"></span>Referencia ingenua</td><td>Lab 1</td><td>Repite el último año de entrenamiento.</td></tr>
   </table>
-
   <table>
-    <thead><tr><th>Serie</th><th>Mejor modelo</th><th class="n">MAE (viajeros por mes)</th><th class="n">MAPE</th><th class="n">MAPE de la referencia</th><th class="n">Reducción</th></tr></thead>
-    <tbody>
-      <tr class="resalta"><td>Total mensual</td><td>LSTM</td><td class="n">40 554</td><td class="n">18.1 %</td><td class="n">84.9 %</td><td class="n">79 %</td></tr>
-      <tr class="resalta"><td>Vía aérea</td><td>SARIMA</td><td class="n">22 915</td><td class="n">22.8 %</td><td class="n">81.5 %</td><td class="n">72 %</td></tr>
-      <tr class="resalta"><td>Frontera La Aurora</td><td>LSTM</td><td class="n">15 908</td><td class="n">18.8 %</td><td class="n">81.5 %</td><td class="n">77 %</td></tr>
-      <tr><td>Vía terrestre</td><td>Holt-Winters</td><td class="n">107 809</td><td class="n">65.6 %</td><td class="n">84.8 %</td><td class="n">23 %</td></tr>
-      <tr><td>Frontera San Cristóbal</td><td>Holt-Winters</td><td class="n">17 583</td><td class="n">68.4 %</td><td class="n">86.2 %</td><td class="n">21 %</td></tr>
-      <tr><td>Frontera Valle Nuevo</td><td>Holt-Winters</td><td class="n">35 211</td><td class="n">85.4 %</td><td class="n">91.4 %</td><td class="n">7 %</td></tr>
-    </tbody>
+    <tr><th>Serie</th><th>Mejor modelo</th><th class="n">MAE (viajeros/mes)</th><th class="n">MAPE</th><th class="n">MAPE referencia</th></tr>
+    <tr class="on"><td>Total mensual</td><td>LSTM</td><td class="n">40 554</td><td class="n">18.1 %</td><td class="n">84.9 %</td></tr>
+    <tr class="on"><td>Vía aérea</td><td>SARIMA</td><td class="n">22 915</td><td class="n">22.8 %</td><td class="n">81.5 %</td></tr>
+    <tr class="on"><td>Frontera La Aurora</td><td>LSTM</td><td class="n">15 908</td><td class="n">18.8 %</td><td class="n">81.5 %</td></tr>
+    <tr><td>Vía terrestre</td><td>Holt-Winters</td><td class="n">107 809</td><td class="n">65.6 %</td><td class="n">84.8 %</td></tr>
+    <tr><td>Frontera San Cristóbal</td><td>Holt-Winters</td><td class="n">17 583</td><td class="n">68.4 %</td><td class="n">86.2 %</td></tr>
+    <tr><td>Frontera Valle Nuevo</td><td>Holt-Winters</td><td class="n">35 211</td><td class="n">85.4 %</td><td class="n">91.4 %</td></tr>
   </table>
-  <p class="fuente">Reducción = 1 − (MAPE del mejor modelo ÷ MAPE de la referencia ingenua). La vía marítima no aparece porque no tiene datos reales en el periodo de prueba.</p>
-
-  <div class="mensaje"><div class="t">Qué significa para la planificación</div><p>Para la demanda total, la vía aérea y La Aurora, los pronósticos sirven como base de planificación: se equivocan, en promedio, en alrededor de una quinta parte. Para las series terrestres todavía no, porque el error pasa del 65 %. Hay que considerar que el periodo de prueba arranca en plena reapertura, un cambio que ningún modelo entrenado hasta marzo de 2021 podía prever.</p></div>
+  <div class="nota">En las tres series resaltadas el mejor modelo deja el error en menos de un tercio del de la referencia. En las terrestres la mejora es pequeña. Conviene tener presente que la prueba arranca en plena reapertura, un cambio que ningún modelo entrenado hasta marzo de 2021 podía prever.</div>
+  <p>Las métricas del tablero usan la misma fórmula del Laboratorio 1 y reproducen sus resultados; Prophet difiere en menos de 1 % por la aleatoriedad de su optimizador. Al integrar los datos encontramos que el SARIMA que el Laboratorio 1 había elegido para San Cristóbal solo producía valores válidos en 10 de los 63 meses, de modo que su error no era comparable con el de los demás. Usamos en su lugar la siguiente variante, evaluada en los 63 meses.</p>
 </section>
 
-<!-- =========================================================== 09 HERRAMIENTA -->
-<section class="seccion">
-  <div class="num"><span>09 · Herramienta</span><span class="req">Requisito 4.3</span></div>
-  <h2>Python con Streamlit y Plotly fue la opción mejor evaluada entre cinco alternativas</h2>
-  <p class="entrada">Comparamos las cinco herramientas gratuitas y de código abierto que sugiere el enunciado con seis criterios, ponderados según cuánto pesaban en este proyecto. Las puntuaciones, de 1 a 5, son nuestra evaluación a partir de la documentación de cada herramienta y de lo que aprendimos en los laboratorios anteriores.</p>
+<section class="sec">
+  <div class="k">08</div>
+  <h2>Herramienta</h2>
+  <p class="lead">Construimos el tablero en Python con Streamlit y Plotly. Antes de decidir comparamos las cinco opciones gratuitas que considerábamos viables.</p>
   <table>
-    <thead><tr><th style="width:31%">Criterio</th><th class="n">Peso</th><th class="n">Streamlit + Plotly</th><th class="n">Plotly Dash</th><th class="n">R Shiny</th><th class="n">Panel</th><th class="n">Voilà</th></tr></thead>
-    <tbody>
-      <tr><td>Continuidad con los Laboratorios 1 y 2 (Python)</td><td class="n">25 %</td><td class="n">5</td><td class="n">5</td><td class="n">1</td><td class="n">5</td><td class="n">5</td></tr>
-      <tr><td>Esfuerzo para enlazar gráficas</td><td class="n">20 %</td><td class="n">4</td><td class="n">5</td><td class="n">5</td><td class="n">3</td><td class="n">2</td></tr>
-      <tr><td>Velocidad de desarrollo en equipo</td><td class="n">20 %</td><td class="n">5</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
-      <tr><td>Componentes listos para usuarios no técnicos</td><td class="n">15 %</td><td class="n">5</td><td class="n">3</td><td class="n">4</td><td class="n">3</td><td class="n">2</td></tr>
-      <tr><td>Publicación gratuita</td><td class="n">10 %</td><td class="n">5</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
-      <tr><td>Curva de aprendizaje del equipo</td><td class="n">10 %</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">3</td><td class="n">4</td></tr>
-      <tr class="total"><td>Puntuación ponderada</td><td class="n">100 %</td><td class="n">4.80</td><td class="n">3.90</td><td class="n">2.95</td><td class="n">3.50</td><td class="n">3.25</td></tr>
-    </tbody>
+    <tr><th style="width:32%">Criterio</th><th class="n">Peso</th><th class="n">Streamlit + Plotly</th><th class="n">Dash</th><th class="n">Shiny</th><th class="n">Panel</th><th class="n">Voilà</th></tr>
+    <tr><td>Continuidad con los laboratorios (Python)</td><td class="n">25 %</td><td class="n">5</td><td class="n">5</td><td class="n">1</td><td class="n">5</td><td class="n">5</td></tr>
+    <tr><td>Esfuerzo para enlazar gráficas</td><td class="n">20 %</td><td class="n">4</td><td class="n">5</td><td class="n">5</td><td class="n">3</td><td class="n">2</td></tr>
+    <tr><td>Velocidad de desarrollo en equipo</td><td class="n">20 %</td><td class="n">5</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
+    <tr><td>Control del diseño visual</td><td class="n">15 %</td><td class="n">4</td><td class="n">5</td><td class="n">4</td><td class="n">3</td><td class="n">2</td></tr>
+    <tr><td>Publicación gratuita</td><td class="n">10 %</td><td class="n">5</td><td class="n">3</td><td class="n">3</td><td class="n">3</td><td class="n">3</td></tr>
+    <tr><td>Curva de aprendizaje</td><td class="n">10 %</td><td class="n">5</td><td class="n">3</td><td class="n">2</td><td class="n">3</td><td class="n">4</td></tr>
+    <tr><th>Total ponderado</th><th class="n"></th><th class="n">4.65</th><th class="n">4.20</th><th class="n">2.95</th><th class="n">3.50</th><th class="n">3.25</th></tr>
   </table>
-
-  <h3>Por qué encaja con este tablero</h3>
-  <p>Los resultados de los laboratorios ya estaban en Python y pandas, y Streamlit los lee tal cual, sin traducciones ni servicios intermedios; con R Shiny habríamos tenido que reescribir el procesamiento en otro lenguaje. Para enlazar gráficas, Streamlit devuelve a Python lo que el usuario selecciona en una gráfica de Plotly y vuelve a ejecutar la página con esa selección. Así resolvimos los cinco pares sin escribir los callbacks que exige Dash.</p>
-  <p>Streamlit trae además controles listos y coherentes entre sí (deslizadores, selección múltiple, botones segmentados, ventanas emergentes, pestañas), admite un tema propio con tipografías servidas desde el repositorio y permite dar estilo a contenedores concretos. Con eso construimos la identidad visual del tablero sin abandonar la herramienta. Plotly aporta tooltips, selección por clic o por caja, treemap con acercamiento y exportación a imagen, y las mismas funciones generan las gráficas de la aplicación y las figuras de este documento, de modo que ambos muestran exactamente lo mismo.</p>
-  <p>Encontramos una limitación: Plotly no permite seleccionar celdas de un mapa de calor. La resolvimos superponiendo un marcador invisible en cada celda, que recibe el clic y enmarca la celda elegida.</p>
+  <p>La puntuación es nuestra evaluación. El factor decisivo fue la continuidad: los resultados de los laboratorios ya estaban en pandas y Streamlit los usa sin intermediarios, mientras que Shiny habría exigido reescribir el procesamiento en R. Dash ofrece más control fino del diseño, pero cada enlace entre gráficas requiere callbacks explícitos. En Streamlit, la selección hecha en una gráfica de Plotly regresa a Python y la página se recalcula con ella, lo que resolvió los cinco pares con poco código.</p>
+  <p>Para lograr un acabado comparable al de una herramienta empresarial usamos el sistema de temas de Streamlit (paleta, tipografía servida desde el repositorio, bordes) y estilos sobre contenedores concretos para construir los mosaicos, los indicadores y las etiquetas. Plotly aporta tooltips, selección por clic o por caja y el treemap con acercamiento, y las mismas funciones generan las gráficas de la aplicación y las figuras de este documento.</p>
+  <p>Encontramos una limitación: Plotly no permite seleccionar celdas de un mapa de calor. La resolvimos con una capa de marcadores invisibles, uno por celda, que recibe el clic y enmarca la celda elegida.</p>
 </section>
 
-<!-- =========================================================== 10 PLANIFICACION -->
-<section class="seccion">
-  <div class="num"><span>10 · Planificación</span><span class="req">Requisito 4.6</span></div>
-  <h2>Tareas, responsables y fechas, contrastados con el historial de los repositorios</h2>
-  <p class="entrada">Las fechas y los responsables salen del historial de <code>anthonylouschwank/Lab10-DS</code>, el repositorio del tablero, y de <code>Isabella1911/DM-Laboratorio-1.-Series-de-Tiempo</code>, donde están los modelos de los Laboratorios 1 y 2. El trabajo de análisis y definición de requerimientos no deja commits; lo indicamos así en la columna de evidencia.</p>
-
-  <div class="hitos">
-    <div class="hito"><b>2 de agosto de 2026</b>Modelos de los Laboratorios 1 y 2 terminados</div>
-    <div class="hito"><b>22 de octubre de 2026</b>Avance: base del tablero y gráficas 1 y 2</div>
-    <div class="hito"><b>25 de octubre de 2026</b>Entrega final: gráficas 3 a 11, interfaz, pruebas y documento</div>
-    <div class="hito p"><b>25 de octubre de 2026</b>Revisión del equipo y entrega en Canvas</div>
-  </div>
-
-  <table class="compacta">
-    <thead><tr><th class="c" style="width:4%">#</th><th style="width:29%">Tarea</th><th style="width:23%">Responsable</th><th style="width:12%">Término</th><th style="width:10%">Estado</th><th>Evidencia</th></tr></thead>
-    <tbody>
-      <tr><td class="c">1</td><td>Modelos de pronóstico que el tablero reutiliza</td><td>Christa Isabella Obando Guzmán, Anthony Lou Schwank</td><td>02-ago-2026</td><td class="ok">Terminada</td><td>Commits del 23 de julio al 2 de agosto en el repositorio de los laboratorios</td></tr>
-      <tr><td class="c">2</td><td>Preguntas de gestión, alcance y requerimientos</td><td>Todo el equipo</td><td>22-oct-2026</td><td class="ok">Terminada</td><td>Trabajo de análisis (sin commits)</td></tr>
-      <tr><td class="c">3</td><td>Base en Streamlit, preparación de datos, tema y paleta de vías</td><td>Anthony Lou Schwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td><code>c67ae2f</code> <code>a701ced</code></td></tr>
-      <tr><td class="c">4</td><td>Gráficas 1 y 2 enlazadas (avance)</td><td>Anthony Lou Schwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td><code>a701ced</code></td></tr>
-      <tr><td class="c">5</td><td>README y archivos auxiliares</td><td>Anthony Lou Schwank</td><td>22-oct-2026</td><td class="ok">Terminada</td><td><code>a959cfa</code></td></tr>
-      <tr><td class="c">6</td><td>Análisis de la entrega final y definición de las instrucciones de implementación</td><td>Christa Isabella Obando Guzmán, Fabian Prado Dluzniewski, Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td>Trabajo de análisis (sin commits)</td></tr>
-      <tr><td class="c">7</td><td>Integración de los resultados de los Laboratorios 1 y 2</td><td>Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td><code>a2a6fdf</code></td></tr>
-      <tr><td class="c">8</td><td>Visualizaciones 3 a 11 y páginas de análisis</td><td>Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td><code>aa12cc8</code> <code>ee3fb42</code> <code>f68a6d8</code> <code>115f74c</code></td></tr>
-      <tr><td class="c">9</td><td>Pruebas automáticas y verificación en navegador</td><td>Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td><code>bfb5f86</code></td></tr>
-      <tr><td class="c">10</td><td>Sistema de interfaz: tema, tipografías, tarjetas e indicadores</td><td>Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td><code>9d8ca22</code> <code>4781823</code></td></tr>
-      <tr><td class="c">11</td><td>Documento de diseño, figuras y README</td><td>Luis Fernando Mendoza Alvarez</td><td>25-oct-2026</td><td class="ok">Terminada</td><td><code>b12a285</code> <code>e4f7706</code> <code>09be2cb</code> <code>b00694f</code></td></tr>
-      <tr><td class="c">12</td><td>Revisión final del tablero y del documento</td><td>Todo el equipo</td><td>25-oct-2026</td><td class="pend">Pendiente</td><td>—</td></tr>
-      <tr><td class="c">13</td><td>Entrega en Canvas y presentación individual</td><td>Todo el equipo</td><td>25-oct-2026</td><td class="pend">Pendiente</td><td>—</td></tr>
-    </tbody>
+<section class="sec">
+  <div class="k">09</div>
+  <h2>Plan de trabajo</h2>
+  <p class="lead">Fechas y responsables según el historial de los repositorios del tablero y de los laboratorios. El trabajo de análisis no deja commits y se indica así.</p>
+  <table>
+    <tr><th style="width:4%">#</th><th style="width:31%">Tarea</th><th style="width:25%">Responsable</th><th style="width:13%">Fecha</th><th>Evidencia</th></tr>
+    <tr><td>1</td><td>Modelos de pronóstico (Labs 1 y 2)</td><td>Christa Isabella Obando Guzmán, Anthony Lou Schwank</td><td>2 ago 2026</td><td>Repositorio de los laboratorios, 23 jul a 2 ago</td></tr>
+    <tr><td>2</td><td>Preguntas de gestión y alcance</td><td>Todo el equipo</td><td>22 oct 2026</td><td>Análisis</td></tr>
+    <tr><td>3</td><td>Base en Streamlit, datos y paleta de vías</td><td>Anthony Lou Schwank</td><td>22 oct 2026</td><td><code>c67ae2f</code> <code>a701ced</code></td></tr>
+    <tr><td>4</td><td>Gráficas 1 y 2 y README inicial</td><td>Anthony Lou Schwank</td><td>22 oct 2026</td><td><code>a701ced</code> <code>a959cfa</code></td></tr>
+    <tr><td>5</td><td>Análisis de la entrega final e instrucciones de implementación</td><td>Christa Isabella Obando Guzmán, Fabian Prado Dluzniewski, Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td>Análisis</td></tr>
+    <tr><td>6</td><td>Integración de los modelos</td><td>Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td><code>a2a6fdf</code></td></tr>
+    <tr><td>7</td><td>Gráficas 3 a 11 y páginas</td><td>Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td><code>aa12cc8</code> <code>ee3fb42</code> <code>f68a6d8</code></td></tr>
+    <tr><td>8</td><td>Pruebas automáticas</td><td>Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td><code>bfb5f86</code></td></tr>
+    <tr><td>9</td><td>Sistema visual e interfaz</td><td>Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td>Commits del 25 de octubre</td></tr>
+    <tr><td>10</td><td>Documento de diseño</td><td>Luis Fernando Mendoza Alvarez</td><td>25 oct 2026</td><td>Commits del 25 de octubre</td></tr>
+    <tr><td>11</td><td>Revisión final y entrega</td><td>Todo el equipo</td><td>25 oct 2026</td><td>Pendiente</td></tr>
   </table>
-</section>
 
-<!-- =========================================================== 11 VERIFICACION -->
-<section class="seccion">
-  <div class="num"><span>11 · Verificación y limitaciones</span><span class="req">Restricciones del enunciado</span></div>
-  <h2>Cómo comprobamos que funciona y qué debe tener en cuenta quien lo use</h2>
   <h3>Verificación</h3>
-  <p>Escribimos 22 pruebas automáticas (<code>tests/test_app.py</code>, con el módulo de pruebas de Streamlit) que recorren todas las páginas, los filtros vacíos, las siete series, los tres niveles de detalle y las tres medidas de error, y confirman que ninguna combinación produce un error. Además probamos en un navegador real los cinco pares enlazados con clics, la selección múltiple con Shift, la selección por caja, el doble clic para deshacer y el acercamiento del treemap. También revisamos página por página que los mensajes de «sin datos» aparezcan cuando corresponde.</p>
+  <p>Veinticuatro pruebas automáticas recorren todas las páginas con filtros vacíos, las siete series, los tres niveles de detalle, las tres medidas de error y la opción de ocultar todas las gráficas. Los cinco pares enlazados, la selección múltiple, la selección por caja, el doble clic para restablecer y el acercamiento del treemap se probaron con clics reales en el navegador.</p>
+</section>
 
-  <h3>Control de calidad de los modelos</h3>
-  <p>Las métricas del tablero usan la misma fórmula del Laboratorio 1 y reproducen sus informes: MAE de 134 375 para Holt-Winters en el total, de 22 967 para SARIMA en La Aurora y MAPE de 18.1 % para la LSTM en el total. Prophet difiere en menos de 1 % por la aleatoriedad de su optimizador. Al integrar los resultados encontramos que el SARIMA(1,1,1)×(1,0,1,12) que el Laboratorio 1 había elegido para San Cristóbal solo producía valores válidos en 10 de los 63 meses de prueba, así que su error no se podía comparar con el de los demás. El tablero descarta primero las variantes con meses inválidos y usa SARIMA(1,1,1)×(0,0,1,12), evaluado en los 63 meses.</p>
-
-  <h3>Limitaciones</h3>
+<section class="sec">
+  <div class="k">10</div>
+  <h2>Limitaciones</h2>
   <ul>
-    <li>Los datos son de uso académico y no oficiales. La base reúne tres fuentes, respaldos históricos (2009-2020), el Instituto Guatemalteco de Migración (2021-2022) y conteos depurados del INGUAT (2023-2026), y parte de los cambios entre esos periodos puede deberse al registro.</li>
-    <li>Desde 2023 la columna de país agrupa algunos mercados; «Otros países del mundo», por ejemplo, pasa a cero. Las comparaciones por país y región que cruzan ese año deben hacerse con cuidado.</li>
-    <li>2026 solo tiene datos de enero a junio. Por eso los índices comparan siempre los mismos meses.</li>
-    <li>Los modelos se evaluaron durante la reapertura, un periodo atípico. En condiciones estables su error podría ser otro.</li>
-    <li>Las gráficas describen lo que ocurrió y no explican por qué. Antes de convertir un hallazgo en recomendación conviene contrastarlo con otras fuentes, como la ocupación hotelera, la conectividad aérea o el gasto turístico.</li>
+    <li>Los datos son de uso académico. La base combina respaldos históricos (2009-2020), registros del Instituto Guatemalteco de Migración (2021-2022) y conteos depurados del INGUAT (2023-2026); parte de los cambios entre esos periodos puede deberse al registro.</li>
+    <li>Desde 2023 la columna de país agrupa algunos mercados, lo que limita las comparaciones por país que cruzan ese año.</li>
+    <li>2026 llega hasta junio; los índices comparan siempre los mismos meses.</li>
+    <li>Los modelos se evaluaron durante la reapertura, un periodo atípico, y no hay pronósticos posteriores a junio de 2026.</li>
+    <li>El tablero describe lo ocurrido y no explica por qué. Antes de convertir un hallazgo en una decisión conviene contrastarlo con otras fuentes, como la ocupación hotelera, la conectividad aérea o el gasto turístico.</li>
   </ul>
-</section>
 
-<!-- =========================================================== ANEXO A -->
-<section class="seccion">
-  <div class="num"><span>Anexo A</span></div>
-  <h2>Correspondencia con el enunciado</h2>
-  <table>
-    <thead><tr><th style="width:30%">Requisito</th><th>Cómo se cumple</th><th style="width:18%">Ubicación</th></tr></thead>
-    <tbody>
-      <tr><td>1.1 Exploración de los datos por el usuario</td><td>Filtros de años, tipo y vía; selección por clic y por caja; cambio de dimensión; tablas desplegables.</td><td>Páginas de exploración</td></tr>
-      <tr><td>1.2 Resultados de al menos 3 modelos</td><td>Holt-Winters, SARIMA, Prophet y LSTM, más la referencia ingenua.</td><td>Gráficas 7 a 11</td></tr>
-      <tr><td>1.3 Información mediante gráficos enlazados</td><td>Cinco pares: 1 y 2, 3 y 4, 5 y 6, 7 y 8, 9 y 10.</td><td>Sección 07</td></tr>
-      <tr><td>1.4 Aumentar y disminuir el detalle</td><td>Año, trimestre y mes; número de categorías; treemap con acercamiento; paso de lo general al detalle en cada par.</td><td>Gráficas 1, 2, 5, 6 y 7</td></tr>
-      <tr><td>2 Diseño intuitivo, teoría del color, HCI y UX</td><td>Siete principios de diseño, paleta validada para daltonismo y heurísticas de Nielsen.</td><td>Secciones 04 a 06</td></tr>
-      <tr><td>3.1 Al menos 8 visualizaciones interactivas</td><td>Once visualizaciones, todas con tooltip e interacción.</td><td>Sección 07</td></tr>
-      <tr><td>3.2 Al menos 2 enlazadas</td><td>Diez visualizaciones en cinco pares enlazados.</td><td>Sección 07</td></tr>
-      <tr><td>3.3 Selección de gráficas visibles</td><td>Control «Gráficas visibles» en cada página y selección de modelos.</td><td>Todas las páginas</td></tr>
-      <tr><td>3.4 Textos explicativos</td><td>Pregunta y propósito de cada gráfica, botón «Cómo leerla», indicaciones de interacción y glosario.</td><td>Todas las páginas</td></tr>
-      <tr><td>3.5 Desempeño de 3 modelos</td><td>Error por modelo, mapa de errores, error por año, curva de validación y tabla comparativa.</td><td>Sección 08</td></tr>
-      <tr><td>4.1 Paleta, fuentes, boceto y navegación</td><td>Paleta justificada y validada, tipografía, boceto, componentes y mapa de navegación.</td><td>Secciones 05 y 06</td></tr>
-      <tr><td>4.2 Tipo de gráfica de cada visualización</td><td>Una ficha por visualización, con la alternativa descartada.</td><td>Sección 07</td></tr>
-      <tr><td>4.3 Framework, lenguaje y herramienta</td><td>Evaluación ponderada y argumentos.</td><td>Sección 09</td></tr>
-      <tr><td>4.4 Preguntas exploratorias</td><td>Siete preguntas de gestión y las preguntas descartadas.</td><td>Sección 02</td></tr>
-      <tr><td>4.5 Alcance</td><td>Lo que incluye y lo que no.</td><td>Sección 03</td></tr>
-      <tr><td>4.6 Planificación</td><td>Trece tareas con responsable, fecha, estado y evidencia.</td><td>Sección 10</td></tr>
-      <tr><td>Restricción: sin modelos nuevos</td><td>Se integran los resultados de los Laboratorios 1 y 2.</td><td>Sección 08</td></tr>
-      <tr><td>Restricción: observado, interpretado y estimado</td><td>Etiqueta en cada gráfica y en cada recuadro de hallazgo.</td><td>Todas las páginas</td></tr>
-      <tr><td>Restricción: mensajes sin información</td><td>Avisos que explican qué pasó y qué hacer.</td><td>Todas las páginas</td></tr>
-    </tbody>
-  </table>
-</section>
-
-<!-- =========================================================== ANEXO B -->
-<section class="seccion">
-  <div class="num"><span>Anexo B</span></div>
-  <h2>Referencias y repositorio</h2>
+  <h3>Referencias</h3>
   <ul class="refs">
-    <li>Cleveland, W. S., y McGill, R. (1984). Graphical perception: Theory, experimentation, and application to the development of graphical methods. <em>Journal of the American Statistical Association, 79</em>(387), 531-554.</li>
-    <li>Few, S. (2006). <em>Information dashboard design: The effective visual communication of data</em>. O'Reilly Media.</li>
+    <li>Cleveland, W. S., y McGill, R. (1984). Graphical perception. <em>Journal of the American Statistical Association, 79</em>(387), 531-554.</li>
+    <li>Few, S. (2006). <em>Information dashboard design</em>. O'Reilly Media.</li>
     <li>Harrower, M., y Brewer, C. A. (2003). ColorBrewer.org: An online tool for selecting colour schemes for maps. <em>The Cartographic Journal, 40</em>(1), 27-37.</li>
-    <li>Hyndman, R. J., y Athanasopoulos, G. (2021). <em>Forecasting: Principles and practice</em> (3.ª ed.). OTexts.</li>
-    <li>Minto, B. (2009). <em>The pyramid principle: Logic in writing and thinking</em> (3.ª ed.). Pearson.</li>
+    <li>IBM. (s. f.). <em>Carbon Design System: Data visualization</em>. https://carbondesignsystem.com/data-visualization/getting-started/</li>
     <li>Munzner, T. (2009). A nested model for visualization design and validation. <em>IEEE Transactions on Visualization and Computer Graphics, 15</em>(6), 921-928.</li>
-    <li>Munzner, T. (2014). <em>Visualization analysis and design</em>. CRC Press.</li>
-    <li>Nielsen, J. (2006). <em>Progressive disclosure</em>. Nielsen Norman Group. https://www.nngroup.com/articles/progressive-disclosure/</li>
-    <li>Nielsen, J. (1994). Enhancing the explanatory power of usability heuristics. En <em>Proceedings of the SIGCHI Conference on Human Factors in Computing Systems</em> (pp. 152-158). ACM.</li>
+    <li>Nielsen, J. (1994). Enhancing the explanatory power of usability heuristics. <em>Proceedings of CHI '94</em>, 152-158.</li>
     <li>Ottosson, B. (2020). <em>A perceptual color space for image processing</em>. https://bottosson.github.io/posts/oklab/</li>
-    <li>Shneiderman, B. (1996). The eyes have it: A task by data type taxonomy for information visualizations. En <em>Proceedings of the IEEE Symposium on Visual Languages</em> (pp. 336-343).</li>
+    <li>Shneiderman, B. (1996). The eyes have it: A task by data type taxonomy for information visualizations. <em>Proceedings of the IEEE Symposium on Visual Languages</em>, 336-343.</li>
     <li>Tufte, E. R. (2001). <em>The visual display of quantitative information</em> (2.ª ed.). Graphics Press.</li>
-    <li>Ware, C. (2012). <em>Information visualization: Perception for design</em> (3.ª ed.). Morgan Kaufmann.</li>
-    <li>World Wide Web Consortium. (2023). <em>Web Content Accessibility Guidelines (WCAG) 2.2</em>. https://www.w3.org/TR/WCAG22/</li>
+    <li>World Wide Web Consortium. (2023). <em>Web Content Accessibility Guidelines (WCAG) 2.2</em>.</li>
   </ul>
-  <h3>Repositorio</h3>
-  <p class="izq">El código, los datos procesados, los resultados de los modelos, las pruebas y este documento están en <a href="https://github.com/anthonylouschwank/Lab10-DS">https://github.com/anthonylouschwank/Lab10-DS</a>. Las figuras se regeneran con <code>python -m src.exportar_figuras</code> y el PDF con <code>python report/generar_pdf.py</code>.</p>
+  <p>Código, datos procesados, resultados de los modelos y este documento: <a href="https://github.com/anthonylouschwank/Lab10-DS">github.com/anthonylouschwank/Lab10-DS</a>.</p>
 </section>
 
 </body>

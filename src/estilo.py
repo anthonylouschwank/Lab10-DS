@@ -40,7 +40,7 @@ DASH_MODELO = {
     "LSTM": "longdash",
     "Referencia ingenua": "dot",
 }
-COLOR_REAL = "#0b0b0b"
+COLOR_REAL = "#161616"
 COLOR_HISTORIA = "#898781"
 
 # Secuencial (magnitud): azul claro -> oscuro
@@ -61,22 +61,22 @@ ESCALA_DIVERGENTE = [
 ESTADO = {"bien": "#0ca30c", "alerta": "#fab219", "critico": "#d03b3b"}
 
 # Tinta y superficies
-SUPERFICIE = "#fcfcfb"
-TINTA = "#0b0b0b"
-TINTA_SECUNDARIA = "#52514e"
-TINTA_TENUE = "#898781"
-CUADRICULA = "#e1e0d9"
-EJE = "#c3c2b7"
+SUPERFICIE = "#ffffff"
+TINTA = "#161616"
+TINTA_SECUNDARIA = "#525252"
+TINTA_TENUE = "#6f6f6f"
+CUADRICULA = "#e0e0e0"
+EJE = "#c6c6c6"
 
-# Misma familia que la interfaz de Streamlit (Source Sans), con respaldo al sans del sistema
-FUENTE = 'SourceSans, "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif'
+# Misma familia que la interfaz (IBM Plex Sans); "IBM Plex Sans" es el nombre instalado que usa kaleido al exportar
+FUENTE = 'PlexSans, "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif'
 
 
 def aplicar_estilo(fig: go.Figure, alto: int = 420) -> go.Figure:
     """Ejes y cuadricula discretos para que el dato sea lo que resalta."""
     fig.update_layout(
         height=alto,
-        font=dict(family=FUENTE, size=13, color=TINTA_SECUNDARIA),
+        font=dict(family=FUENTE, size=12, color=TINTA_SECUNDARIA),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
         margin=dict(l=8, r=8, t=8, b=8),

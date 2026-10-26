@@ -22,13 +22,13 @@ En este laboratorio no se entrenan modelos nuevos.
 
 | Página | Visualizaciones |
 |---|---|
-| Inicio | Resumen (tarjetas), preguntas de gestión y guía de navegación |
+| Resumen | Indicadores, llegadas mensuales con promedio móvil, lectura principal |
 | Evolución y origen | 1. Evolución por vía → 2. Origen / puesto de ingreso de la selección |
 | Temporadas | 3. Mapa de calor año × mes → 4. Perfil mensual por vía del año elegido |
 | Mercados y recuperación | 5. Índice de recuperación (2019 = 100) → 6. Árbol región → país |
 | Pronósticos de llegadas | 7. Real vs. pronóstico por modelo → 8. Error por modelo en los periodos elegidos |
 | Comparar modelos | 9. Mapa de errores serie × modelo → 10. Error por año; 11. Ajuste de la LSTM; tabla comparativa |
-| Glosario y limitaciones | Términos, guía de colores y limitaciones |
+| Acerca del tablero | Glosario, colores, limitaciones, equipo |
 
 Modelos (de los Laboratorios 1 y 2, **no se entrena nada nuevo**): Holt-Winters, SARIMA, Prophet,
 LSTM y una referencia ingenua.
@@ -51,7 +51,7 @@ data/
   raw/                      Base original (uso académico, no son cifras oficiales)
   procesados/               Parquet de viajeros
   modelos/                  Pronósticos de prueba, series y tuneo LSTM de los Labs 1 y 2
-static/                     Tipografías (Source Sans 3, Source Serif 4; licencia OFL) y logotipo
+static/                     Tipografía IBM Plex (licencia OFL) y logotipo
 report/
   documento_diseno.html/.pdf  Documento de diseño (entregable)
   generar_pdf.py            HTML -> PDF con Chromium (Playwright)

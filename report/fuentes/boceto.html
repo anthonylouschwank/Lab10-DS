@@ -1,42 +1,51 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><style>
-  body{margin:0;font-family:"Source Sans 3","Source Sans Pro",system-ui,sans-serif;background:#fcfcfb;color:#52514e}
-  .frame{display:grid;grid-template-columns:230px 1fr;width:1400px;height:860px;border:2px solid #52514e;border-radius:8px;overflow:hidden}
-  .side{background:#f0efec;padding:22px 18px;border-right:2px dashed #c3c2b7}
-  .side h4{margin:18px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#898781}
-  .side div{font-size:15px;padding:6px 8px;border-radius:6px;margin:2px 0}
-  .side .on{background:#e1e0d9;color:#0b0b0b;font-weight:600}
-  .main{padding:22px 30px;display:flex;flex-direction:column;gap:12px}
-  .t{font-size:30px;font-weight:700;color:#0b0b0b}
-  .p{height:10px;background:#e1e0d9;border-radius:5px}
-  .row{display:flex;gap:12px}
-  .box{border:2px dashed #c3c2b7;border-radius:8px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:14px;padding:6px}
-  .ctl{height:44px;flex:1}
-  .pill{border:2px solid #2a78d6;color:#2a78d6;border-radius:20px;padding:4px 12px;font-size:13px}
-  .badge{background:#e3edfb;color:#2a78d6;border-radius:6px;padding:2px 8px;font-size:12px;width:fit-content}
-  .h{font-size:19px;font-weight:700;color:#0b0b0b}
-  .chart{height:210px;flex:1;background:repeating-linear-gradient(45deg,#fcfcfb,#fcfcfb 10px,#f4f3f0 10px,#f4f3f0 20px)}
-  .note{position:absolute;font-size:13px;color:#d03b3b;font-weight:600}
-  .arrow{font-size:26px;color:#d03b3b;text-align:center;line-height:1}
-  .wrap{position:relative;padding:20px}
+  @font-face { font-family: Plex; src: url("../../static/tipografia/IBMPlexSans.ttf"); font-weight: 100 700; }
+  body{margin:0;font-family:Plex,sans-serif;background:#ffffff;color:#525252}
+  .wrap{padding:16px}
+  .frame{display:grid;grid-template-columns:200px 1fr;width:1360px;height:820px;border:1px solid #8d8d8d}
+  .side{background:#fff;border-right:1px solid #e0e0e0;padding:18px 14px;font-size:13px}
+  .logo{display:flex;gap:3px;align-items:flex-end;margin-bottom:22px}.logo i{display:block;width:7px}
+  .side h5{margin:16px 0 6px;font-size:12px;color:#161616;font-weight:600}
+  .side div{padding:5px 8px}.side .on{background:#e8e8e8;color:#161616;font-weight:600}
+  .main{background:#f4f4f4;padding:18px 22px;display:flex;flex-direction:column;gap:10px}
+  .hd{display:flex;justify-content:space-between;align-items:flex-end}
+  .crumb{font-size:11px;color:#6f6f6f}.h1{font-size:24px;color:#161616}
+  .btn{border:1px solid #c6c6c6;background:#fff;padding:6px 12px;font-size:12px;color:#161616}
+  .box{background:#fff;border:1px solid #e0e0e0;padding:10px 12px;font-size:12px}
+  .row{display:flex;gap:10px}.f{flex:1}
+  .lbl{font-size:10px;color:#6f6f6f;margin-bottom:6px}.ctl{height:24px;background:#f4f4f4;border-bottom:1px solid #8d8d8d}
+  .kv{font-size:22px;font-weight:300;color:#161616}
+  .tt{font-weight:600;color:#161616;font-size:13px}.ts{font-size:10px;color:#6f6f6f;margin-top:2px}
+  .tag{font-size:10px;padding:1px 7px;border-radius:9px;background:#d0e2ff;color:#0043ce}
+  .chip{font-size:10px;padding:1px 7px;background:#161616;color:#fff}
+  .chart{margin-top:10px;background:repeating-linear-gradient(45deg,#fff,#fff 8px,#f4f4f4 8px,#f4f4f4 16px);border:1px dashed #c6c6c6;display:flex;align-items:center;justify-content:center;color:#6f6f6f;text-align:center}
+  .arrow{position:absolute;color:#da1e28;font-size:12px;font-weight:600}
 </style></head><body><div class="wrap"><div class="frame">
   <div class="side">
-    <div style="font-weight:700;color:#0b0b0b">Observatorio</div><div>Inicio</div>
-    <h4>Explorar los datos</h4><div class="on">Evolución y origen</div><div>Temporadas</div><div>Mercados y recuperación</div>
-    <h4>Pronósticos</h4><div>Pronósticos de llegadas</div><div>Comparar modelos</div>
-    <h4>Ayuda</h4><div>Glosario y limitaciones</div>
+    <div class="logo"><i style="height:22px;background:#2a78d6"></i><i style="height:16px;background:#eb6834"></i><i style="height:10px;background:#1baf7a"></i><span style="margin-left:6px;color:#161616;font-weight:600">Observatorio</span></div>
+    <h5>Observatorio</h5><div>Resumen</div>
+    <h5>Explorar los datos</h5><div class="on">Evolución y origen</div><div>Temporadas</div><div>Mercados y recuperación</div>
+    <h5>Pronósticos</h5><div>Pronósticos de llegadas</div><div>Comparar modelos</div>
+    <h5>Ayuda</h5><div>Acerca del tablero</div>
   </div>
   <div class="main">
-    <div class="t">Título de la página = tema de gestión</div>
-    <div class="p" style="width:80%"></div><div class="p" style="width:55%"></div>
-    <div class="row"><div class="box ctl">Años (rango)</div><div class="box ctl">Tipo de viajero</div><div class="box ctl">Vía de ingreso</div><div class="box ctl">Nivel de detalle: Año · Trimestre · Mes</div></div>
-    <div class="row" style="align-items:center;gap:8px"><span style="font-size:13px">Gráficas visibles:</span><span class="pill">1. Evolución</span><span class="pill">2. Origen</span></div>
-    <div class="h">1. ¿Pregunta de gestión que responde la gráfica?</div>
-    <div class="badge">Dato observado / Interpretación / Estimación</div>
-    <div class="p" style="width:70%"></div>
-    <div class="row"><div class="box chart">GRÁFICA ORIGEN<br>(clic / caja = selección)</div></div>
-    <div class="arrow">▼ la selección filtra ▼</div>
-    <div class="h">2. ¿Pregunta de detalle? — título con la selección actual</div>
-    <div class="row"><div class="box chart" style="height:150px">GRÁFICA DESTINO (detalle de la selección)<br>+ resumen textual + tabla desplegable</div></div>
+    <div class="hd"><div><div class="crumb">Sección · Tema</div><div class="h1">Título de la página</div></div>
+      <div style="text-align:right"><div class="crumb" style="margin-bottom:6px">Datos hasta jun 2026</div><span class="btn">⚙ Personalizar vista ▾</span></div></div>
+    <div class="box row"><div class="f"><div class="lbl">Años</div><div class="ctl"></div></div><div class="f"><div class="lbl">Tipo de viajero</div><div class="ctl"></div></div><div class="f"><div class="lbl">Vía de ingreso</div><div class="ctl"></div></div><div class="f"><div class="lbl">Detalle temporal</div><div class="ctl"></div></div></div>
+    <div class="row">
+      <div class="box f"><div class="lbl">Indicador</div><div class="kv">3.4 M</div><div class="lbl" style="margin:4px 0 0">▲ 2 % frente al año anterior</div></div>
+      <div class="box f"><div class="lbl">Indicador</div><div class="kv">81 %</div><div class="lbl" style="margin:4px 0 0">contexto</div></div>
+      <div class="box f"><div class="lbl">Indicador</div><div class="kv">65 %</div><div class="lbl" style="margin:4px 0 0">contexto</div></div>
+    </div>
+    <div class="row" style="flex:1">
+      <div class="box" style="flex:1.35;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between"><div><div class="tt">Gráfica de origen</div><div class="ts">Unidades · seleccione elementos para filtrar</div></div><div><span class="tag">Observado</span> ⓘ</div></div>
+        <div class="chart" style="flex:1">GRÁFICA DE ORIGEN<br>clic o caja = filtro cruzado →</div></div>
+      <div class="box" style="flex:1;display:flex;flex-direction:column">
+        <div style="display:flex;justify-content:space-between"><div><div class="tt">Gráfica de detalle</div><div class="ts">Unidades · alcance</div></div><div><span class="chip">Filtrado por: selección</span> <span class="tag">Observado</span> ⓘ</div></div>
+        <div class="chart" style="flex:1">GRÁFICA DE DETALLE<br>responde a la selección</div>
+        <div style="border-left:2px solid #0f62fe;padding-left:8px;margin-top:8px;font-size:11px">Lectura breve marcada como observado, interpretación o estimación</div></div>
+    </div>
   </div>
 </div></div></body></html>

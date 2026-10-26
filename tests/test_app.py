@@ -49,7 +49,7 @@ def test_filtros_vacios_muestran_mensaje(pagina):
 @pytest.mark.parametrize("nivel", ["Año", "Trimestre", "Mes"])
 def test_explorar_niveles(nivel):
     at = correr("paginas/explorar.py")
-    at.button_group[0].set_value(nivel).run() if at.button_group else None
+    at.button_group(key="expl_nivel").set_value(nivel).run()
     assert not at.exception
 
 
@@ -94,7 +94,9 @@ def test_mercados_dimensiones_y_base():
     assert not at.exception
 
 
-def test_ocultar_todas_las_graficas():
-    at = correr("paginas/comparar.py")
-    at.button_group(key="comp_vis").set_value([]).run()
+@pytest.mark.parametrize("pagina,clave", [("paginas/comparar.py", "comp_vis"), ("paginas/explorar.py", "explorar_vis"), ("paginas/modelos.py", "pron_vis")])
+def test_ocultar_todas_las_graficas(pagina, clave):
+    at = correr(pagina)
+    at.button_group(key=clave).set_value([]).run()
     assert not at.exception
+    assert any("ocultas" in i.value for i in at.info)

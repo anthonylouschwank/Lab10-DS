@@ -19,9 +19,9 @@ AQUI = Path(__file__).resolve().parent
 SALIDA = AQUI / "documento_diseno.pdf"
 
 PIE = (
-    '<div style="width:100%;font-family:sans-serif;font-size:7.5px;color:#6b6a66;'
-    'padding:0 19mm;display:flex;justify-content:space-between">'
-    "<span>Observatorio de Turismo Sostenible · Documento de diseño del tablero</span>"
+    '<div style="width:100%;font-family:IBM Plex Sans,sans-serif;font-size:7.5px;color:#6f6f6f;'
+    'padding:0 20mm;display:flex;justify-content:space-between">'
+    "<span>Observatorio de Turismo Sostenible · Diseño del tablero</span>"
     "<span>github.com/anthonylouschwank/Lab10-DS</span>"
     '<span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>'
 )
