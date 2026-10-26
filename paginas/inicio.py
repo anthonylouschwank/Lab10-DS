@@ -32,17 +32,33 @@ total = met[(met["serie"] == "Total mensual") & (met["modelo"] != "Referencia in
 st.subheader("Resumen")
 k1, k2, k3, k4 = st.columns(4)
 k1.metric(f"Viajeros en {anio_completo}", formato_numero(por_anio[anio_completo]), f"{cambio_2019:+.0%} vs. 2019", border=True)
-k2.metric(f"Vía principal en {anio_completo}", por_via.idxmax(), f"{por_via.max() / por_via.sum():.0%} del total", delta_color="off", delta_arrow="off", border=True)
-k3.metric(
-    f"Región principal en {anio_completo}",
-    NOMBRE_CORTO.get(por_region.idxmax(), por_region.idxmax()),
-    f"{por_region.max() / por_region.sum():.0%} del total",
+# El nombre va en la etiqueta y la cifra como valor: las tarjetas no truncan nombres largos
+region = por_region.idxmax()
+k2.metric(
+    f"Vía {por_via.idxmax().lower()} · {anio_completo}",
+    f"{por_via.max() / por_via.sum():.0%}",
+    "vía principal",
     delta_color="off",
     delta_arrow="off",
     border=True,
-    help=por_region.idxmax(),
 )
-k4.metric("Mejor pronóstico del total", str(total["modelo"]), f"error promedio {total['MAPE']:.0f} %", delta_color="off", delta_arrow="off", border=True)
+k3.metric(
+    f"{NOMBRE_CORTO.get(region, region)} · {anio_completo}",
+    f"{por_region.max() / por_region.sum():.0%}",
+    "región principal",
+    delta_color="off",
+    delta_arrow="off",
+    border=True,
+    help=f"Participación de {region} en las llegadas de {anio_completo}.",
+)
+k4.metric(
+    f"Mejor pronóstico: {total['modelo']}",
+    f"{total['MAPE']:.0f} %",
+    "error promedio del total",
+    delta_color="off",
+    delta_arrow="off",
+    border=True,
+)
 st.caption(f"Turistas y excursionistas. Datos hasta {ultimo:%m/%Y}; el último año completo es {anio_completo}.")
 
 c1, c2 = st.columns(2)
