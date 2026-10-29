@@ -72,6 +72,30 @@ python -m pytest tests                            # pruebas
 
 Si no existe el parquet de viajeros, la app lo genera desde el Excel la primera vez que carga.
 
+## Pipeline de estimaciones (Laboratorio 11)
+
+Estima los visitantes internacionales mensuales del **Lago de Atitlán (Sololá)**, grupo 3. Todo
+se configura en [config/config.yaml](config/config.yaml): rutas, periodos, fórmula, factor de
+reparto, semilla y umbrales de aceptación.
+
+```bash
+python -m venv .venv
+.venv/Scripts/pip install -r requirements-pipeline.txt
+python -m pipeline                                 # usa config/config.yaml
+python -m pipeline --fuente RUTA/A/LA/BASE.xlsx    # o la variable de entorno OBS_FUENTE
+python -m pytest tests/test_pipeline.py            # controles con datos sintéticos
+```
+
+Etapas: lectura → validación (6 controles) → preparación → ajuste → evaluación → estimación →
+almacenamiento → publicación. Cada ejecución deja en `salidas/ejecuciones/<id>/` el reporte de
+calidad (`calidad.md`, `calidad.json`), las estimaciones, las métricas, los parámetros, la
+configuración usada, el registro y un `manifiesto.json` con el commit, la huella SHA-256 de la
+fuente y las versiones de las dependencias. Solo una versión que cumple la regla de aceptación se
+copia a `salidas/versiones/<id>/` y queda apuntada en `salidas/vigente.json`. Si falla un control
+crítico, el pipeline se detiene antes de estimar y la versión vigente no cambia.
+
+Código de salida: 0 publicada, 2 rechazada por la regla de aceptación, 1 fallida.
+
 ## Resultados de los modelos
 
 `data/modelos/` ya está versionado. Para regenerarlo desde el repositorio de los laboratorios

@@ -1,0 +1,73 @@
+destino:
+  nombre: Lago de Atitlán
+  departamento: Sololá
+variable:
+  nombre: visitantes_internacionales
+  descripcion: Llegadas mensuales de visitantes internacionales (turistas) atribuidas
+    al destino
+  unidad: visitantes por mes
+  agregacion: mensual, destino completo
+rutas:
+  fuente: C:\Users\chris\OneDrive\Escritorio\Repositorios\data science\lab11\Lab10-DS\data\raw\Base_Migracion_2009-2026jun.xlsx
+  salidas: C:\Users\chris\OneDrive\Escritorio\Repositorios\data science\lab11\Lab10-DS\salidas
+fuente:
+  hoja: Datos
+  columnas:
+    Año: anio
+    Mes cod: mes
+    Mes: mes_nombre
+    Vía: via
+    Frontera: frontera
+    País: pais
+    Agrupación Residencia: agrupacion
+    Tipo de Viajero: tipo
+    Viajero: viajeros
+  indispensables:
+  - anio
+  - mes
+  - tipo
+  - viajeros
+  clave:
+  - anio
+  - mes
+  - via
+  - frontera
+  - pais
+  - agrupacion
+  - tipo
+  tipos_visitante:
+  - Turista
+  - Excursionista
+  tipos_conocidos:
+  - Turista
+  - Excursionista
+  - Viajero
+  - Cruceristas
+periodos:
+  ajuste:
+  - 2023-01
+  - 2025-06
+  evaluacion:
+  - 2025-07
+  - 2026-06
+  estimacion:
+  - 2026-07
+  - 2026-12
+procedimiento:
+  nombre: estacional_con_ajuste_de_nivel
+  version: 1.0.0
+  formula: y_hat(o+h) = y(o+h-12) * r(o);  r(o) = sum(y[o-k+1..o]) / sum(y[o-k+1-12..o-12])
+  ventana_nivel: 12
+  referencia: ultimo_valor
+  semilla: 2026
+reparto:
+  factores:
+    Turista: 0.2
+    Excursionista: 0.0
+  fuente: 'SUPUESTO: reemplazar por el factor de la guia del proyecto'
+calidad:
+  anio_minimo: 2009
+  tolerancia_conciliacion: 0.001
+aceptacion:
+  mape_maximo: 15.0
+  mae_relativo_referencia_maximo: 1.25

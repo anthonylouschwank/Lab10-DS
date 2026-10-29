@@ -1,0 +1,16 @@
+{
+  "evaluacion": {
+    "origen": "2025-06",
+    "ventana_nivel": 12,
+    "numerador": 502269.1070831684,
+    "denominador": 449871.9644803835,
+    "r": 1.1164712334615146
+  },
+  "estimacion": {
+    "origen": "2026-06",
+    "ventana_nivel": 12,
+    "numerador": 507268.9215982042,
+    "denominador": 502269.1070831684,
+    "r": 1.0099544535877814
+  }
+}

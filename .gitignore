@@ -17,3 +17,6 @@ report/*.log
 report/*.out
 report/*.toc
 .pytest_cache/
+
+# Pipeline: cada ejecucion queda local; las versiones aprobadas (salidas/versiones, vigente.json) si se versionan
+salidas/ejecuciones/
