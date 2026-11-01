@@ -20,6 +20,7 @@ paginas = st.navigation(
     {
         "Observatorio": [
             st.Page("paginas/inicio.py", title="Resumen", icon=":material/dashboard:", default=True),
+            st.Page("paginas/estimaciones.py", title="Estimaciones del destino", icon=":material/insights:"),
         ],
         "Explorar los datos": [
             st.Page("paginas/explorar.py", title="Evolución y origen", icon=":material/bar_chart:"),

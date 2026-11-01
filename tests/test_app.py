@@ -100,3 +100,48 @@ def test_ocultar_todas_las_graficas(pagina, clave):
     at.button_group(key=clave).set_value([]).run()
     assert not at.exception
     assert any("ocultas" in i.value for i in at.info)
+
+
+# Estimaciones del destino (Laboratorio 11): el tablero lee la version aprobada
+
+def test_estimaciones_version_vigente():
+    at = correr("paginas/estimaciones.py")
+    assert not at.exception, at.exception
+    assert any("Como leer estas cifras" in w.value for w in at.warning)
+
+
+def test_estimaciones_sin_version_aprobada(tmp_path, monkeypatch):
+    monkeypatch.setenv("OBS_SALIDAS", str(tmp_path))
+    at = correr("paginas/estimaciones.py")
+    assert not at.exception
+    assert any("no estan disponibles" in w.value for w in at.warning)
+
+
+def test_estimaciones_lee_version_restaurada(tmp_path, monkeypatch):
+    import json
+    import shutil
+
+    versiones = sorted(p.name for p in (ROOT / "salidas" / "versiones").iterdir() if p.is_dir())
+    shutil.copytree(ROOT / "salidas" / "versiones", tmp_path / "versiones")
+    anterior = versiones[0]
+    (tmp_path / "vigente.json").write_text(json.dumps({
+        "id_ejecucion": anterior, "ruta": f"versiones/{anterior}", "publicado": "2026-11-01T12:00:00",
+        "anterior": versiones[-1], "restaurada": True,
+    }))
+    monkeypatch.setenv("OBS_SALIDAS", str(tmp_path))
+    at = correr("paginas/estimaciones.py")
+    assert not at.exception
+    assert any("version anterior" in i.value for i in at.info)
+    assert any(anterior in c.value for c in at.caption)
+
+
+def test_estimaciones_filtro_no_reajusta(monkeypatch):
+    from pipeline import run
+
+    def prohibido(*_a, **_k):
+        raise AssertionError("el tablero no debe ejecutar el pipeline")
+
+    monkeypatch.setattr(run, "ejecutar", prohibido)
+    at = correr("paginas/estimaciones.py")
+    at.slider(key="est_desde").set_value(2015).run()
+    assert not at.exception

@@ -42,6 +42,8 @@ DASH_MODELO = {
 }
 COLOR_REAL = "#161616"
 COLOR_HISTORIA = "#898781"
+# Estimaciones del pipeline (Lab 11): violeta de la etiqueta "Estimado", siempre con linea discontinua
+COLOR_ESTIMADO = "#8a3ffc"
 
 # Secuencial (magnitud): azul claro -> oscuro
 SECUENCIAL_AZUL = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#256abf", "#184f95", "#0d366b"]

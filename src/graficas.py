@@ -10,6 +10,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 from src.estilo import (
+    COLOR_ESTIMADO,
     COLOR_HISTORIA,
     COLOR_REAL,
     COLORES_MODELO,
@@ -476,5 +477,68 @@ def figura_tendencia(mensual: pd.Series) -> go.Figure:
     aplicar_estilo(fig, alto=300)
     fig.update_layout(hovermode="x unified")
     fig.update_xaxes(title_text=None, tickformat="%Y")
+    fig.update_yaxes(title_text=None, rangemode="tozero", tickformat="~s")
+    return fig
+
+
+# ---------------------------------------------------------------- estimaciones del destino (Lab 11)
+
+
+def figura_estimaciones(observados: pd.DataFrame, estimaciones: pd.DataFrame, unidad: str) -> go.Figure:
+    """Observado en tinta continua y estimado en violeta discontinuo, con el tramo estimado sombreado."""
+    fig = go.Figure()
+    fig.add_scatter(
+        x=observados["fecha"], y=observados["valor"], name="Observado", mode="lines",
+        line=dict(color=COLOR_REAL, width=2), customdata=_etiqueta_fecha(observados["fecha"], "Mes"),
+        hovertemplate="<b>%{customdata}</b><br>Observado: %{y:,.0f}<extra></extra>",
+    )
+    # La linea estimada arranca en el ultimo mes observado para que se lea como continuacion
+    ultimo = observados.iloc[[-1]]
+    est = pd.concat([ultimo[["fecha", "valor"]], estimaciones[["fecha", "valor"]]])
+    fig.add_scatter(
+        x=est["fecha"], y=est["valor"], name="Estimado", mode="lines+markers",
+        line=dict(color=COLOR_ESTIMADO, width=2.5, dash="dash"),
+        marker=dict(size=[0] + [8] * len(estimaciones), color=SUPERFICIE, line=dict(color=COLOR_ESTIMADO, width=2)),
+        customdata=_etiqueta_fecha(est["fecha"], "Mes"),
+        hovertemplate="<b>%{customdata}</b><br>Estimado: %{y:,.0f}<extra></extra>",
+    )
+    inicio = estimaciones["fecha"].min() - pd.Timedelta(days=15)
+    fin = estimaciones["fecha"].max() + pd.Timedelta(days=15)
+    fig.add_vrect(x0=inicio, x1=fin, fillcolor="rgba(138,63,252,0.07)", line_width=0)
+    fig.add_annotation(
+        x=inicio, y=1, yref="paper", text="Estimado", showarrow=False, xanchor="left", yanchor="top",
+        xshift=4, font=dict(color=COLOR_ESTIMADO, size=12),
+    )
+    aplicar_estilo(fig, alto=420)
+    fig.update_layout(hovermode="closest")
+    fig.update_xaxes(title_text=None, tickformat="%Y", dtick="M12")
+    fig.update_yaxes(title_text=unidad.capitalize(), rangemode="tozero", tickformat="~s")
+    return fig
+
+
+def figura_validacion(evaluacion: pd.DataFrame) -> go.Figure:
+    """Meses ocultos de la validacion: lo observado frente a lo que estimo el procedimiento y la referencia."""
+    etiquetas = _etiqueta_fecha(evaluacion["fecha"], "Mes")
+    fig = go.Figure()
+    fig.add_scatter(
+        x=evaluacion["fecha"], y=evaluacion["referencia"], name="Referencia: ultimo valor observado", mode="lines",
+        line=dict(color=COLOR_HISTORIA, width=1.75, dash="dot"), customdata=etiquetas,
+        hovertemplate="<b>%{customdata}</b><br>Referencia: %{y:,.0f}<extra></extra>",
+    )
+    fig.add_scatter(
+        x=evaluacion["fecha"], y=evaluacion["estimado"], name="Estimado sin ver esos meses", mode="lines+markers",
+        line=dict(color=COLOR_ESTIMADO, width=2.5, dash="dash"),
+        marker=dict(size=7, color=SUPERFICIE, line=dict(color=COLOR_ESTIMADO, width=2)), customdata=etiquetas,
+        hovertemplate="<b>%{customdata}</b><br>Estimado: %{y:,.0f}<extra></extra>",
+    )
+    fig.add_scatter(
+        x=evaluacion["fecha"], y=evaluacion["observado"], name="Observado", mode="lines+markers",
+        line=dict(color=COLOR_REAL, width=2), marker=dict(size=7, color=COLOR_REAL, line=dict(color=SUPERFICIE, width=2)),
+        customdata=etiquetas, hovertemplate="<b>%{customdata}</b><br>Observado: %{y:,.0f}<extra></extra>",
+    )
+    aplicar_estilo(fig, alto=340)
+    fig.update_layout(hovermode="x unified")
+    marcas = evaluacion["fecha"].iloc[::2]
+    fig.update_xaxes(title_text=None, tickvals=marcas, ticktext=_etiqueta_fecha(marcas, "Mes"))
     fig.update_yaxes(title_text=None, rangemode="tozero", tickformat="~s")
     return fig
