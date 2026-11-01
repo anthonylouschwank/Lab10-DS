@@ -72,7 +72,7 @@ def calidad(actual: dict, anterior: dict | None, cfg: dict) -> dict:
         avisos.append(f"las filas cambiaron {cambio_filas:+.1%} (de {anterior['filas']} a {actual['filas']}; umbral {umbral:.0%})")
     for campo, nombre in (("faltantes_conteo_usados", "conteos faltantes en tipos usados"), ("faltantes_totales", "faltantes totales"), ("claves_repetidas", "claves repetidas")):
         if actual[campo] > anterior[campo]:
-            avisos.append(f"aumentaron los {nombre}: de {anterior[campo]} a {actual[campo]}")
+            avisos.append(f"aumento el numero de {nombre}: de {anterior[campo]} a {actual[campo]}")
     if actual["meses_con_datos"] < anterior["meses_con_datos"]:
         avisos.append(f"bajo la cobertura: de {anterior['meses_con_datos']} a {actual['meses_con_datos']} meses con datos")
     detalle = "; ".join(avisos) or "Sin cambios relevantes en faltantes, duplicados ni cobertura frente a la version vigente"
