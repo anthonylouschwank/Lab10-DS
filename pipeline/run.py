@@ -33,7 +33,7 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from pipeline import calidad, seguimiento
+from pipeline import calidad, monitoreo, seguimiento
 from pipeline import procedimiento as proc
 from pipeline.configuracion import CONFIG_DEFECTO, ROOT, cargar
 
@@ -164,6 +164,13 @@ def ejecutar(cfg: dict) -> dict:
     def guardar_manifiesto() -> None:
         (carpeta / "manifiesto.json").write_text(json.dumps(manifiesto, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
 
+    def vigilar(nombre: str, resultado: dict) -> None:
+        """Guarda una verificacion de monitoreo y deja la alerta en el registro."""
+        manifiesto.setdefault("monitoreo", {})[nombre] = resultado
+        (carpeta / "monitoreo.json").write_text(json.dumps(manifiesto["monitoreo"], ensure_ascii=False, indent=2), encoding="utf-8")
+        nivel = logging.WARNING if resultado["estado"] == monitoreo.ALERTA else logging.INFO
+        log.log(nivel, "Monitoreo %s: %s - %s", nombre, resultado["estado"], resultado["detalle"])
+
     cliente = None
     try:
         log.info("Inicio de la ejecucion %s (destino %s)", run_id, destino)
@@ -180,6 +187,13 @@ def ejecutar(cfg: dict) -> dict:
         for r in resultados:
             nivel = logging.ERROR if r.estado == calidad.CRITICO else logging.WARNING if r.estado == calidad.ADVERTENCIA else logging.INFO
             log.log(nivel, "Control %s: %s - %s", r.control, r.estado, r.detalle)
+        _, carpeta_vigente = monitoreo.leer_vigente(salidas)
+        if df is not None:
+            perfil = monitoreo.perfil(df, cfg)
+            (carpeta / "perfil.json").write_text(json.dumps(perfil, indent=2), encoding="utf-8")
+            previo = carpeta_vigente / "perfil.json" if carpeta_vigente else None
+            vigilar("calidad", monitoreo.calidad(perfil, json.loads(previo.read_text(encoding="utf-8")) if previo and previo.exists() else None, cfg))
+            vigilar("actualizacion", monitoreo.actualizacion(perfil, cfg))
         if calidad.hay_criticos(resultados):
             raise calidad.ControlCritico("Fallaron controles criticos: " + "; ".join(f"{r.control} ({r.detalle})" for r in resultados if r.estado == calidad.CRITICO))
         completar("validacion")
@@ -213,6 +227,10 @@ def ejecutar(cfg: dict) -> dict:
         estimaciones = pd.DataFrame({"periodo": meses_est.astype(str), "valor": est_final.to_numpy(), "tipo_valor": "estimado"}).assign(**comunes)
         observados = pd.DataFrame({"periodo": y.dropna().index.astype(str), "valor": y.dropna().to_numpy(), "tipo_valor": "observado"}).assign(**comunes)
         completar("estimacion")
+
+        vigilar("actualizacion", monitoreo.actualizacion(perfil, cfg, estimaciones))
+        previas = carpeta_vigente / "estimaciones.parquet" if carpeta_vigente else None
+        vigilar("resultados", monitoreo.resultados(estimaciones, y, pd.read_parquet(previas) if previas and previas.exists() else None, cfg))
 
         decision = _regla_aceptacion(resultados, estimaciones, cfg, met, met_ref)
         estimaciones.to_parquet(carpeta / "estimaciones.parquet", index=False)

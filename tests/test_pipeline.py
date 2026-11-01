@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 from mlflow.tracking import MlflowClient
 
-from pipeline import calidad, consultar
+from pipeline import calidad, consultar, monitoreo
 from pipeline import procedimiento as proc
 from pipeline.configuracion import cargar
 from pipeline.run import ejecutar
@@ -185,7 +185,8 @@ def test_mlflow_fallida_sin_metricas_y_con_causa(entorno):
     run = MlflowClient().get_run(m["mlflow"]["run_id"])
     assert run.info.status == "FAILED" and run.data.tags["estado"] == "fallida"
     assert "a_columnas_tipos" in run.data.tags["error"] and "Viajero" in run.data.tags["error"]
-    assert not {c for c in run.data.metrics if not c.startswith("calidad_")}
+    # solo conteos de calidad y monitoreo; ninguna metrica de evaluacion
+    assert not {c for c in run.data.metrics if not c.startswith(("calidad_", "monitoreo_"))}
 
 
 def test_mlflow_no_disponible_detiene_sin_publicar(entorno, monkeypatch):
@@ -214,3 +215,40 @@ def test_consulta_reproducibilidad(entorno, tmp_path):
     assert len(tabla) == 3 and (tabla["estado"] == "fallida").sum() == 1
     assert repro["equivalentes"] and repro["diferencia_maxima"] == 0
     assert "sin metricas" in (tmp_path / "evidencia" / "mlflow_consulta.md").read_text(encoding="utf-8")
+
+
+# Monitoreo (ejercicio 7.2): las alertas no rechazan la version por si solas
+
+def test_monitoreo_primera_ejecucion(entorno):
+    m = ejecutar(entorno(base_sintetica()))
+    mon = m["monitoreo"]
+    assert mon["calidad"]["estado"] == monitoreo.SIN_REFERENCIA
+    assert mon["actualizacion"]["estado"] == mon["resultados"]["estado"] == monitoreo.OK
+
+
+def test_monitoreo_alerta_de_calidad_sin_bloquear(entorno):
+    cfg = entorno(base_sintetica())
+    ejecutar(cfg)
+    raw = pd.concat([base_sintetica(), base_sintetica().query("`Tipo de Viajero` == 'Viajero'").head(3)])
+    m = ejecutar(entorno(raw))
+    assert m["monitoreo"]["calidad"]["estado"] == monitoreo.ALERTA and "claves repetidas" in m["monitoreo"]["calidad"]["detalle"]
+    assert m["estado"] == "publicada"
+
+
+def test_monitoreo_fuente_atrasada(entorno):
+    cfg = entorno(base_sintetica())
+    cfg["monitoreo"]["ultimo_periodo_esperado"] = "2026-08"
+    m = ejecutar(cfg)
+    assert m["monitoreo"]["actualizacion"]["estado"] == monitoreo.ALERTA and "se esperaba 2026-08" in m["monitoreo"]["actualizacion"]["detalle"]
+
+
+def test_monitoreo_cambio_frente_a_vigente(entorno):
+    cfg = entorno(base_sintetica())
+    ejecutar(cfg)
+    cfg["reparto"]["factores"]["Turista"] = 0.3
+    m = ejecutar(cfg)
+    res = m["monitoreo"]["resultados"]
+    assert res["estado"] == monitoreo.ALERTA and res["cambio_maximo_frente_a_vigente"] == pytest.approx(0.5)
+    assert m["estado"] == "publicada"
+    run = MlflowClient().get_run(m["mlflow"]["run_id"])
+    assert run.data.tags["monitoreo.resultados"] == monitoreo.ALERTA and run.data.metrics["monitoreo_alertas"] == 1

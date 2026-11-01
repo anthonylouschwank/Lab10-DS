@@ -95,6 +95,7 @@ def _etiquetas(m: dict) -> dict:
     if "aceptacion" in m:
         t["aceptacion.aprobada"] = m["aceptacion"]["aprobada"]
         t |= {f"aceptacion.{r}": v for r, v in m["aceptacion"]["reglas"].items()}
+    t |= {f"monitoreo.{c}": r["estado"] for c, r in m.get("monitoreo", {}).items()}
     t |= {f"dep.{p}": v for p, v in m["dependencias"].items()}
     return {c: str(v)[:5000] for c, v in t.items() if v is not None}
 
@@ -120,6 +121,8 @@ def cerrar(client: MlflowClient, mlflow_run_id: str, manifiesto: dict, carpeta: 
     metricas = _metricas(manifiesto)
     calidad = json.loads((carpeta / "calidad.json").read_text(encoding="utf-8")) if (carpeta / "calidad.json").exists() else []
     metricas |= {f"calidad_{r['control']}_filas": r["filas_afectadas"] for r in calidad}
+    if manifiesto.get("monitoreo"):
+        metricas["monitoreo_alertas"] = sum(r["estado"] == "alerta" for r in manifiesto["monitoreo"].values())
     ahora = int(time.time() * 1000)
     client.log_batch(
         mlflow_run_id,

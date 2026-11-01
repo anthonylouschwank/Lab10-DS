@@ -74,3 +74,13 @@ reproducibilidad:
   # Diferencia absoluta maxima entre las estimaciones de dos ejecuciones con los mismos datos y
   # configuracion. El procedimiento es determinista; el margen solo cubre redondeo de punto flotante.
   tolerancia: 1.0e-6   # visitantes
+
+monitoreo:
+  # Ultimo mes que debe cubrir la fuente (cobertura configurada); coincide con el fin de la evaluacion
+  ultimo_periodo_esperado: "2026-06"
+  # Un mes nuevo agrega cerca de 0.5 % de filas a la base; mas de 10 % indica un cambio de estructura
+  cambio_filas_maximo: 0.10
+  # Desde 2024 el 95 % de las variaciones interanuales observadas del destino es menor que 28 %
+  variacion_interanual_maxima: 0.30
+  # Con un mes nuevo de datos r cambia pocos puntos; mas de 10 % frente a la version vigente pide revision
+  cambio_entre_versiones_maximo: 0.10
