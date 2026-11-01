@@ -1,0 +1,5 @@
+# Imagen de Docker: pipeline con versiones fijas y tablero. Las herramientas del documento de
+# diseno y de las pruebas de interfaz (kaleido, playwright, pypdf) no se instalan en la imagen.
+-r requirements-pipeline.txt
+streamlit==1.66.1
+plotly==7.1.0

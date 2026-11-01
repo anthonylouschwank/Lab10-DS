@@ -1,0 +1,15 @@
+# Datos institucionales: se montan, nunca se copian a la imagen
+data/
+# Volumenes: versiones aprobadas, ejecuciones, MLflow y evidencia
+salidas/
+mlflow/
+evidencia/
+# Entorno local y archivos que la imagen no necesita
+.git
+.venv/
+venv/
+**/__pycache__/
+.pytest_cache/
+report/
+.claude/
+.DS_Store

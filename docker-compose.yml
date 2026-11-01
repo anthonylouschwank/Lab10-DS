@@ -1,0 +1,62 @@
+# Laboratorio 11: MLflow, tablero y pipeline. Guia completa en docs/lab11.md.
+#
+#   export GIT_COMMIT=$(git rev-parse HEAD)    # commit que se registra en MLflow
+#   docker compose build
+#   docker compose up -d                       # MLflow en :5000 y tablero en :8501
+#   docker compose run --rm pipeline           # una ejecucion del pipeline
+#   docker compose down                        # detiene; salidas/ y mlflow/ se conservan
+#
+# DATOS_DIR apunta a la carpeta con los datos institucionales (por defecto ./data). Los puertos
+# solo se publican en 127.0.0.1: el tablero y MLflow no quedan expuestos a la red.
+
+x-imagen: &imagen
+  build:
+    context: .
+    args:
+      GIT_COMMIT: ${GIT_COMMIT:-desconocido}
+  image: observatorio-lab11:latest
+
+services:
+  mlflow:
+    <<: *imagen
+    command: >
+      mlflow server --host 0.0.0.0 --port 5000 --workers 1
+      --backend-store-uri sqlite:////mlflow/mlflow.db
+      --artifacts-destination /mlflow/artefactos
+      --allowed-hosts mlflow,mlflow:5000,localhost,localhost:5000,127.0.0.1,127.0.0.1:5000
+    ports:
+      - "127.0.0.1:5000:5000"
+    volumes:
+      - ./mlflow:/mlflow
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health')"]
+      interval: 5s
+      timeout: 5s
+      retries: 24
+    restart: unless-stopped
+
+  tablero:
+    <<: *imagen
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+    ports:
+      - "127.0.0.1:8501:8501"
+    volumes:
+      - ${DATOS_DIR:-./data}:/app/data
+      - ./salidas:/app/salidas:ro
+      - ./config:/app/config:ro
+    restart: unless-stopped
+
+  pipeline:
+    <<: *imagen
+    profiles: ["pipeline"]
+    command: python -m pipeline
+    environment:
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+    volumes:
+      - ${DATOS_DIR:-./data}:/app/data:ro
+      - ./salidas:/app/salidas
+      - ./config:/app/config:ro
+      - ./evidencia:/app/evidencia
+    depends_on:
+      mlflow:
+        condition: service_healthy
