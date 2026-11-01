@@ -58,6 +58,17 @@ report/
   figures/, fuentes/        Figuras exportadas y boceto de la interfaz
 tests/test_app.py           Pruebas de humo de todas las páginas (streamlit.testing)
 .streamlit/config.toml      Tema de la aplicación
+
+Laboratorio 11
+pipeline/                   run (etapas), calidad (6 controles), procedimiento, seguimiento (MLflow),
+                            monitoreo, consultar, restaurar, prueba_controlada
+config/config.yaml          Rutas, periodos, formula, factor, umbrales, monitoreo y MLflow
+paginas/estimaciones.py     Pagina del tablero que lee la version aprobada
+salidas/versiones/, vigente.json   Versiones aprobadas y la que consulta el tablero
+evidencia/                  Consulta de MLflow, pruebas controladas y registros de ejemplo
+docs/lab11.md               Alcance, diagrama, controles, regla de aceptacion y operacion
+report/lab11/               Informe en PDF, capturas y scripts que los generan
+Dockerfile, docker-compose.yml   Tablero, pipeline y MLflow en contenedores
 ```
 
 ## Cómo correrlo
@@ -95,6 +106,30 @@ copia a `salidas/versiones/<id>/` y queda apuntada en `salidas/vigente.json`. Si
 crítico, el pipeline se detiene antes de estimar y la versión vigente no cambia.
 
 Código de salida: 0 publicada, 2 rechazada por la regla de aceptación, 1 fallida.
+
+Cada ejecucion queda registrada en MLflow (experimento `observatorio-lago-de-atitlan`): commit,
+huella de la fuente, periodos, parametros, metricas, resultado de los controles y del monitoreo, y
+todos los archivos de la ejecucion. Sin Docker, `python -m pipeline` necesita MLflow levantado
+(`docker compose up -d mlflow`); si no responde, la ejecucion se detiene sin publicar. La pagina **Estimaciones del destino** del tablero solo lee la
+version aprobada; cambiar un filtro no vuelve a ajustar nada.
+
+### Con Docker
+
+```bash
+export GIT_COMMIT=$(git rev-parse HEAD)     # PowerShell: $env:GIT_COMMIT = git rev-parse HEAD
+docker compose build
+docker compose up -d                        # tablero http://127.0.0.1:8501, MLflow http://127.0.0.1:5000
+docker compose run --rm pipeline            # una ejecucion del pipeline
+docker compose run --rm pipeline python -m pipeline.consultar                          # evidencia de MLflow
+docker compose run --rm pipeline python -m pipeline.prueba_controlada --problema columna  # fallo y recuperacion
+docker compose run --rm pipeline python -m pipeline.restaurar --anterior               # volver a la version anterior
+docker compose down
+```
+
+Los datos no entran a la imagen: se montan desde `data/` (o la carpeta en `DATOS_DIR`). `salidas/`
+y `mlflow/` son carpetas montadas y se conservan al recrear los contenedores. Requisitos, ubicacion
+de registros, regla de aceptacion, monitoreo y restauracion en [docs/lab11.md](docs/lab11.md);
+informe en [report/lab11/Informe_Lab11.pdf](report/lab11/Informe_Lab11.pdf).
 
 ## Resultados de los modelos
 
