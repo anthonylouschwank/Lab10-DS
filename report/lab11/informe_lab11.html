@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Laboratorio 11 - MLOps aplicado al observatorio</title>
+<style>
+  @font-face { font-family: "Plex"; src: url("../../static/tipografia/IBMPlexSans.ttf") format("truetype"); font-weight: 100 700; font-style: normal; }
+  @font-face { font-family: "Plex"; src: url("../../static/tipografia/IBMPlexSans-Italic.ttf") format("truetype"); font-weight: 100 700; font-style: italic; }
+  @font-face { font-family: "PlexMono"; src: url("../../static/tipografia/IBMPlexMono-Regular.ttf") format("truetype"); font-weight: 400; }
+
+  @page { size: Letter; margin: 20mm 18mm 18mm 18mm; }
+  @page portada { margin: 0; }
+
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { margin: 0; background: #ffffff; font-family: "Plex", sans-serif; font-size: 9.6pt; line-height: 1.5; color: #161616; }
+
+  .portada { page: portada; width: 215.9mm; height: 279.4mm; position: relative; break-after: page; padding: 28mm 24mm; }
+  .portada .marca { display: flex; align-items: flex-end; gap: 1.6mm; }
+  .portada .marca i { display: block; width: 4.2mm; }
+  .portada .marca span { margin-left: 3mm; font-size: 10pt; font-weight: 600; }
+  .portada h1 { font-size: 32pt; font-weight: 300; line-height: 1.12; margin: 58mm 0 6mm; max-width: 160mm; }
+  .portada .sub { font-size: 13pt; font-weight: 300; color: #525252; max-width: 150mm; }
+  .portada .pie { position: absolute; left: 24mm; right: 24mm; bottom: 26mm; border-top: 1px solid #161616; padding-top: 5mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; font-size: 8.8pt; color: #393939; }
+  .portada .pie b { display: block; font-size: 7.6pt; font-weight: 400; color: #6f6f6f; margin-bottom: 1mm; }
+  .portada .aviso { position: absolute; left: 24mm; right: 24mm; bottom: 12mm; font-size: 7.6pt; color: #6f6f6f; }
+
+  .sec { break-before: page; }
+  .k { font-size: 8pt; color: #6f6f6f; margin-bottom: 1.5mm; }
+  h2 { font-size: 19pt; font-weight: 300; line-height: 1.2; margin: 0 0 4mm; break-after: avoid; }
+  h3 { font-size: 10.5pt; font-weight: 600; margin: 5mm 0 1.5mm; break-after: avoid; }
+  p { margin: 0 0 2.6mm; }
+  .lead { font-size: 11pt; font-weight: 300; line-height: 1.45; color: #393939; margin-bottom: 4mm; }
+  ul, ol { margin: 0 0 3mm; padding-left: 5mm; } li { margin-bottom: 1mm; }
+  code, pre { font-family: "PlexMono", monospace; font-size: 7.9pt; }
+  pre { background: #f4f4f4; padding: 2.5mm 3mm; margin: 1mm 0 4mm; white-space: pre-wrap; line-height: 1.45; break-inside: avoid; }
+  a { color: #0f62fe; text-decoration: none; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 8.3pt; line-height: 1.38; margin: 1.5mm 0 5mm; }
+  th { text-align: left; font-weight: 600; background: #e0e0e0; padding: 1.4mm 2.2mm; }
+  td { border-bottom: 1px solid #e0e0e0; padding: 1.3mm 2.2mm; vertical-align: top; }
+  tr { break-inside: avoid; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tr.on td { background: #edf5ff; }
+  tr.mal td { background: #fff1f1; }
+  table.runs { font-size: 7.8pt; } table.runs td:first-child, table.runs td:nth-child(3) { white-space: nowrap; font-family: "PlexMono", monospace; font-size: 7.4pt; }
+
+  .cifras { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid #161616; border-bottom: 1px solid #e0e0e0; margin: 1mm 0 5mm; }
+  .cifra { padding: 3.5mm 3mm 3mm 0; }
+  .cifra + .cifra { padding-left: 4mm; border-left: 1px solid #e0e0e0; }
+  .cifra b { display: block; font-size: 21pt; font-weight: 300; line-height: 1.1; }
+  .cifra span { font-size: 8pt; color: #525252; }
+
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; break-inside: avoid; }
+  .nota { border-left: 2px solid #0f62fe; padding: 1mm 0 1mm 4mm; margin: 2mm 0 5mm; color: #393939; break-inside: avoid; }
+  .nota.alerta { border-left-color: #da1e28; }
+
+  figure { margin: 2mm 0 6mm; break-inside: avoid; }
+  figure img { width: 100%; display: block; border: 1px solid #e0e0e0; }
+  figure img.alta { width: auto; max-width: 100%; max-height: 190mm; margin: 0 auto; }
+  figcaption { font-size: 8pt; color: #525252; margin-top: 2mm; }
+  svg text { font-family: "Plex", sans-serif; }
+</style>
+</head>
+<body>
+
+<section class="portada">
+  <div class="marca"><i style="height:11mm;background:#2a78d6"></i><i style="height:8mm;background:#eb6834"></i><i style="height:5mm;background:#1baf7a"></i><span>Observatorio de Turismo Sostenible</span></div>
+  <h1>Laboratorio 11. MLOps aplicado al observatorio</h1>
+  <div class="sub">Pipeline reproducible de estimaciones de visitantes internacionales para el Lago de Atitlan</div>
+  <div class="pie">
+    <div><b>Equipo (grupo 3)</b>Anthony Lou Schwank<br>Christa Isabella Obando Guzman<br>Fabian Prado Dluzniewski<br>Luis Fernando Mendoza Alvarez</div>
+    <div><b>Repositorio</b><a href="https://github.com/anthonylouschwank/Lab10-DS">github.com/anthonylouschwank/Lab10-DS</a><br><br><b>Curso</b>CC3066 Data Science, Universidad del Valle de Guatemala<br>1 de noviembre de 2026</div>
+  </div>
+  <div class="aviso">Los datos provienen de una base de migracion de uso academico (enero de 2009 a junio de 2026). Las estimaciones atribuyen al destino una fraccion supuesta de las llegadas nacionales y no son cifras oficiales.</div>
+</section>
+
+<section>
+  <div class="k">Resumen</div>
+  <h2>Un flujo que se puede repetir, rastrear y revertir</h2>
+  <p class="lead">El observatorio actualiza sus estimaciones mensuales del Lago de Atitlan con un solo comando. Cada ejecucion valida la fuente, evalua el procedimiento con meses ocultos, queda registrada en MLflow y solo reemplaza lo que ve el directivo si cumple una regla de aceptacion definida de antemano.</p>
+  <div class="cifras">
+    <div class="cifra"><b>6</b><span>controles de calidad; un critico detiene la publicacion</span></div>
+    <div class="cifra"><b>11.1 %</b><span>error de validacion (MAPE), frente a 13.3 % de la referencia</span></div>
+    <div class="cifra"><b>8</b><span>ejecuciones en MLflow: 6 publicadas y 2 fallidas a proposito</span></div>
+    <div class="cifra"><b>0</b><span>visitantes de diferencia entre ejecuciones con los mismos datos y configuracion</span></div>
+  </div>
+  <h3>Que se entrega</h3>
+  <ul>
+    <li><b>Pipeline</b> <code>python -m pipeline</code>: lectura, validacion, preparacion, ajuste, evaluacion, estimacion, almacenamiento y publicacion, configurado en <code>config/config.yaml</code>.</li>
+    <li><b>Seis controles automaticos</b> con criterios de advertencia y de detencion, y un reporte por ejecucion.</li>
+    <li><b>MLflow Tracking</b>: commit, huella de la fuente, periodos, parametros, metricas, controles, monitoreo y archivos de cada ejecucion, incluidas las fallidas.</li>
+    <li><b>Regla de aceptacion</b> verificable y <b>publicacion controlada</b>: el tablero lee solo la version aprobada vigente.</li>
+    <li><b>Monitoreo</b> de actualizacion, calidad y resultados, <b>prueba controlada</b> de fallo y recuperacion, y <b>restauracion</b> de versiones anteriores.</li>
+    <li><b>Docker Compose</b> con MLflow, tablero y pipeline; los datos se montan y nunca entran a la imagen.</li>
+  </ul>
+  <p>La documentacion operativa completa (requisitos, comandos, ubicacion de registros) esta en <code>docs/lab11.md</code> y en el README.</p>
+
+  <h3>1. Alcance</h3>
+  <table>
+    <tr><th style="width:30%">Elemento</th><th>Definicion</th></tr>
+    <tr><td>Variable</td><td>Visitantes internacionales mensuales atribuidos al Lago de Atitlan (Solola)</td></tr>
+    <tr><td>Unidad y agregacion</td><td>visitantes por mes; mensual, destino completo</td></tr>
+    <tr><td>Fuente</td><td><code>Base_Migracion_2009-2026jun.xlsx</code>, hoja Datos, granularidad mensual</td></tr>
+    <tr><td>Columnas</td><td><code>Año</code>, <code>Mes cod</code>, <code>Mes</code>, <code>Vía</code>, <code>Frontera</code>, <code>País</code>, <code>Agrupación Residencia</code>, <code>Tipo de Viajero</code>, <code>Viajero</code>. Indispensables: anio, mes, tipo, viajeros</td></tr>
+    <tr><td>Clave</td><td>anio, mes, via, frontera, pais, agrupacion, tipo (nombres internos)</td></tr>
+    <tr><td>Periodos</td><td>Ajuste 2023-01 a 2025-06; evaluacion 2025-07 a 2026-06; estimacion 2026-07 a 2026-12. El ajuste empieza en 2023 porque ahi cambia la metodologia de la fuente.</td></tr>
+    <tr><td>Factor de reparto</td><td>0.20 de los turistas y 0.0 de los excursionistas. <b>Supuesto</b>: la base no registra destinos.</td></tr>
+    <tr><td>Resultados para el tablero</td><td><code>salidas/vigente.json</code> apunta a <code>salidas/versiones/&lt;id&gt;/estimaciones.parquet</code></td></tr>
+  </table>
+  <pre>destino(t)   = sum_tipo factor_tipo * llegadas_tipo(t)
+y_hat(o + h) = y(o + h - 12) * r(o)
+r(o)         = sum(y[o-11 .. o]) / sum(y[o-23 .. o-12])        ventana k = 12, o = ultimo mes observado</pre>
+  <p>Cada mes estimado repite el mismo mes de doce meses antes, escalado por el crecimiento de los ultimos 12 meses frente a los 12 previos. Es determinista; la semilla (2026) queda fija por si se agregan componentes aleatorios. Un mes sin registros queda vacio, nunca en cero.</p>
+</section>
+
+<section>
+  <div class="k" style="margin-top:6mm">Ejercicio 1.2</div>
+  <h2>2. Diagrama del flujo</h2>
+  <figure>
+  <svg viewBox="0 0 680 330" width="100%" xmlns="http://www.w3.org/2000/svg">
+    <defs><marker id="f" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="#525252"/></marker></defs>
+    <g font-size="10.5" fill="#161616">
+      <!-- fila 1 -->
+      <rect x="10" y="70" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="18" y="90" font-weight="600">Fuente mensual</text><text x="18" y="106" font-size="9" fill="#525252">xlsx montado</text>
+      <rect x="147" y="70" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="155" y="90" font-weight="600">Lectura</text><text x="155" y="106" font-size="9" fill="#525252">huella SHA-256</text>
+      <rect x="284" y="70" width="112" height="48" fill="#edf5ff" stroke="#0f62fe" stroke-width="1.5"/><text x="292" y="88" font-weight="600">1 Validacion</text><text x="292" y="103" font-size="9" fill="#525252">6 controles de calidad</text><text x="292" y="113" font-size="8" fill="#0043ce">se validan los datos</text>
+      <rect x="421" y="70" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="429" y="90" font-weight="600">Preparacion</text><text x="429" y="106" font-size="9" fill="#525252">serie del destino</text>
+      <rect x="558" y="70" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="566" y="90" font-weight="600">Ajuste</text><text x="566" y="106" font-size="9" fill="#525252">r con datos hasta o</text>
+      <rect x="284" y="2" width="112" height="40" fill="#fff1f1" stroke="#da1e28"/><text x="292" y="18" font-weight="600" font-size="9.5">Fallida</text><text x="292" y="32" font-size="8.5" fill="#525252">vigente.json sin cambios</text>
+      <!-- fila 2, de derecha a izquierda -->
+      <rect x="558" y="160" width="112" height="48" fill="#edf5ff" stroke="#0f62fe" stroke-width="1.5"/><text x="566" y="178" font-weight="600">2 Evaluacion</text><text x="566" y="193" font-size="9" fill="#525252">12 meses ocultos</text><text x="566" y="203" font-size="8" fill="#0043ce">se evalua el procedimiento</text>
+      <rect x="421" y="160" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="429" y="180" font-weight="600">Estimacion</text><text x="429" y="196" font-size="9" fill="#525252">jul a dic 2026</text>
+      <rect x="284" y="160" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="292" y="180" font-weight="600">Monitoreo</text><text x="292" y="196" font-size="9" fill="#525252">alertas para revision</text>
+      <rect x="147" y="160" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="155" y="180" font-weight="600">Almacenamiento</text><text x="155" y="196" font-size="9" fill="#525252">ejecuciones/id</text>
+      <rect x="10" y="160" width="112" height="48" fill="#edf5ff" stroke="#0f62fe" stroke-width="1.5"/><text x="18" y="178" font-weight="600">3 Aceptacion</text><text x="18" y="193" font-size="9" fill="#525252">4 condiciones</text><text x="18" y="203" font-size="8" fill="#0043ce">se autoriza la publicacion</text>
+      <!-- fila 3 -->
+      <rect x="10" y="260" width="112" height="48" fill="#fff1f1" stroke="#da1e28"/><text x="18" y="280" font-weight="600">No se publica</text><text x="18" y="296" font-size="9" fill="#525252">version rechazada</text>
+      <rect x="147" y="260" width="112" height="48" fill="#defbe6" stroke="#198038"/><text x="155" y="280" font-weight="600">Publicacion</text><text x="155" y="296" font-size="9" fill="#525252">versiones/id, vigente.json</text>
+      <rect x="284" y="260" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="292" y="280" font-weight="600">Tablero</text><text x="292" y="296" font-size="9" fill="#525252">lee la version vigente</text>
+      <rect x="421" y="260" width="112" height="48" fill="#fff" stroke="#8d8d8d"/><text x="429" y="280" font-weight="600">Directivo</text><text x="429" y="296" font-size="9" fill="#525252">consulta estimaciones</text>
+      <rect x="558" y="260" width="112" height="48" fill="#f4f4f4" stroke="#8d8d8d" stroke-dasharray="4 3"/><text x="566" y="280" font-weight="600">MLflow</text><text x="566" y="296" font-size="9" fill="#525252">un run por ejecucion</text>
+    </g>
+    <g stroke="#525252" stroke-width="1.2" fill="none" marker-end="url(#f)">
+      <path d="M122,94 H145"/><path d="M259,94 H282"/><path d="M396,94 H419"/><path d="M533,94 H556"/>
+      <path d="M340,70 V44"/>
+      <path d="M614,118 V158"/>
+      <path d="M558,184 H535"/><path d="M421,184 H398"/><path d="M284,184 H261"/><path d="M147,184 H124"/>
+      <path d="M50,208 V258"/>
+      <path d="M90,208 V232 H203 V258"/>
+      <path d="M259,284 H282"/><path d="M396,284 H419"/>
+    </g>
+    <g font-size="8.5" fill="#525252">
+      <text x="346" y="60">critico</text>
+      <text x="30" y="240">no</text>
+      <text x="150" y="228">si</text>
+      <text x="460" y="230" font-size="8.5">Todas las etapas, incluidas las fallidas, quedan en MLflow y en registro.log</text>
+    </g>
+  </svg>
+  <figcaption>Flujo desde la lectura de la fuente hasta la consulta del directivo. En azul, los tres puntos de control: (1) se validan los datos, (2) se evalua el procedimiento y (3) se autoriza la publicacion. Solo la rama aprobada cambia <code>vigente.json</code>.</figcaption>
+  </figure>
+
+  <h3>3. Pipeline reproducible y configuracion</h3>
+  <ul>
+    <li><b>Un comando</b>: <code>python -m pipeline</code> o, con Docker, <code>docker compose run --rm pipeline</code>. No se editan archivos intermedios ni se depende de una sesion abierta.</li>
+    <li><b>Configuracion</b> en <code>config/config.yaml</code>: rutas, periodos, formula, ventana, factor de reparto, semilla, umbrales de aceptacion y de monitoreo, servidor de MLflow y tolerancia de reproducibilidad. La fuente tambien se puede cambiar con <code>OBS_FUENTE</code> o <code>--fuente</code>.</li>
+    <li><b>Dependencias fijas</b> (<code>requirements-pipeline.txt</code>): pandas 3.1.0, numpy 2.5.4, pyarrow 25.0.1, openpyxl 3.1.5, PyYAML 6.0.3 y mlflow 3.17.2 sobre Python 3.13. Cada ejecucion registra las versiones instaladas.</li>
+    <li><b>Salidas por ejecucion</b> en <code>salidas/ejecuciones/&lt;id&gt;/</code>: registro, manifiesto, reporte de calidad, perfil, monitoreo, serie preparada, evaluacion, estimaciones, observados, metricas, parametros y la configuracion usada.</li>
+    <li><b>Procesamiento separado de la interfaz</b>: el tablero solo lee archivos de <code>salidas/</code>. Una prueba automatica mueve el filtro de la pagina y verifica que no se ejecuta el pipeline.</li>
+  </ul>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 3</div>
+  <h2>4. Controles automaticos de calidad</h2>
+  <p>Cada control termina en ok, advertencia o critico. Un critico detiene el pipeline antes de ajustar, asi que nunca reemplaza la version vigente. Los periodos sin cobertura no se convierten en cero.</p>
+  <table>
+    <tr><th style="width:17%">Control</th><th style="width:28%">Que verifica</th><th style="width:25%">Advertencia</th><th>Detiene la ejecucion</th></tr>
+    <tr><td>a) Columnas y tipos</td><td>Columnas de la fuente; tipos de anio, mes, tipo y viajeros</td><td>Falta una columna descriptiva</td><td>Falta una indispensable o tiene valores no convertibles</td></tr>
+    <tr><td>b) Fechas y cobertura</td><td>Fechas validas; cada mes de ajuste y evaluacion con registros</td><td>Nombre de mes distinto a su codigo; mes faltante fuera del periodo necesario</td><td>Mes fuera de 1-12, anio menor al minimo, fecha futura o mes necesario sin informacion</td></tr>
+    <tr><td>c) Unicidad</td><td>Clave anio-mes-via-frontera-pais-agrupacion-tipo</td><td>Repetidas solo en tipos no usados</td><td>Repetidas en tipos usados (doble conteo)</td></tr>
+    <tr><td>d) Faltantes</td><td>Ausencias permitidas frente a las que impiden estimar</td><td>Faltan columnas descriptivas o conteos de tipos no usados</td><td>Falta anio, mes o tipo, o el conteo de un tipo usado</td></tr>
+    <tr><td>e) Valores y denominadores</td><td>Conteos finitos y no negativos; denominador de r</td><td>Mes evaluado con observado cero (sale del MAPE)</td><td>Conteo negativo o no finito en tipos usados, o denominador de r igual a cero</td></tr>
+    <tr><td>f) Regla metodologica</td><td>La serie sale de la fuente mensual: solo turistas y excursionistas, sin columnas diarias ni filas de total, y concilia con la suma directa</td><td>Factor de reparto sin fuente documentada</td><td>Tipos que no son visitantes, granularidad diaria, filas de total, factor fuera de [0, 1] o serie que no concilia</td></tr>
+  </table>
+  <p><b>Resultado en la version vigente</b> (<code>20261101T113708-33f338</code>): controles a) a e) en ok, sin claves repetidas ni faltantes en 161,036 filas y 210 meses; f) en advertencia porque el factor de reparto es un supuesto. La advertencia no detiene la publicacion pero queda en el reporte, en MLflow y en el tablero.</p>
+  <p>Cada control tiene pruebas con datos sinteticos para el caso que advierte y el que detiene (<code>tests/test_pipeline.py</code>, 28 pruebas del pipeline). Las que detienen verifican ademas que la version vigente sigue igual.</p>
+
+  <h3>5. Registro y trazabilidad en MLflow</h3>
+  <p>Experimento <code>observatorio-lago-de-atitlan</code>. El run se crea al inicio: si MLflow no responde, la ejecucion se detiene antes de leer datos y no publica nada que no se pueda rastrear.</p>
+  <table>
+    <tr><th style="width:30%">Requisito</th><th>Como queda en el run</th></tr>
+    <tr><td>Identificador y fecha</td><td>Nombre del run = id de ejecucion; etiquetas inicio y fin</td></tr>
+    <tr><td>Version del codigo</td><td>Etiqueta git_commit (en Docker se fija al construir la imagen con GIT_COMMIT)</td></tr>
+    <tr><td>Fuente y su huella</td><td>fuente_archivo, fuente_sha256 y fuente_filas</td></tr>
+    <tr><td>Periodos y parametros</td><td>Parametros periodo_*, formula, ventana_nivel, factor_*, umbrales; config_sha256 y el artefacto config.yaml</td></tr>
+    <tr><td>Metricas y controles</td><td>mae, rmse, mape y las de la referencia (solo si la evaluacion se completo); etiquetas calidad.*, aceptacion.*, monitoreo.*</td></tr>
+    <tr><td>Archivos</td><td>Estimaciones, configuracion, parametros.json (todo lo necesario para reproducir la formula), reporte de calidad, manifiesto y registro.log</td></tr>
+  </table>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 4</div>
+  <h2>Ejecuciones registradas</h2>
+  <figure><img src="capturas/mlflow_ejecuciones.png" alt="Lista de ejecuciones en MLflow" style="width:auto;max-width:100%;max-height:72mm"><figcaption>Experimento en la interfaz de MLflow (modo Model training): 8 ejecuciones, dos marcadas como fallidas.</figcaption></figure>
+  <p>Consulta con <code>python -m pipeline.consultar</code> (archivo completo en <code>evidencia/mlflow_ejecuciones.csv</code>):</p>
+  <table class="runs">
+    <tr><th>Ejecucion</th><th>Estado</th><th>Commit</th><th>Huella fuente</th><th class="n">MAE</th><th class="n">MAPE</th><th>Causa del fallo</th></tr>
+    <tr><td>20261101T173335-b4655f</td><td>publicada</td><td>7cafe5b</td><td>cdaba779</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+    <tr class="on"><td>20261101T113603-7aa3b6</td><td>publicada</td><td>698023e</td><td>cdaba779</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+    <tr class="on"><td>20261101T113614-7a0ca0</td><td>publicada</td><td>698023e</td><td>cdaba779</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+    <tr class="mal"><td>20261101T113642-74246e</td><td>fallida</td><td>698023e</td><td>8f78dc8a</td><td class="n">-</td><td class="n">-</td><td>Control a): falta la columna indispensable Viajero</td></tr>
+    <tr><td>20261101T113642-993761</td><td>publicada</td><td>698023e</td><td>f6fdbce2</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+    <tr class="mal"><td>20261101T113653-a51e91</td><td>fallida</td><td>698023e</td><td>be6082ce</td><td class="n">-</td><td class="n">-</td><td>Control c): 2 filas con clave repetida en tipos usados</td></tr>
+    <tr><td>20261101T113653-87a4ab</td><td>publicada</td><td>698023e</td><td>f6fdbce2</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+    <tr class="on"><td>20261101T113708-33f338</td><td>publicada (vigente)</td><td>698023e</td><td>cdaba779</td><td class="n">4,458</td><td class="n">11.14 %</td><td></td></tr>
+  </table>
+  <ul>
+    <li><b>Reproducibilidad (4.2).</b> Las ejecuciones en azul usan el mismo commit, la misma fuente y la misma configuracion. La consulta descarga de MLflow las estimaciones de <code>113614-7a0ca0</code> y <code>113708-33f338</code> y las compara: diferencia maxima 0 visitantes en los 6 meses y diferencia de MAE 0. La tolerancia configurada es 1e-6 visitantes, solo para redondeo de punto flotante; el procedimiento es determinista y no hubo diferencias que explicar.</li>
+    <li><b>Fallidas (4.3).</b> Las dos se detuvieron en la validacion y no tienen metricas de evaluacion: MLflow solo guarda los conteos de filas afectadas por control. Su estado es FAILED y la causa queda en la etiqueta error.</li>
+    <li>Las publicadas con huella f6fdbce2 son las recuperaciones de la prueba controlada, que leen una copia en parquet: la huella cambia con el formato, las estimaciones no.</li>
+  </ul>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 4</div>
+  <h2>Detalle de un run publicado y de uno fallido</h2>
+  <div class="dos">
+    <figure><img src="capturas/mlflow_run_publicada.png" alt="Run publicado"><figcaption>Run publicado: estado Finished, commit, huellas, controles, reglas de aceptacion, monitoreo, versiones de dependencias y metricas.</figcaption></figure>
+    <figure><img src="capturas/mlflow_run_fallida.png" alt="Run fallido"><figcaption>Run fallido: estado Failed, causa en la etiqueta error, c_unicidad critico y solo conteos de calidad y monitoreo, sin metricas de evaluacion.</figcaption></figure>
+  </div>
+  <p class="nota">La primera ejecucion en Docker (<code>173335-b4655f</code>) tiene la hora en UTC en su id porque la imagen aun no fijaba la zona horaria. Se corrigio en el commit 698023e; desde ahi los contenedores usan la hora de Guatemala.</p>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 5</div>
+  <h2>6. Validacion temporal y regla de aceptacion</h2>
+  <p>Se ocultaron los 12 meses observados de julio de 2025 a junio de 2026 y se estimaron desde el origen junio de 2025, con r calculado solo con datos hasta ese mes (r = 1.116). Ningun dato posterior al origen entra al calculo: una prueba multiplica por 10 los datos futuros y verifica que la estimacion no cambia. Ambos procedimientos se evaluaron sobre los mismos 12 meses.</p>
+  <table>
+    <tr><th>Procedimiento</th><th class="n">MAE (visitantes)</th><th class="n">RMSE</th><th class="n">MAPE</th></tr>
+    <tr class="on"><td>Estacional con ajuste de nivel</td><td class="n">4,458</td><td class="n">5,102</td><td class="n">11.14 %</td></tr>
+    <tr><td>Referencia: ultimo valor observado (jun 2025, 37,385)</td><td class="n">6,138</td><td class="n">8,159</td><td class="n">13.30 %</td></tr>
+  </table>
+  <table>
+    <tr><th>Mes</th><th class="n">Observado</th><th class="n">Estimado</th><th class="n">Error</th><th class="n">Referencia</th><th class="n">Error ref.</th></tr>
+    <tr><td>jul 2025</td><td class="n">43,936</td><td class="n">45,995</td><td class="n">+4.7 %</td><td class="n">37,385</td><td class="n">-14.9 %</td></tr>
+    <tr><td>ago 2025</td><td class="n">42,589</td><td class="n">47,053</td><td class="n">+10.5 %</td><td class="n">37,385</td><td class="n">-12.2 %</td></tr>
+    <tr><td>sep 2025</td><td class="n">31,951</td><td class="n">35,810</td><td class="n">+12.1 %</td><td class="n">37,385</td><td class="n">+17.0 %</td></tr>
+    <tr><td>oct 2025</td><td class="n">37,798</td><td class="n">43,664</td><td class="n">+15.5 %</td><td class="n">37,385</td><td class="n">-1.1 %</td></tr>
+    <tr><td>nov 2025</td><td class="n">47,937</td><td class="n">50,952</td><td class="n">+6.3 %</td><td class="n">37,385</td><td class="n">-22.0 %</td></tr>
+    <tr><td>dic 2025</td><td class="n">56,922</td><td class="n">61,476</td><td class="n">+8.0 %</td><td class="n">37,385</td><td class="n">-34.3 %</td></tr>
+    <tr><td>ene 2026</td><td class="n">47,396</td><td class="n">48,172</td><td class="n">+1.6 %</td><td class="n">37,385</td><td class="n">-21.1 %</td></tr>
+    <tr><td>feb 2026</td><td class="n">38,036</td><td class="n">47,223</td><td class="n">+24.2 %</td><td class="n">37,385</td><td class="n">-1.7 %</td></tr>
+    <tr><td>mar 2026</td><td class="n">46,696</td><td class="n">47,870</td><td class="n">+2.5 %</td><td class="n">37,385</td><td class="n">-19.9 %</td></tr>
+    <tr><td>abr 2026</td><td class="n">41,304</td><td class="n">49,739</td><td class="n">+20.4 %</td><td class="n">37,385</td><td class="n">-9.5 %</td></tr>
+    <tr><td>may 2026</td><td class="n">35,553</td><td class="n">41,079</td><td class="n">+15.5 %</td><td class="n">37,385</td><td class="n">+5.2 %</td></tr>
+    <tr><td>jun 2026</td><td class="n">37,152</td><td class="n">41,739</td><td class="n">+12.3 %</td><td class="n">37,385</td><td class="n">+0.6 %</td></tr>
+  </table>
+  <p>El procedimiento supera a la referencia (su MAE es 73 % del de la referencia) porque sigue la estacionalidad, que la referencia ignora. Pero <b>sobreestimo 11 de los 12 meses</b>: r = 1.116 extrapola el crecimiento entre 2024 y 2025, que en 2026 se desacelero. El MAPE excluye los meses con observado igual a cero y reporta cuantos excluyo; en este periodo no hubo ninguno.</p>
+  <h3>Limitaciones para reproducir enero y febrero de 2026</h3>
+  <ul>
+    <li>No hay un conteo observado del destino para ningun mes. La serie "observada" es la nacional por un factor supuesto, asi que el error mide el procedimiento sobre la dinamica nacional y no contra visitantes reales del lago.</li>
+    <li>La base si trae enero y febrero de 2026 a nivel nacional. Dentro de la definicion de este flujo son comparables y entran en la evaluacion (1.6 % y 24.2 % de error), pero no reproducen la situacion de un destino sin dato propio.</li>
+    <li>En la situacion real el ultimo dato seria diciembre de 2025 (horizonte de 1 y 2 meses); aqui esos meses se estiman con horizonte de 7 y 8 meses, un escenario mas exigente.</li>
+    <li>El cambio de metodologia de 2023 deja pocos periodos comparables: no se puede repetir la validacion con varios origenes sin mezclar niveles.</li>
+  </ul>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 5.4</div>
+  <h2>Regla de aceptacion</h2>
+  <p>Una version candidata se publica solo si cumple las cuatro condiciones. Los umbrales estan en <code>config/config.yaml</code> y la regla se aplica en <code>pipeline/run.py</code>.</p>
+  <table>
+    <tr><th style="width:36%">Condicion</th><th>Valor en la version vigente</th><th>Umbral</th><th>Cumple</th></tr>
+    <tr><td>Ningun control de calidad critico</td><td>0 criticos, 1 advertencia</td><td>0 criticos</td><td>si</td></tr>
+    <tr><td>Salidas completas, finitas y no negativas</td><td>6 de 6 meses, de 32,269 a 57,489</td><td>6 meses</td><td>si</td></tr>
+    <tr><td>MAPE de la evaluacion</td><td>11.14 %</td><td>15 % como maximo</td><td>si</td></tr>
+    <tr><td>MAE frente al de la referencia en los mismos meses</td><td>0.73 veces</td><td>1.25 veces como maximo</td><td>si</td></tr>
+  </table>
+  <h3>Justificacion de los umbrales</h3>
+  <ul>
+    <li><b>Independientes del factor de reparto.</b> El MAPE y la razon de MAE no dependen de la escala, asi que la regla no cambia cuando se reemplace el factor supuesto por el oficial. Un umbral en visitantes si dependeria de el.</li>
+    <li><b>15 % de MAPE.</b> Con el promedio observado de la evaluacion (42,272 visitantes por mes) equivale a unos 6,300 visitantes por mes. Es menor que la variacion interanual tipica de la serie desde 2023 (mediana 12 %, percentil 90 de 29 %): un error mayor no aportaria mas que mirar el mismo mes de doce meses antes.</li>
+    <li><b>1.25 veces el MAE de la referencia.</b> No es obligatorio superar a la referencia. Con una sola ventana de 12 meses la diferencia entre dos MAE es ruidosa, asi que se admite un procedimiento algo peor, pero se rechaza uno claramente peor que repetir el ultimo dato.</li>
+    <li>La regla no se modifico despues de ver los resultados. Una version rechazada termina con codigo 2, queda en MLflow como FINISHED con estado rechazada y no toca <code>vigente.json</code>.</li>
+  </ul>
+
+  <h3>7. Integracion con el tablero</h3>
+  <p>La pagina <b>Estimaciones del destino</b> lee <code>salidas/vigente.json</code> y los archivos de esa version. Cada archivo de estimaciones trae destino, periodo, valor, unidad, tipo de valor, id de ejecucion, fecha de generacion y version del procedimiento. Lo observado va en linea negra continua y lo estimado en violeta discontinuo con puntos huecos, con el tramo estimado sombreado y la etiqueta "Estimado" que usa el resto del tablero. La pagina muestra la fecha de actualizacion, el error de validacion con una explicacion breve y los meses evaluados, y una advertencia sobre el factor de reparto. Los parametros y las ejecuciones quedan en MLflow y en la documentacion; la interfaz sigue pensada para directivos. Si no hay version aprobada, dice que las estimaciones no estan disponibles.</p>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 6</div>
+  <h2>El tablero con la version aprobada</h2>
+  <figure><img class="alta" src="capturas/estimaciones_vigente.png" alt="Pagina de estimaciones"><figcaption>Pagina Estimaciones del destino con la version vigente <code>20261101T113708-33f338</code>: indicadores, advertencia de lectura, serie observada y estimada, y validacion frente a la referencia.</figcaption></figure>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 7</div>
+  <h2>8. Monitoreo y recuperacion</h2>
+  <p><b>Registro por ejecucion.</b> <code>registro.log</code> guarda la hora de cada evento, las etapas completadas, el resultado de cada control y verificacion, las advertencias, los errores y el resultado de la publicacion; <code>manifiesto.json</code> guarda inicio, fin, etapas, estado y error. Registro de la ejecucion fallida por duplicado (lineas seleccionadas, sin la fecha; ... indica texto recortado):</p>
+  <pre>11:36:53 INFO Inicio de la ejecucion 20261101T113653-a51e91 (destino Lago de Atitlán)
+11:36:53 INFO Run de MLflow 889c7079cb9c4a8fb444a8da4cd70da7 en http://mlflow:5000
+11:36:53 INFO Etapa completada: lectura
+11:36:53 INFO Control a_columnas_tipos: ok - Columnas y tipos completos
+11:36:53 ERROR Control c_unicidad: critico - 2 filas con clave repetida (2 en tipos usados); clav...
+11:36:53 WARNING Control f_regla_metodologica: advertencia - el factor de reparto es un supuesto ...
+11:36:53 WARNING Monitoreo calidad: alerta - aumentaron los claves repetidas: de 0 a 2
+11:36:53 ERROR Ejecucion detenida en la etapa validacion: Fallaron controles criticos: c_unicidad...
+11:36:53 INFO Resultado: fallida</pre>
+  <table>
+    <tr><th style="width:15%">Verificacion</th><th style="width:40%">Que revisa</th><th>Umbral y justificacion</th></tr>
+    <tr><td>Actualizacion</td><td>La fuente llega al ultimo periodo esperado (2026-06) y las estimaciones empiezan el mes siguiente</td><td>Cobertura configurada. Tambien avisa si la fuente ya trae meses que la configuracion no usa</td></tr>
+    <tr><td>Calidad</td><td>Filas, faltantes, claves repetidas y meses con datos frente al perfil de la version vigente</td><td>Filas: 10 %. Un mes nuevo agrega cerca de 0.5 % de filas, asi que mas indica un cambio de estructura. Faltantes, duplicados y cobertura: cualquier deterioro</td></tr>
+    <tr><td>Resultados</td><td>Estimaciones negativas o no finitas; variacion interanual; cambio frente a la version vigente</td><td>Interanual 30 %: desde 2024 el 95 % de las variaciones observadas es menor que 28 %. Entre versiones 10 %: un mes nuevo mueve r pocos puntos</td></tr>
+  </table>
+  <p>Una alerta queda en el registro, el manifiesto, MLflow y una nota del tablero, y pide revision. Por si sola no rechaza la version ni demuestra perdida de precision. El error predictivo solo se recalcula en la evaluacion, donde hay observaciones comparables.</p>
+
+  <h3>Prueba controlada (7.4)</h3>
+  <p><code>python -m pipeline.prueba_controlada</code> copia la fuente, introduce un problema en la copia, ejecuta, verifica que la version aprobada siga igual (huella de sus archivos), corrige la copia y vuelve a ejecutar. La fuente original nunca se modifica.</p>
+  <table>
+    <tr><th>Problema introducido</th><th>Ejecucion con el problema</th><th>Vigente antes y despues</th><th>Tras corregir</th></tr>
+    <tr><td>Columna Viajero eliminada</td><td>74246e fallida; control a) critico</td><td>7a0ca0 y 7a0ca0, archivos sin cambios</td><td>993761 publicada</td></tr>
+    <tr><td>Fila de turistas duplicada</td><td>a51e91 fallida; control c) critico y alerta de calidad</td><td>993761 y 993761, archivos sin cambios</td><td>87a4ab publicada</td></tr>
+  </table>
+  <p>Las pruebas automaticas cubren ademas el denominador de r igual a cero con datos sinteticos.</p>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 7.5</div>
+  <h2>Restaurar una version anterior</h2>
+  <p><code>salidas/versiones/</code> conserva todas las versiones aprobadas (ocho, incluidas dos del 29 de octubre). Restaurar solo cambia <code>vigente.json</code> de forma atomica, sin borrar nada:</p>
+  <pre>python -m pipeline.restaurar --listar                  # * marca la vigente
+python -m pipeline.restaurar --anterior                # la que estaba antes de la vigente
+python -m pipeline.restaurar --id 20261101T113614-7a0ca0</pre>
+  <p>Se restauro <code>113614-7a0ca0</code>; el tablero la mostro al recargar y avisa que es una version anterior. Despues se volvio a la ultima publicada, <code>113708-33f338</code>, que el tablero vuelve a mostrar sin aviso.</p>
+  <figure><img class="alta" src="capturas/estimaciones_restaurada.png" alt="Version restaurada en el tablero" style="max-height:150mm"><figcaption>El tablero consultando la version restaurada, con el aviso de version anterior.</figcaption></figure>
+</section>
+
+<section class="sec">
+  <div class="k">Ejercicio 8</div>
+  <h2>9. Docker y reproducibilidad</h2>
+  <table>
+    <tr><th style="width:16%">Servicio</th><th>Que hace</th><th style="width:34%">Carpetas montadas</th></tr>
+    <tr><td>mlflow</td><td>Servidor de MLflow 3.17.2 en 127.0.0.1:5000, base SQLite y artefactos servidos por el propio servidor</td><td><code>mlflow/</code></td></tr>
+    <tr><td>tablero</td><td>Streamlit en 127.0.0.1:8501</td><td><code>data/</code>, <code>salidas/</code> (solo lectura), <code>config/</code></td></tr>
+    <tr><td>pipeline</td><td>Una ejecucion por <code>docker compose run --rm pipeline</code>; tambien consulta, prueba controlada y restauracion</td><td><code>data/</code> (solo lectura), <code>salidas/</code>, <code>config/</code>, <code>evidencia/</code></td></tr>
+  </table>
+  <ul>
+    <li><b>Datos fuera de la imagen.</b> <code>.dockerignore</code> excluye <code>data/</code>; se verifico que la imagen no contiene ningun xlsx. La carpeta de datos se cambia con <code>DATOS_DIR</code>.</li>
+    <li><b>Persistencia.</b> <code>salidas/</code> y <code>mlflow/</code> son carpetas del repositorio montadas en los contenedores; sobreviven a <code>docker compose down</code> y a reconstruir la imagen.</li>
+    <li><b>Commit dentro del contenedor.</b> No hay <code>.git</code> en la imagen: <code>GIT_COMMIT</code> se pasa al construir y el pipeline lo registra.</li>
+    <li><b>Puertos solo en 127.0.0.1</b> y MLflow acepta solo los hosts mlflow, localhost y 127.0.0.1: ni el tablero ni MLflow quedan expuestos a la red.</li>
+  </ul>
+  <h3>Comprobacion desde una copia limpia (8.4)</h3>
+  <p>Se clono el repositorio desde GitHub en una carpeta nueva, sin <code>mlflow/</code> ni <code>salidas/ejecuciones/</code>, y se corrio:</p>
+  <pre>export GIT_COMMIT=$(git rev-parse HEAD)
+docker compose build
+docker compose up -d
+docker compose run --rm pipeline
+docker compose run --rm pipeline python -m pytest tests/test_pipeline.py
+docker compose down &amp;&amp; docker compose up -d
+docker compose run --rm pipeline python -m pipeline.consultar</pre>
+  <p>Resultado: la ejecucion se publico con las mismas metricas (MAE 4,458.34, MAPE 11.14 %), las 28 pruebas del pipeline pasaron dentro del contenedor, el tablero y MLflow respondieron, y despues de recrear los contenedores el run seguia en MLflow y <code>vigente.json</code> seguia apuntando a la version publicada.</p>
+
+  <h3>10. Limitaciones y siguientes pasos</h3>
+  <ul>
+    <li>El factor de reparto es un supuesto. Cuando la guia del proyecto fije el oficial, basta con cambiarlo en la configuracion: la regla de aceptacion no depende de la escala.</li>
+    <li>El procedimiento tiende a sobreestimar cuando el crecimiento se desacelera. Una ventana de nivel mas corta o un amortiguamiento de r son candidatos para una version 1.1, que tendria que pasar la misma regla.</li>
+    <li>La validacion usa un solo origen. Con mas periodos comparables convendria promediar varios origenes.</li>
+    <li>Las pruebas del tablero y del pipeline (56 en total) corren con <code>python -m pytest tests</code>.</li>
+  </ul>
+</section>
+
+</body>
+</html>
