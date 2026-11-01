@@ -64,3 +64,13 @@ calidad:
 aceptacion:
   mape_maximo: 15.0                 # %
   mae_relativo_referencia_maximo: 1.25
+
+mlflow:
+  # MLFLOW_TRACKING_URI tiene prioridad (en Docker apunta al servicio mlflow)
+  tracking_uri: http://localhost:5000
+  experimento: observatorio-lago-de-atitlan
+
+reproducibilidad:
+  # Diferencia absoluta maxima entre las estimaciones de dos ejecuciones con los mismos datos y
+  # configuracion. El procedimiento es determinista; el margen solo cubre redondeo de punto flotante.
+  tolerancia: 1.0e-6   # visitantes

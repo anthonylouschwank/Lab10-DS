@@ -33,11 +33,11 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from pipeline import calidad
+from pipeline import calidad, seguimiento
 from pipeline import procedimiento as proc
 from pipeline.configuracion import CONFIG_DEFECTO, ROOT, cargar
 
-DEPENDENCIAS = ["pandas", "numpy", "pyarrow", "openpyxl", "PyYAML"]
+DEPENDENCIAS = ["pandas", "numpy", "pyarrow", "openpyxl", "PyYAML", "mlflow"]
 ETAPAS = ["lectura", "validacion", "preparacion", "ajuste", "evaluacion", "estimacion", "almacenamiento", "publicacion"]
 
 
@@ -50,13 +50,14 @@ def _huella(path: Path) -> str:
 
 
 def _commit() -> dict:
+    """Commit del codigo. En Docker no hay .git: se usa GIT_COMMIT, fijado al construir la imagen."""
     def git(*args: str) -> str:
         return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
 
     try:
         return {"commit": git("rev-parse", "HEAD"), "cambios_sin_commit": bool(git("status", "--porcelain"))}
     except (OSError, subprocess.CalledProcessError):
-        return {"commit": None, "cambios_sin_commit": None}
+        return {"commit": os.environ.get("GIT_COMMIT") or None, "cambios_sin_commit": None}
 
 
 def _versiones() -> dict:
@@ -145,6 +146,7 @@ def ejecutar(cfg: dict) -> dict:
         "codigo": _commit(),
         "dependencias": _versiones(),
         "configuracion": cfg["_archivo"],
+        "config_sha256": seguimiento.huella_config(cfg),
         "fuente": {"ruta": str(cfg["rutas"]["fuente"])},
         "periodos": cfg["periodos"],
         "procedimiento": cfg["procedimiento"],
@@ -159,8 +161,15 @@ def ejecutar(cfg: dict) -> dict:
         manifiesto["etapas_completadas"].append(etapa)
         log.info("Etapa completada: %s", etapa)
 
+    def guardar_manifiesto() -> None:
+        (carpeta / "manifiesto.json").write_text(json.dumps(manifiesto, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+
+    cliente = None
     try:
         log.info("Inicio de la ejecucion %s (destino %s)", run_id, destino)
+        cliente, mlflow_run, exp_id = seguimiento.iniciar(cfg, run_id)
+        manifiesto["mlflow"] = {"tracking_uri": seguimiento.tracking_uri(cfg), "experimento_id": exp_id, "run_id": mlflow_run}
+        log.info("Run de MLflow %s en %s", mlflow_run, manifiesto["mlflow"]["tracking_uri"])
         raw = leer_fuente(cfg)
         manifiesto["fuente"] |= {"sha256": _huella(cfg["rutas"]["fuente"]), "filas": len(raw)}
         completar("lectura")
@@ -172,7 +181,7 @@ def ejecutar(cfg: dict) -> dict:
             nivel = logging.ERROR if r.estado == calidad.CRITICO else logging.WARNING if r.estado == calidad.ADVERTENCIA else logging.INFO
             log.log(nivel, "Control %s: %s - %s", r.control, r.estado, r.detalle)
         if calidad.hay_criticos(resultados):
-            raise calidad.ControlCritico("Fallaron controles criticos: " + ", ".join(r.control for r in resultados if r.estado == calidad.CRITICO))
+            raise calidad.ControlCritico("Fallaron controles criticos: " + "; ".join(f"{r.control} ({r.detalle})" for r in resultados if r.estado == calidad.CRITICO))
         completar("validacion")
 
         serie = proc.construir_serie(df, cfg)
@@ -215,22 +224,34 @@ def ejecutar(cfg: dict) -> dict:
         completar("almacenamiento")
 
         if decision["aprobada"]:
-            _publicar(carpeta, salidas, run_id)
+            # El manifiesto se escribe antes de copiar para que la version publicada lo incluya
             manifiesto["estado"] = "publicada"
-            completar("publicacion")
+            manifiesto["etapas_completadas"].append("publicacion")
+            guardar_manifiesto()
+            _publicar(carpeta, salidas, run_id)
+            log.info("Etapa completada: publicacion")
         else:
             manifiesto["estado"] = "rechazada"
             log.warning("Version rechazada por la regla de aceptacion: %s", decision["reglas"])
     except Exception as e:  # cualquier fallo deja intacta la version vigente
+        if "publicacion" in manifiesto["etapas_completadas"]:  # fallo la copia o el cambio de vigente.json
+            manifiesto["etapas_completadas"].remove("publicacion")
         manifiesto |= {"estado": "fallida", "error": f"{type(e).__name__}: {e}"}
         log.error("Ejecucion detenida en la etapa %s: %s", next((s for s in ETAPAS if s not in manifiesto["etapas_completadas"]), "?"), e)
     finally:
         manifiesto["fin"] = datetime.now().isoformat(timespec="seconds")
-        (carpeta / "manifiesto.json").write_text(json.dumps(manifiesto, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
         log.info("Resultado: %s", manifiesto["estado"])
         for handler in list(log.handlers):
             handler.close()
             log.removeHandler(handler)
+        guardar_manifiesto()
+        if cliente is not None:
+            try:
+                seguimiento.cerrar(cliente, manifiesto["mlflow"]["run_id"], manifiesto, carpeta)
+            except Exception as e:  # la ejecucion ya termino; queda constancia en el manifiesto
+                manifiesto["mlflow"]["error"] = f"{type(e).__name__}: {e}"
+                guardar_manifiesto()
+                print(f"No se pudo cerrar el run de MLflow: {e}", file=sys.stderr)
     manifiesto["carpeta"] = str(carpeta)
     return manifiesto
 

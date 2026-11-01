@@ -7,8 +7,9 @@ import json
 import numpy as np
 import pandas as pd
 import pytest
+from mlflow.tracking import MlflowClient
 
-from pipeline import calidad
+from pipeline import calidad, consultar
 from pipeline import procedimiento as proc
 from pipeline.configuracion import cargar
 from pipeline.run import ejecutar
@@ -36,7 +37,9 @@ def entorno(tmp_path):
     def preparar(raw: pd.DataFrame, formato: str = "parquet") -> dict:
         fuente = tmp_path / f"base.{formato}"
         raw.to_csv(fuente, index=False) if formato == "csv" else raw.to_parquet(fuente, index=False)
-        return cargar(fuente=str(fuente), salidas=str(tmp_path / "salidas"))
+        cfg = cargar(fuente=str(fuente), salidas=str(tmp_path / "salidas"))
+        cfg["mlflow"]["experimento"] = f"pruebas-{tmp_path.name}"
+        return cfg
     return preparar
 
 
@@ -158,3 +161,56 @@ def test_f_tipo_que_no_es_visitante(entorno):
     cfg["reparto"]["factores"]["Viajero"] = 0.1
     resultados, _ = calidad.validar(base_sintetica(), cfg)
     assert {r.control: r.estado for r in resultados}["f_regla_metodologica"] == calidad.CRITICO
+
+
+# MLflow (ejercicio 4)
+
+def test_mlflow_registra_ejecucion_publicada(entorno):
+    cfg = entorno(base_sintetica())
+    m = ejecutar(cfg)
+    client = MlflowClient()
+    run = client.get_run(m["mlflow"]["run_id"])
+    assert run.info.status == "FINISHED" and run.info.run_name == m["id_ejecucion"]
+    tags, params, metricas = run.data.tags, run.data.params, run.data.metrics
+    assert tags["estado"] == "publicada" and tags["git_commit"] == str(m["codigo"]["commit"] or "desconocido")
+    assert tags["fuente_sha256"] == m["fuente"]["sha256"] and tags["calidad.c_unicidad"] == calidad.OK
+    assert params["periodo_ajuste_inicio"] == cfg["periodos"]["ajuste"][0] and params["factor_Turista"] == "0.2"
+    assert metricas["mape"] == pytest.approx(m["metricas"]["procedimiento"]["MAPE"])
+    artefactos = {a.path for a in client.list_artifacts(run.info.run_id)}
+    assert {"estimaciones.parquet", "config.yaml", "parametros.json", "calidad.json", "manifiesto.json", "registro.log"} <= artefactos
+
+
+def test_mlflow_fallida_sin_metricas_y_con_causa(entorno):
+    m = ejecutar(entorno(base_sintetica().drop(columns="Viajero")))
+    run = MlflowClient().get_run(m["mlflow"]["run_id"])
+    assert run.info.status == "FAILED" and run.data.tags["estado"] == "fallida"
+    assert "a_columnas_tipos" in run.data.tags["error"] and "Viajero" in run.data.tags["error"]
+    assert not {c for c in run.data.metrics if not c.startswith("calidad_")}
+
+
+def test_mlflow_no_disponible_detiene_sin_publicar(entorno, monkeypatch):
+    cfg = entorno(base_sintetica())
+    aprobada = ejecutar(cfg)
+    monkeypatch.setenv("MLFLOW_TRACKING_URI", "http://127.0.0.1:9")
+    monkeypatch.setenv("MLFLOW_HTTP_REQUEST_MAX_RETRIES", "0")
+    m = ejecutar(cfg)
+    assert m["estado"] == "fallida" and m["etapas_completadas"] == []
+    vigente = json.loads((cfg["rutas"]["salidas"] / "vigente.json").read_text(encoding="utf-8"))
+    assert vigente["id_ejecucion"] == aprobada["id_ejecucion"]
+
+
+def test_version_publicada_incluye_manifiesto(entorno):
+    cfg = entorno(base_sintetica())
+    m = ejecutar(cfg)
+    copia = json.loads((cfg["rutas"]["salidas"] / "versiones" / m["id_ejecucion"] / "manifiesto.json").read_text(encoding="utf-8"))
+    assert copia["estado"] == "publicada" and copia["mlflow"]["run_id"] == m["mlflow"]["run_id"]
+
+
+def test_consulta_reproducibilidad(entorno, tmp_path):
+    cfg = entorno(base_sintetica())
+    ejecutar(cfg), ejecutar(cfg)
+    ejecutar(entorno(base_sintetica().drop(columns="Viajero")))
+    tabla, repro = consultar.escribir_evidencia(cfg, tmp_path / "evidencia")
+    assert len(tabla) == 3 and (tabla["estado"] == "fallida").sum() == 1
+    assert repro["equivalentes"] and repro["diferencia_maxima"] == 0
+    assert "sin metricas" in (tmp_path / "evidencia" / "mlflow_consulta.md").read_text(encoding="utf-8")
