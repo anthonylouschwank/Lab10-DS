@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 from mlflow.tracking import MlflowClient
 
-from pipeline import calidad, consultar, monitoreo
+from pipeline import calidad, consultar, monitoreo, restaurar
 from pipeline import procedimiento as proc
 from pipeline.configuracion import cargar
 from pipeline.run import ejecutar
@@ -252,3 +252,24 @@ def test_monitoreo_cambio_frente_a_vigente(entorno):
     assert m["estado"] == "publicada"
     run = MlflowClient().get_run(m["mlflow"]["run_id"])
     assert run.data.tags["monitoreo.resultados"] == monitoreo.ALERTA and run.data.metrics["monitoreo_alertas"] == 1
+
+
+# Restauracion (ejercicio 7.5)
+
+def test_restaurar_version_anterior_y_volver(entorno):
+    cfg = entorno(base_sintetica())
+    salidas = cfg["rutas"]["salidas"]
+    a, b = ejecutar(cfg), ejecutar(cfg)
+    assert restaurar.main(["--salidas", str(salidas), "--anterior"]) == 0
+    vig = restaurar.vigente(salidas)
+    assert vig["id_ejecucion"] == a["id_ejecucion"] and vig["anterior"] == b["id_ejecucion"] and vig["restaurada"]
+    assert restaurar.main(["--salidas", str(salidas), "--id", b["id_ejecucion"]]) == 0
+    assert restaurar.vigente(salidas)["id_ejecucion"] == b["id_ejecucion"]
+    assert restaurar.versiones(salidas) == sorted([a["id_ejecucion"], b["id_ejecucion"]])
+
+
+def test_restaurar_version_inexistente_no_cambia_vigente(entorno):
+    cfg = entorno(base_sintetica())
+    m = ejecutar(cfg)
+    assert restaurar.main(["--salidas", str(cfg["rutas"]["salidas"]), "--id", "no-existe"]) == 1
+    assert restaurar.vigente(cfg["rutas"]["salidas"])["id_ejecucion"] == m["id_ejecucion"]

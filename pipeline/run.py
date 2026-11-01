@@ -113,16 +113,21 @@ def _publicar(carpeta: Path, salidas: Path, run_id: str) -> Path:
     shutil.copytree(carpeta, destino, ignore=shutil.ignore_patterns("registro.log", "datos_preparados.parquet"))
     vigente = salidas / "vigente.json"
     anterior = json.loads(vigente.read_text(encoding="utf-8")) if vigente.exists() else None
-    nuevo = {
+    escribir_vigente(salidas, {
         "id_ejecucion": run_id,
         "ruta": f"versiones/{run_id}",
         "publicado": datetime.now().isoformat(timespec="seconds"),
         "anterior": anterior["id_ejecucion"] if anterior else None,
-    }
-    tmp = vigente.with_suffix(".tmp")
-    tmp.write_text(json.dumps(nuevo, ensure_ascii=False, indent=2), encoding="utf-8")
-    os.replace(tmp, vigente)
+    })
     return destino
+
+
+def escribir_vigente(salidas: Path, contenido: dict) -> None:
+    """Reemplaza vigente.json de forma atomica: el tablero nunca lee un archivo a medio escribir."""
+    vigente = salidas / "vigente.json"
+    tmp = vigente.with_suffix(".tmp")
+    tmp.write_text(json.dumps(contenido, ensure_ascii=False, indent=2), encoding="utf-8")
+    os.replace(tmp, vigente)
 
 
 def ejecutar(cfg: dict) -> dict:
