@@ -9,7 +9,7 @@ import pandas as pd
 import pytest
 from mlflow.tracking import MlflowClient
 
-from pipeline import calidad, consultar, monitoreo, restaurar
+from pipeline import calidad, consultar, monitoreo, prueba_controlada, restaurar
 from pipeline import procedimiento as proc
 from pipeline.configuracion import cargar
 from pipeline.run import ejecutar
@@ -273,3 +273,15 @@ def test_restaurar_version_inexistente_no_cambia_vigente(entorno):
     m = ejecutar(cfg)
     assert restaurar.main(["--salidas", str(cfg["rutas"]["salidas"]), "--id", "no-existe"]) == 1
     assert restaurar.vigente(cfg["rutas"]["salidas"])["id_ejecucion"] == m["id_ejecucion"]
+
+
+# Prueba controlada (ejercicio 7.4)
+
+@pytest.mark.parametrize("problema", ["columna", "duplicado", "denominador"])
+def test_prueba_controlada_detecta_conserva_y_recupera(entorno, tmp_path, problema):
+    cfg = entorno(base_sintetica())
+    aprobada = ejecutar(cfg)
+    resumen = prueba_controlada.correr(cfg, problema, tmp_path / "evidencia")
+    assert resumen["comportamiento_esperado"], resumen
+    assert resumen["vigente_antes"] == aprobada["id_ejecucion"]
+    assert "detecto el problema" in (tmp_path / "evidencia" / f"prueba_controlada_{problema}.md").read_text(encoding="utf-8")
