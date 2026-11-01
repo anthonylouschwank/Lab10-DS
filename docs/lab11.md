@@ -28,7 +28,7 @@ y_hat(o + h) = y(o + h - 12) * r(o)
 r(o)         = sum(y[o-11 .. o]) / sum(y[o-23 .. o-12])        (ventana k = 12)
 ```
 
-`o` es el ultimo mes observado. Cada mes estimado repite el mismo mes del ano anterior, escalado por
+`o` es el ultimo mes observado. Cada mes estimado repite el mismo mes de doce meses antes, escalado por
 el crecimiento de los ultimos 12 meses frente a los 12 previos. No tiene componentes aleatorios; la
 semilla (2026) se fija igual por si se agregan.
 
@@ -101,7 +101,7 @@ asi que nunca se reemplaza la version vigente. El reporte queda en `calidad.md` 
 | Control | Que verifica | Advertencia | Detiene |
 |---|---|---|---|
 | a) Columnas y tipos | Columnas de la fuente; anio, mes, tipo y viajeros con tipo compatible | Falta una columna descriptiva | Falta una indispensable o tiene valores no convertibles |
-| b) Fechas y cobertura | Fechas validas; cada mes de ajuste y evaluacion con registros de los tipos usados | Nombre de mes distinto a su codigo, o falta un mes fuera del periodo necesario | Mes fuera de 1-12, ano menor al minimo, fecha futura o mes necesario sin informacion |
+| b) Fechas y cobertura | Fechas validas; cada mes de ajuste y evaluacion con registros de los tipos usados | Nombre de mes distinto a su codigo, o falta un mes fuera del periodo necesario | Mes fuera de 1-12, anio menor al minimo, fecha futura o mes necesario sin informacion |
 | c) Unicidad | Clave anio-mes-via-frontera-pais-agrupacion-tipo | Repetidas solo en tipos no usados | Repetidas en tipos usados (doble conteo) |
 | d) Faltantes | Distingue ausencias permitidas | Faltantes en columnas descriptivas o en tipos no usados | Falta anio, mes o tipo, o el conteo de un tipo usado |
 | e) Valores y denominadores | Conteos finitos y no negativos; denominador de r mayor que cero | Mes evaluado con observado cero (sale del MAPE) | Conteo negativo o no finito en tipos usados, o denominador de r cero |
@@ -173,7 +173,7 @@ excluye los meses con observado cero y reporta cuantos excluyo; en este periodo 
   reproducen la situacion de un destino sin dato propio.
 - En la situacion real el ultimo mes con dato seria diciembre de 2025 (horizonte 1 y 2). Aqui esos
   meses se estiman con horizonte 7 y 8 desde junio de 2025, un escenario mas exigente.
-- La fuente cambia de metodologia en 2023: no hay suficientes anos comparables para repetir la
+- La fuente cambia de metodologia en 2023: no hay suficientes periodos comparables para repetir la
   validacion con varios origenes sin mezclar niveles.
 
 **Regla de aceptacion** (`aceptacion` en `config/config.yaml`, aplicada en `pipeline/run.py`). Una

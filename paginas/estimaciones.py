@@ -89,7 +89,7 @@ if "serie" in visibles:
         "estimacion",
         "**Que muestra.** La linea negra continua son los meses observados. La linea violeta discontinua, con puntos "
         "huecos, son las estimaciones de los meses que todavia no tienen dato; el fondo violeta marca ese tramo.\n\n"
-        "**Como se estima.** Cada mes repite el mismo mes del ano anterior, ajustado por cuanto crecieron o bajaron "
+        "**Como se estima.** Cada mes repite el mismo mes de doce meses antes, ajustado por cuanto crecieron o bajaron "
         "los ultimos 12 meses frente a los 12 previos.",
     ):
         st.plotly_chart(figura_estimaciones(obs[obs["fecha"].dt.year >= desde], est, unidad), key="est_serie", width="stretch")
