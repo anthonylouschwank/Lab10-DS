@@ -42,12 +42,15 @@ def restaurar(salidas: Path, run_id: str) -> dict:
     if faltan:
         raise ValueError(f"La version {run_id} esta incompleta, faltan {faltan}")
     actual = vigente(salidas)
+    # Ultima version que publico el pipeline: volver a ella no cuenta como restaurar una anterior
+    ultima = (actual.get("ultima_publicada") or actual["id_ejecucion"]) if actual else None
     nuevo = {
         "id_ejecucion": run_id,
         "ruta": f"versiones/{run_id}",
         "publicado": datetime.now().isoformat(timespec="seconds"),
-        "anterior": actual["id_ejecucion"] if actual else None,
-        "restaurada": True,
+        "anterior": (actual["id_ejecucion"] if actual["id_ejecucion"] != run_id else actual.get("anterior")) if actual else None,
+        "restaurada": run_id != ultima,
+        "ultima_publicada": ultima,
     }
     escribir_vigente(salidas, nuevo)
     return nuevo

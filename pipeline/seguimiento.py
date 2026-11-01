@@ -21,6 +21,8 @@ import yaml
 # Sin reintentos largos: si el servidor no responde se sabe en segundos
 os.environ.setdefault("MLFLOW_HTTP_REQUEST_MAX_RETRIES", "2")
 os.environ.setdefault("MLFLOW_HTTP_REQUEST_TIMEOUT", "15")
+# Sin el aviso informativo que MLflow imprime al importarse
+os.environ.setdefault("MLFLOW_DISABLE_AGENT_HINT", "1")
 
 from mlflow.entities import Metric, Param, RunTag  # noqa: E402
 from mlflow.tracking import MlflowClient  # noqa: E402

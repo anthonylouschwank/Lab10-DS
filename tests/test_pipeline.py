@@ -264,7 +264,8 @@ def test_restaurar_version_anterior_y_volver(entorno):
     vig = restaurar.vigente(salidas)
     assert vig["id_ejecucion"] == a["id_ejecucion"] and vig["anterior"] == b["id_ejecucion"] and vig["restaurada"]
     assert restaurar.main(["--salidas", str(salidas), "--id", b["id_ejecucion"]]) == 0
-    assert restaurar.vigente(salidas)["id_ejecucion"] == b["id_ejecucion"]
+    vig = restaurar.vigente(salidas)
+    assert vig["id_ejecucion"] == b["id_ejecucion"] and not vig["restaurada"]  # volver a la ultima publicada
     assert restaurar.versiones(salidas) == sorted([a["id_ejecucion"], b["id_ejecucion"]])
 
 
