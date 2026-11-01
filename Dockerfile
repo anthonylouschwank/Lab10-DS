@@ -5,7 +5,9 @@ FROM python:3.13-slim
 
 # Commit del codigo copiado a la imagen; el pipeline lo registra en MLflow (no hay .git adentro)
 ARG GIT_COMMIT=desconocido
+# Hora local de Guatemala: los id de ejecucion y las fechas de generacion coinciden con la del equipo
 ENV GIT_COMMIT=${GIT_COMMIT} \
+    TZ=America/Guatemala \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
