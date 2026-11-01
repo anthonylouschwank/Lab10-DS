@@ -2,7 +2,9 @@
 # instaladas en salidas/ejecuciones/<id>/manifiesto.json.
 pandas==3.1.0
 numpy==2.5.4
-pyarrow==26.0.0
+# mlflow 3.17 exige pyarrow<26
+pyarrow==25.0.1
 openpyxl==3.1.5
 PyYAML==6.0.3
+mlflow==3.17.2
 pytest==9.2.0

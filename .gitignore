@@ -20,3 +20,7 @@ report/*.toc
 
 # Pipeline: cada ejecucion queda local; las versiones aprobadas (salidas/versiones, vigente.json) si se versionan
 salidas/ejecuciones/
+
+# MLflow: base y artefactos de las ejecuciones (volumen de Docker). Se regenera con
+# `docker compose run --rm pipeline`; se entrega comprimido por Canvas, no en el repositorio.
+mlflow/
