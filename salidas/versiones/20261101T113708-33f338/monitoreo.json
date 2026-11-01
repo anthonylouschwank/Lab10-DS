@@ -1,0 +1,34 @@
+{
+  "calidad": {
+    "estado": "ok",
+    "detalle": "Sin cambios relevantes en faltantes, duplicados ni cobertura frente a la version vigente",
+    "actual": {
+      "filas": 161036,
+      "faltantes_conteo_usados": 0,
+      "faltantes_totales": 0,
+      "claves_repetidas": 0,
+      "meses_con_datos": 210,
+      "ultimo_periodo": "2026-06"
+    },
+    "anterior": {
+      "filas": 161036,
+      "faltantes_conteo_usados": 0,
+      "faltantes_totales": 0,
+      "claves_repetidas": 0,
+      "meses_con_datos": 210,
+      "ultimo_periodo": "2026-06"
+    }
+  },
+  "actualizacion": {
+    "estado": "ok",
+    "detalle": "Fuente y resultados al dia con la cobertura configurada (2026-06)",
+    "ultimo_periodo_fuente": "2026-06",
+    "esperado": "2026-06"
+  },
+  "resultados": {
+    "estado": "ok",
+    "detalle": "Estimaciones finitas, no negativas y sin variaciones sobre los umbrales",
+    "variacion_interanual_maxima_observada": 0.009954453587781353,
+    "cambio_maximo_frente_a_vigente": 0.0
+  }
+}

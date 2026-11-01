@@ -1,0 +1,56 @@
+[
+  {
+    "control": "a_columnas_tipos",
+    "estado": "ok",
+    "detalle": "Columnas y tipos completos",
+    "filas_afectadas": 0,
+    "verifica": "Que existan las columnas de la fuente y que las indispensables (anio, mes, tipo, viajeros) tengan un tipo compatible.",
+    "advertencia_si": "Falta una columna descriptiva que no interviene en la estimacion.",
+    "detiene_si": "Falta una columna indispensable o tiene valores que no se pueden convertir a su tipo (texto en un conteo, mes con decimales)."
+  },
+  {
+    "control": "b_fechas_cobertura",
+    "estado": "ok",
+    "detalle": "Fechas validas y cobertura completa de 2023-01 a 2026-06",
+    "filas_afectadas": 0,
+    "verifica": "Que anio y mes formen fechas validas y que cada mes del ajuste y la evaluacion tenga registros de los tipos usados.",
+    "advertencia_si": "El nombre del mes no coincide con su codigo, o falta un mes fuera del periodo necesario.",
+    "detiene_si": "Hay meses fuera de 1-12, anios anteriores al minimo o fechas futuras, o un mes necesario no tiene informacion."
+  },
+  {
+    "control": "c_unicidad",
+    "estado": "ok",
+    "detalle": "Sin claves repetidas; clave ['anio', 'mes', 'via', 'frontera', 'pais', 'agrupacion', 'tipo']",
+    "filas_afectadas": 0,
+    "verifica": "Que no se repita la clave anio-mes-via-frontera-pais-agrupacion-tipo, que es la granularidad mensual de la fuente.",
+    "advertencia_si": "Hay claves repetidas solo en tipos que no se usan para estimar (Viajero, Cruceristas).",
+    "detiene_si": "Hay claves repetidas en los tipos usados: esos visitantes se contarian dos veces."
+  },
+  {
+    "control": "d_faltantes",
+    "estado": "ok",
+    "detalle": "Sin faltantes",
+    "filas_afectadas": 0,
+    "verifica": "Que los faltantes esten solo donde se permiten.",
+    "advertencia_si": "Faltan valores en columnas descriptivas o en conteos de tipos que no se usan (ausencia permitida).",
+    "detiene_si": "Falta anio, mes o tipo, o falta el conteo de un tipo usado para estimar (impide estimar)."
+  },
+  {
+    "control": "e_valores_denominadores",
+    "estado": "ok",
+    "detalle": "Conteos finitos y no negativos; denominadores de r mayores que cero",
+    "filas_afectadas": 0,
+    "verifica": "Que los conteos sean finitos y no negativos y que el denominador de la razon de nivel r sea mayor que cero.",
+    "advertencia_si": "Hay meses evaluados con valor observado cero (se excluyen del MAPE) o valores invalidos en tipos no usados.",
+    "detiene_si": "Hay conteos negativos o no finitos en los tipos usados, o el denominador de r es cero o no se puede calcular."
+  },
+  {
+    "control": "f_regla_metodologica",
+    "estado": "advertencia",
+    "detalle": "el factor de reparto es un supuesto sin fuente documentada",
+    "filas_afectadas": 0,
+    "verifica": "Que la serie mensual sume solo turistas y excursionistas de la fuente mensual, sin columnas diarias ni filas de total, y que concilie con la suma directa de la fuente.",
+    "advertencia_si": "El factor de reparto todavia es un supuesto sin fuente documentada.",
+    "detiene_si": "Se usan tipos que no son visitantes, la fuente trae granularidad diaria o filas de total, el factor esta fuera de [0, 1] o la serie no concilia con la fuente."
+  }
+]

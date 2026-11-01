@@ -1,0 +1,6 @@
+2026-11-01 11:36:42 INFO Inicio de la ejecucion 20261101T113642-74246e (destino Lago de Atitlán)
+2026-11-01 11:36:42 INFO Run de MLflow 5a488b82007141b292c5c2742c4181f1 en http://mlflow:5000
+2026-11-01 11:36:42 INFO Etapa completada: lectura
+2026-11-01 11:36:42 ERROR Control a_columnas_tipos: critico - Faltan columnas indispensables: ['Viajero']
+2026-11-01 11:36:42 ERROR Ejecucion detenida en la etapa validacion: Fallaron controles criticos: a_columnas_tipos (Faltan columnas indispensables: ['Viajero'])
+2026-11-01 11:36:42 INFO Resultado: fallida

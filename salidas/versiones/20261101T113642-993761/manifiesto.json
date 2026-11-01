@@ -1,0 +1,160 @@
+{
+  "id_ejecucion": "20261101T113642-993761",
+  "inicio": "2026-11-01T11:36:42",
+  "codigo": {
+    "commit": "698023e2b522f681980a05d421ac9ec0f73e9c6b",
+    "cambios_sin_commit": null
+  },
+  "dependencias": {
+    "python": "3.13.18",
+    "pandas": "3.1.0",
+    "numpy": "2.5.4",
+    "pyarrow": "25.0.1",
+    "openpyxl": "3.1.5",
+    "PyYAML": "6.0.3",
+    "mlflow": "3.17.2"
+  },
+  "configuracion": "/app/config/config.yaml",
+  "config_sha256": "793218cf95c2730e475936bee3343df18b1535c97083be85844dfcd55dce7b7e",
+  "fuente": {
+    "ruta": "/tmp/tmp8dp_y2v6/copia_corregida.parquet",
+    "sha256": "f6fdbce2db449460082e51348764e62117e88ff3d931f3219d2892f85daa4fa7",
+    "filas": 161036
+  },
+  "periodos": {
+    "ajuste": [
+      "2023-01",
+      "2025-06"
+    ],
+    "evaluacion": [
+      "2025-07",
+      "2026-06"
+    ],
+    "estimacion": [
+      "2026-07",
+      "2026-12"
+    ]
+  },
+  "procedimiento": {
+    "nombre": "estacional_con_ajuste_de_nivel",
+    "version": "1.0.0",
+    "formula": "y_hat(o+h) = y(o+h-12) * r(o);  r(o) = sum(y[o-k+1..o]) / sum(y[o-k+1-12..o-12])",
+    "ventana_nivel": 12,
+    "referencia": "ultimo_valor",
+    "semilla": 2026
+  },
+  "reparto": {
+    "factores": {
+      "Turista": 0.2,
+      "Excursionista": 0.0
+    },
+    "fuente": "SUPUESTO: reemplazar por el factor de la guia del proyecto"
+  },
+  "etapas_completadas": [
+    "lectura",
+    "validacion",
+    "preparacion",
+    "ajuste",
+    "evaluacion",
+    "estimacion",
+    "almacenamiento",
+    "publicacion"
+  ],
+  "estado": "publicada",
+  "mlflow": {
+    "tracking_uri": "http://mlflow:5000",
+    "experimento_id": "1",
+    "run_id": "6cf7273b9b704bbc86faffe46620a375"
+  },
+  "calidad": {
+    "a_columnas_tipos": "ok",
+    "b_fechas_cobertura": "ok",
+    "c_unicidad": "ok",
+    "d_faltantes": "ok",
+    "e_valores_denominadores": "ok",
+    "f_regla_metodologica": "advertencia"
+  },
+  "monitoreo": {
+    "calidad": {
+      "estado": "ok",
+      "detalle": "Sin cambios relevantes en faltantes, duplicados ni cobertura frente a la version vigente",
+      "actual": {
+        "filas": 161036,
+        "faltantes_conteo_usados": 0,
+        "faltantes_totales": 0,
+        "claves_repetidas": 0,
+        "meses_con_datos": 210,
+        "ultimo_periodo": "2026-06"
+      },
+      "anterior": {
+        "filas": 161036,
+        "faltantes_conteo_usados": 0,
+        "faltantes_totales": 0,
+        "claves_repetidas": 0,
+        "meses_con_datos": 210,
+        "ultimo_periodo": "2026-06"
+      }
+    },
+    "actualizacion": {
+      "estado": "ok",
+      "detalle": "Fuente y resultados al dia con la cobertura configurada (2026-06)",
+      "ultimo_periodo_fuente": "2026-06",
+      "esperado": "2026-06"
+    },
+    "resultados": {
+      "estado": "ok",
+      "detalle": "Estimaciones finitas, no negativas y sin variaciones sobre los umbrales",
+      "variacion_interanual_maxima_observada": 0.009954453587781353,
+      "cambio_maximo_frente_a_vigente": 0.0
+    }
+  },
+  "metricas": {
+    "procedimiento": {
+      "MAE": 4458.340659712873,
+      "RMSE": 5102.174046964991,
+      "MAPE": 11.138961810207022,
+      "meses_evaluados": 12,
+      "meses_cero_excluidos_mape": 0
+    },
+    "referencia": {
+      "MAE": 6137.58254220562,
+      "RMSE": 8159.356421445017,
+      "MAPE": 13.3010098353049,
+      "meses_evaluados": 12,
+      "meses_cero_excluidos_mape": 0
+    },
+    "meses_evaluados": [
+      "2025-07",
+      "2026-06"
+    ]
+  },
+  "parametros": {
+    "evaluacion": {
+      "origen": "2025-06",
+      "ventana_nivel": 12,
+      "numerador": 502269.1070831684,
+      "denominador": 449871.9644803835,
+      "r": 1.1164712334615146
+    },
+    "estimacion": {
+      "origen": "2026-06",
+      "ventana_nivel": 12,
+      "numerador": 507268.9215982042,
+      "denominador": 502269.1070831684,
+      "r": 1.0099544535877814
+    }
+  },
+  "aceptacion": {
+    "reglas": {
+      "controles_sin_criticos": true,
+      "salidas_completas": true,
+      "mape_bajo_umbral": true,
+      "mae_frente_a_referencia": true
+    },
+    "aprobada": true,
+    "umbrales": {
+      "mape_maximo": 15.0,
+      "mae_relativo_referencia_maximo": 1.25
+    }
+  }
+}

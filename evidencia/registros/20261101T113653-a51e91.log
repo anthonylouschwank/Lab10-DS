@@ -1,0 +1,13 @@
+2026-11-01 11:36:53 INFO Inicio de la ejecucion 20261101T113653-a51e91 (destino Lago de Atitlán)
+2026-11-01 11:36:53 INFO Run de MLflow 889c7079cb9c4a8fb444a8da4cd70da7 en http://mlflow:5000
+2026-11-01 11:36:53 INFO Etapa completada: lectura
+2026-11-01 11:36:53 INFO Control a_columnas_tipos: ok - Columnas y tipos completos
+2026-11-01 11:36:53 INFO Control b_fechas_cobertura: ok - Fechas validas y cobertura completa de 2023-01 a 2026-06
+2026-11-01 11:36:53 ERROR Control c_unicidad: critico - 2 filas con clave repetida (2 en tipos usados); clave ['anio', 'mes', 'via', 'frontera', 'pais', 'agrupacion', 'tipo']
+2026-11-01 11:36:53 INFO Control d_faltantes: ok - Sin faltantes
+2026-11-01 11:36:53 INFO Control e_valores_denominadores: ok - Conteos finitos y no negativos; denominadores de r mayores que cero
+2026-11-01 11:36:53 WARNING Control f_regla_metodologica: advertencia - el factor de reparto es un supuesto sin fuente documentada
+2026-11-01 11:36:53 WARNING Monitoreo calidad: alerta - aumentaron los claves repetidas: de 0 a 2
+2026-11-01 11:36:53 INFO Monitoreo actualizacion: ok - Fuente y resultados al dia con la cobertura configurada (2026-06)
+2026-11-01 11:36:53 ERROR Ejecucion detenida en la etapa validacion: Fallaron controles criticos: c_unicidad (2 filas con clave repetida (2 en tipos usados); clave ['anio', 'mes', 'via', 'frontera', 'pais', 'agrupacion', 'tipo'])
+2026-11-01 11:36:53 INFO Resultado: fallida

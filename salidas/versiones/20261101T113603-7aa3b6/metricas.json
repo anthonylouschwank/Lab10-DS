@@ -1,0 +1,20 @@
+{
+  "procedimiento": {
+    "MAE": 4458.340659712873,
+    "RMSE": 5102.174046964991,
+    "MAPE": 11.138961810207022,
+    "meses_evaluados": 12,
+    "meses_cero_excluidos_mape": 0
+  },
+  "referencia": {
+    "MAE": 6137.58254220562,
+    "RMSE": 8159.356421445017,
+    "MAPE": 13.3010098353049,
+    "meses_evaluados": 12,
+    "meses_cero_excluidos_mape": 0
+  },
+  "meses_evaluados": [
+    "2025-07",
+    "2026-06"
+  ]
+}

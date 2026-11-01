@@ -1,0 +1,22 @@
+2026-11-01 11:37:08 INFO Inicio de la ejecucion 20261101T113708-33f338 (destino Lago de Atitlán)
+2026-11-01 11:37:08 INFO Run de MLflow 46a018a6875e496181307e842616f438 en http://mlflow:5000
+2026-11-01 11:37:17 INFO Etapa completada: lectura
+2026-11-01 11:37:17 INFO Control a_columnas_tipos: ok - Columnas y tipos completos
+2026-11-01 11:37:17 INFO Control b_fechas_cobertura: ok - Fechas validas y cobertura completa de 2023-01 a 2026-06
+2026-11-01 11:37:17 INFO Control c_unicidad: ok - Sin claves repetidas; clave ['anio', 'mes', 'via', 'frontera', 'pais', 'agrupacion', 'tipo']
+2026-11-01 11:37:17 INFO Control d_faltantes: ok - Sin faltantes
+2026-11-01 11:37:17 INFO Control e_valores_denominadores: ok - Conteos finitos y no negativos; denominadores de r mayores que cero
+2026-11-01 11:37:17 WARNING Control f_regla_metodologica: advertencia - el factor de reparto es un supuesto sin fuente documentada
+2026-11-01 11:37:17 INFO Monitoreo calidad: ok - Sin cambios relevantes en faltantes, duplicados ni cobertura frente a la version vigente
+2026-11-01 11:37:17 INFO Monitoreo actualizacion: ok - Fuente y resultados al dia con la cobertura configurada (2026-06)
+2026-11-01 11:37:17 INFO Etapa completada: validacion
+2026-11-01 11:37:17 INFO Etapa completada: preparacion
+2026-11-01 11:37:17 INFO Etapa completada: ajuste
+2026-11-01 11:37:17 INFO Evaluacion 2025-07 a 2026-06: MAE 4458, MAPE 11.14 % (referencia MAE 6138, MAPE 13.30 %)
+2026-11-01 11:37:17 INFO Etapa completada: evaluacion
+2026-11-01 11:37:17 INFO Etapa completada: estimacion
+2026-11-01 11:37:17 INFO Monitoreo actualizacion: ok - Fuente y resultados al dia con la cobertura configurada (2026-06)
+2026-11-01 11:37:17 INFO Monitoreo resultados: ok - Estimaciones finitas, no negativas y sin variaciones sobre los umbrales
+2026-11-01 11:37:17 INFO Etapa completada: almacenamiento
+2026-11-01 11:37:17 INFO Etapa completada: publicacion
+2026-11-01 11:37:17 INFO Resultado: publicada
